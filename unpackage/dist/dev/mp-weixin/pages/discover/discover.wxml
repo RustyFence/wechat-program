@@ -1,0 +1,1 @@
+<view class="discover-container"><view>发现页面内容</view><tab-bar u-i="06bf36a7-0" bind:__l="__l"></tab-bar></view>

@@ -1,0 +1,1 @@
+<view class="myaccount-container"><view>我的页面内容</view><tab-bar u-i="c1361aea-0" bind:__l="__l"></tab-bar></view>

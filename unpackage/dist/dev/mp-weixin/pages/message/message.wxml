@@ -1,0 +1,1 @@
+<view class="message-container"><view>消息页面内容</view><tab-bar u-i="45fc7d57-0" bind:__l="__l"></tab-bar></view>

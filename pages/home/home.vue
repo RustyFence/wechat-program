@@ -32,45 +32,75 @@
       <view class="recommend-section">
         <view class="section-title">推荐内容</view>
         <view class="content-grid">
-          <view class="content-item" v-for="(item, index) in 6" :key="index">
-            <view class="content-image"></view>
-            <view class="content-info">
-              <text class="content-title">标题{{index + 1}}</text>
-              <text class="content-desc">描述文本</text>
-            </view>
-          </view>
+          <goods-preview 
+            v-for="(item, index) in goodsList" 
+            :key="index"
+            :goods="item"
+          ></goods-preview>
         </view>
       </view>
     </scroll-view>
 
-    <!-- 底部导航栏 -->
-    <view class="nav-bar">
-      <view class="nav-item" v-for="(item, index) in navItems" :key="index" @click="navigateTo(item.page)">
-        <image :src="item.icon" class="nav-icon"></image>
-        <text :class="['nav-text', currentPage === item.page ? 'active' : '']">{{item.text}}</text>
-      </view>
-    </view>
+    <!-- 使用底部导航栏组件 -->
+    <tab-bar></tab-bar>
   </view>
 </template>
 
 <script>
+import TabBar from '@/components/tab-bar/tab-bar.vue'
+import GoodsPreview from '@/components/goods-preview/goods-preview.vue'
+
 export default {
+  components: {
+    TabBar,
+    GoodsPreview
+  },
   data() {
     return {
-      currentPage: 'home',
-      navItems: [
-        { text: '发现', icon: '/static/icons/discover.png', page: 'discover' },
-        { text: '发布', icon: '/static/icons/publish.png', page: 'publish' },
-        { text: '消息', icon: '/static/icons/message.png', page: 'message' },
-        { text: '我的', icon: '/static/icons/account.png', page: 'account' }
+      goodsList: [
+        {
+          id: 1,
+          title: 'iPhone 14 Pro Max',
+          price: '7999.00',
+          description: '全新未拆封，256G 暗紫色',
+          image: '/static/goods/iphone.jpg'
+        },
+        {
+          id: 2,
+          title: '耐克运动鞋',
+          price: '599.00',
+          description: 'Nike Air Max 270，9成新',
+          image: '/static/goods/nike.jpg'
+        },
+        {
+          id: 3,
+          title: '索尼相机 A7M4',
+          price: '15999.00',
+          description: '95新，快门数3000次以内',
+          image: '/static/goods/sony.jpg'
+        },
+        {
+          id: 4,
+          title: 'MacBook Pro M2',
+          price: '12999.00',
+          description: '2023年新款，带包装',
+          image: '/static/goods/macbook.jpg'
+        },
+        {
+          id: 5,
+          title: '华为手表 GT4',
+          price: '1499.00',
+          description: '全新未拆封，46mm',
+          image: '/static/goods/watch.jpg'
+        },
+        {
+          id: 6,
+          title: 'AirPods Pro 2',
+          price: '1299.00',
+          description: '99新，带包装盒',
+          image: '/static/goods/airpods.jpg'
+        }
       ]
-    }
-  },
-  methods: {
-    navigateTo(page) {
-      uni.navigateTo({
-        url: `/pages/${page}/${page}`
-      })
     }
   }
 }
@@ -82,6 +112,7 @@ export default {
   background-color: #f8f8f8;
   display: flex;
   flex-direction: column;
+  padding-bottom: 50px; /* 为系统tabBar预留空间 */
 }
 
 .status-bar {
@@ -179,9 +210,38 @@ export default {
       overflow: hidden;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       
-      .content-image {
+      .content-image-wrapper {
+        position: relative;
         height: 120px;
-        background-color: #e0e0e0;
+        
+        .content-image {
+          width: 100%;
+          height: 100%;
+          background-color: #e0e0e0;
+        }
+        
+        .price-tag {
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.6);
+          padding: 4rpx 12rpx;
+          border-radius: 0 8rpx 0 0;
+          display: flex;
+          align-items: center;
+        }
+        
+        .price-symbol {
+          color: #fff;
+          font-size: 24rpx;
+          margin-right: 2rpx;
+        }
+        
+        .price-value {
+          color: #fff;
+          font-size: 28rpx;
+          font-weight: bold;
+        }
       }
       
       .content-info {
@@ -202,43 +262,13 @@ export default {
   }
 }
 
-.nav-bar {
-  height: 50px;
-  background-color: #ffffff;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  border-top: 1px solid #eee;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  
-  .nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    
-    .nav-icon {
-      width: 24px;
-      height: 24px;
-      margin-bottom: 2px;
-    }
-    
-    .nav-text {
-      font-size: 12px;
-      color: #666;
-      
-      &.active {
-        color: #007AFF;
-      }
-    }
-  }
+/* 添加一个默认的图标字体样式 */
+@font-face {
+  font-family: 'iconfont';
+  src: url('//at.alicdn.com/t/font_1234567_abcdefg.ttf') format('truetype');
 }
 
-// 适配底部安全区
-.nav-bar {
-  padding-bottom: constant(safe-area-inset-bottom);
-  padding-bottom: env(safe-area-inset-bottom);
+.iconfont {
+  font-family: 'iconfont';
 }
 </style>

@@ -1,9 +1,16 @@
 <template>
   <view class="login-container">
+    <!-- 背景图片 -->
+    <image class="bg-image" src="/static/login.jpg" mode="aspectFill"></image>
+    
     <!-- 登录表单 -->
     <view class="login-form">
-      <input type="text" v-model="username" placeholder="请输入用户名" />
-      <input type="password" v-model="password" placeholder="请输入密码" />
+      <view class="form-title">欢迎登录</view>
+      
+      <view class="input-group">
+        <input type="text" v-model="username" placeholder="请输入用户名" />
+        <input type="password" v-model="password" placeholder="请输入密码" />
+      </view>
       
       <!-- 登录和注册按钮行 -->
       <view class="btn-row">
@@ -13,6 +20,7 @@
       
       <!-- 微信登录按钮 -->
       <button class="wechat-login-btn" type="primary" @click="handleWXLogin">
+        <text class="iconfont icon-weixin"></text>
         微信登录
       </button>
     </view>
@@ -29,8 +37,7 @@ export default {
   },
   methods: {
     // 普通登录
-    handleLogin() {
-      // 这里添加登录逻辑
+    async handleLogin() {
       if (!this.username || !this.password) {
         uni.showToast({
           title: '请输入用户名和密码',
@@ -40,7 +47,9 @@ export default {
       }
       // 模拟登录,暂不调用后端API
       if(this.username === 'admin' && this.password === '123456') {
-        uni.navigateTo({ url: '/pages/home/home' })
+        uni.switchTab({
+          url: '/pages/home/home'
+        })
       } else {
         uni.showToast({
           title: '用户名或密码错误',
@@ -87,53 +96,107 @@ export default {
 
 <style scoped>
 .login-container {
-  padding: 50rpx;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.bg-image {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  z-index: 0;
+  animation: zoomInOut 20s ease-in-out infinite;
+}
+
+@keyframes zoomInOut {
+  0% {
+    transform: scale(0.5);
+  }
+  50% {
+    transform: scale(0.55);
+  }
+  100% {
+    transform: scale(0.5);
+  }
 }
 
 .login-form {
+  position: relative;
+  z-index: 1;
+  margin-top: 30vh;
+  padding: 40rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20rpx;
+  margin-left: 40rpx;
+  margin-right: 40rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+  font-size: 40rpx;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 40rpx;
+  color: #333;
+}
+
+.input-group {
   display: flex;
   flex-direction: column;
-  gap: 30rpx;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
 }
 
 input {
   height: 88rpx;
-  border: 1px solid #ddd;
-  border-radius: 44rpx;
+  border: 1px solid #eee;
+  border-radius: 12rpx;
   padding: 0 30rpx;
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .btn-row {
   display: flex;
   gap: 20rpx;
+  margin-bottom: 30rpx;
 }
 
 .login-btn {
   flex: 1;
   background: #007AFF;
   color: #fff;
-  border-radius: 44rpx;
+  border-radius: 12rpx;
   height: 88rpx;
   line-height: 88rpx;
 }
 
 .register-btn {
   flex: 1;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.9);
   color: #007AFF;
   border: 1px solid #007AFF;
-  border-radius: 44rpx;
+  border-radius: 12rpx;
   height: 88rpx;
   line-height: 88rpx;
-  font-size: 32rpx;
 }
 
 .wechat-login-btn {
-  margin-top: 30rpx;
+  width: 100%;
   background: #07C160;
   color: #fff;
-  border-radius: 44rpx;
+  border-radius: 12rpx;
   height: 88rpx;
   line-height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconfont {
+  margin-right: 10rpx;
 }
 </style>

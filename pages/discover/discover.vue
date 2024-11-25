@@ -1,181 +1,235 @@
 <template>
-  <scroll-view class="discover-container" scroll-y="true" @scrolltolower="loadMore">
-    <!-- 搜索栏 -->
-    <view class="search-bar">
-      <view class="search-input">
-        <text class="iconfont icon-filter"></text>
-        <input type="text" placeholder="输入你要搜索的型号" />
+  <view class="discover-container">
+    <!-- 搜索框 -->
+    <view class="search-box">
+      <view class="search-bar">
+        <image src="/static/icons/search.png" class="search-icon"></image>
+        <input type="text" placeholder="搜索" placeholder-class="search-placeholder"/>
       </view>
     </view>
 
-    <!-- 商品网格 -->
-    <view class="goods-grid">
-      <view v-for="(item, index) in 10" :key="index" class="grid-item">
-        <image class="item-image" src="/static/default-image.png" mode="aspectFill"></image>
-      </view>
-    </view>
-
-    <!-- 底部商品列表 -->
-    <view class="goods-list">
-      <view v-for="(item, index) in goodsList" :key="index" class="goods-item">
-        <image class="goods-image" :src="item.image || '/static/default-image.png'" mode="aspectFill"></image>
-        <view class="goods-info">
-          <text class="price">¥{{ item.price }}</text>
-          <text class="time">{{ item.time }}</text>
-        </view>
-        <text class="desc">{{ item.desc }}</text>
-        <view class="status-icon" v-if="item.status">
-          <text class="iconfont icon-lightning"></text>
+    <!-- 分类筛选区 -->
+    <scroll-view class="filter-section" scroll-x>
+      <view class="filter-list">
+        <view 
+          class="filter-item" 
+          v-for="(item, index) in filters" 
+          :key="index"
+          :class="{ active: currentFilter === index }"
+          @click="selectFilter(index)"
+        >
+          {{ item }}
         </view>
       </view>
-    </view>
+    </scroll-view>
 
-    <!-- 加载更多提示 -->
-    <view class="loading-more" v-if="isLoading">
-      <text>加载中...</text>
-    </view>
-  </scroll-view>
+    <!-- 内容区域 -->
+    <scroll-view class="content-area" scroll-y>
+      <!-- 分区导航 -->
+      <view class="category-nav">
+        <view class="category-item" v-for="(item, index) in categories" :key="index">
+          <view class="category-icon"></view>
+          <text class="category-text">{{item}}</text>
+        </view>
+      </view>
+
+      <!-- 商品列表 -->
+      <view class="goods-section">
+        <view class="content-grid">
+          <goods-preview 
+            v-for="(item, index) in goodsList" 
+            :key="index"
+            :goods="item"
+          ></goods-preview>
+        </view>
+      </view>
+    </scroll-view>
+
+    <tab-bar></tab-bar>
+  </view>
 </template>
 
 <script>
+import TabBar from '@/components/tab-bar/tab-bar.vue'
+import GoodsPreview from '@/components/goods-preview/goods-preview.vue'
+
 export default {
+  components: {
+    TabBar,
+    GoodsPreview
+  },
   data() {
     return {
+      currentFilter: 0,
+      filters: ['全部', '最新', '热门', '附近', '低价', '高价'],
+      categories: ['数码', '服装', '美食', '图书', '运动', '生活', '家居', '其他'],
       goodsList: [
-        { 
-          price: 200, 
-          time: '2小时前', 
-          desc: '商品描述信息11111', 
-          status: true,
-          image: '/static/default-image.png'
+        {
+          id: 7,
+          title: '戴森吸尘器 V15',
+          price: '3999.00',
+          description: '全新未拆封，顺丰包邮',
+          image: '/static/goods/dyson.jpg'
         },
-        // ... 其他商品数据
-      ],
-      isLoading: false,
-      page: 1
+        {
+          id: 8,
+          title: 'Switch OLED',
+          price: '1999.00',
+          description: '95新，带两个游戏',
+          image: '/static/goods/switch.jpg'
+        },
+        {
+          id: 9,
+          title: 'iPad Pro 12.9',
+          price: '6999.00',
+          description: '2022款，带妙控键盘',
+          image: '/static/goods/ipad.jpg'
+        },
+        {
+          id: 10,
+          title: '索尼降噪耳机',
+          price: '1799.00',
+          description: 'WH-1000XM5，全新',
+          image: '/static/goods/headphone.jpg'
+        },
+        {
+          id: 11,
+          title: '理光GR3x',
+          price: '4999.00',
+          description: '9成新，带UV镜',
+          image: '/static/goods/camera.jpg'
+        },
+        {
+          id: 12,
+          title: '机械键盘',
+          price: '899.00',
+          description: 'HHKB Pro 3，带包装',
+          image: '/static/goods/keyboard.jpg'
+        },
+        {
+          id: 13,
+          title: '显示器',
+          price: '2999.00',
+          description: 'LG 27寸4K显示器',
+          image: '/static/goods/monitor.jpg'
+        },
+        {
+          id: 14,
+          title: '游戏主机',
+          price: '3699.00',
+          description: 'PS5光驱版，全新',
+          image: '/static/goods/ps5.jpg'
+        }
+      ]
     }
   },
   methods: {
-    loadMore() {
-      if (this.isLoading) return
-      this.isLoading = true
-      
-      // 模拟加载更多数据
-      setTimeout(() => {
-        const newItems = [...this.goodsList]
-        this.goodsList = this.goodsList.concat(newItems)
-        this.isLoading = false
-        this.page++
-      }, 1000)
+    selectFilter(index) {
+      this.currentFilter = index
+      // TODO: 实现筛选逻辑
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss">
 .discover-container {
-  height: 100vh;
-  padding: 20rpx;
-  box-sizing: border-box;
+  min-height: 100vh;
+  background-color: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 50px;
 }
 
-.search-bar {
+.search-box {
+  background-color: #ffffff;
+  padding: 10px 15px;
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: #fff;
-  padding: 20rpx 0;
 }
 
-.search-input {
+.search-bar {
   display: flex;
   align-items: center;
   background-color: #f5f5f5;
-  padding: 10rpx 20rpx;
-  border-radius: 10rpx;
+  border-radius: 20px;
+  padding: 8px 15px;
+  
+  .search-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+  }
+  
+  input {
+    flex: 1;
+    font-size: 14px;
+  }
 }
 
-.search-input input {
-  flex: 1;
-  padding: 10rpx;
+.filter-section {
+  background: #fff;
+  padding: 10px 0;
+  white-space: nowrap;
+  
+  .filter-list {
+    display: inline-flex;
+    padding: 0 15px;
+  }
+  
+  .filter-item {
+    padding: 6px 16px;
+    margin-right: 10px;
+    font-size: 14px;
+    color: #666;
+    background: #f5f5f5;
+    border-radius: 16px;
+    
+    &.active {
+      color: #fff;
+      background: #007AFF;
+    }
+  }
 }
 
-.goods-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10rpx;
-  margin: 20rpx 0;
+.category-nav {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 15px;
+  background-color: #ffffff;
+  margin: 10px 0;
+  
+  .category-item {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+    
+    .category-icon {
+      width: 40px;
+      height: 40px;
+      background-color: #e0e0e0;
+      border-radius: 50%;
+      margin-bottom: 5px;
+    }
+    
+    .category-text {
+      font-size: 12px;
+      color: #333;
+    }
+  }
 }
 
-.grid-item {
-  aspect-ratio: 1;
-  border-radius: 8rpx;
-  overflow: hidden;
+.goods-section {
+  background-color: #ffffff;
+  padding: 15px;
 }
 
-.item-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.goods-list {
+.content-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20rpx;
-}
-
-.goods-item {
-  background-color: #fff;
-  border-radius: 12rpx;
-  overflow: hidden;
-  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05);
-}
-
-.goods-image {
-  width: 100%;
-  height: 300rpx;
-  object-fit: cover;
-}
-
-.goods-info {
-  padding: 16rpx;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.price {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #ff4d4f;
-}
-
-.time {
-  color: #999;
-  font-size: 24rpx;
-}
-
-.desc {
-  padding: 0 16rpx 16rpx;
-  font-size: 26rpx;
-  color: #666;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-}
-
-.status-icon {
-  position: absolute;
-  bottom: 16rpx;
-  right: 16rpx;
-}
-
-.loading-more {
-  text-align: center;
-  padding: 20rpx 0;
-  color: #999;
-  font-size: 24rpx;
+  gap: 10px;
 }
 </style>
