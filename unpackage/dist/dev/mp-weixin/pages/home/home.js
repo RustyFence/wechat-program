@@ -1,6 +1,5 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
-const common_assets = require("../../common/assets.js");
 const TabBar = () => "../../components/tab-bar/tab-bar.js";
 const GoodsPreview = () => "../../components/goods-preview/goods-preview.js";
 const _sfc_main = {
@@ -15,7 +14,7 @@ const _sfc_main = {
           id: 1,
           title: "iPhone 14 Pro Max",
           price: "7999.00",
-          description: "全新未拆封，256G 暗紫色",
+          description: "全新未拆封，256G 暗紫色//测试字数溢出",
           image: "/static/goods/iphone.jpg"
         },
         {
@@ -58,18 +57,24 @@ const _sfc_main = {
   }
 };
 if (!Array) {
+  const _easycom_uni_icons2 = common_vendor.resolveComponent("uni-icons");
   const _easycom_goods_preview2 = common_vendor.resolveComponent("goods-preview");
   const _easycom_tab_bar2 = common_vendor.resolveComponent("tab-bar");
-  (_easycom_goods_preview2 + _easycom_tab_bar2)();
+  (_easycom_uni_icons2 + _easycom_goods_preview2 + _easycom_tab_bar2)();
 }
+const _easycom_uni_icons = () => "../../uni_modules/uni-icons/components/uni-icons/uni-icons.js";
 const _easycom_goods_preview = () => "../../components/goods-preview/goods-preview.js";
 const _easycom_tab_bar = () => "../../components/tab-bar/tab-bar.js";
 if (!Math) {
-  (_easycom_goods_preview + _easycom_tab_bar)();
+  (_easycom_uni_icons + _easycom_goods_preview + _easycom_tab_bar)();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_assets._imports_0,
+    a: common_vendor.p({
+      type: "search",
+      size: "18",
+      color: "#666"
+    }),
     b: common_vendor.f(3, (item, index, i0) => {
       return {
         a: index
@@ -83,11 +88,11 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     d: common_vendor.f($data.goodsList, (item, index, i0) => {
       return {
-        a: index,
-        b: "1dd46367-0-" + i0,
-        c: common_vendor.p({
+        a: "3e597ef8-1-" + i0,
+        b: common_vendor.p({
           goods: item
-        })
+        }),
+        c: index
       };
     })
   };

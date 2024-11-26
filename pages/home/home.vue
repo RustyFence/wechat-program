@@ -15,16 +15,24 @@
     <scroll-view class="content-area" scroll-y>
       <!-- 轮播图 -->
       <swiper class="banner" indicator-dots autoplay circular>
-        <swiper-item v-for="(item, index) in 3" :key="index">
-          <view class="banner-item"></view>
+        <swiper-item v-for="(item, index) in banners" :key="index">
+          <image 
+            :src="item.src" 
+            mode="aspectFit" 
+            class="banner-item"
+          ></image> 
         </swiper-item>
       </swiper>
 
       <!-- 分类导航 -->
       <view class="category-nav">
-        <view class="category-item" v-for="(item, index) in 4" :key="index">
-          <view class="category-icon"></view>
-          <text class="category-text">分类{{index + 1}}</text>
+        <view class="category-item" v-for="(item, index) in categories" :key="index">
+          <image 
+            :src="item.icon" 
+            mode="aspectFit"
+            class="category-icon"
+          ></image>
+          <text class="category-text">{{item.name}}</text>
         </view>
       </view>
 
@@ -32,11 +40,9 @@
       <view class="recommend-section">
         <view class="section-title">推荐内容</view>
         <view class="content-grid">
-          <goods-preview 
-            v-for="(item, index) in goodsList" 
-            :key="index"
-            :goods="item"
-          ></goods-preview>
+          <view class="grid-item" v-for="(item, index) in goodsList" :key="index">
+            <goods-preview :goods="item"></goods-preview>
+          </view>
         </view>
       </view>
     </scroll-view>
@@ -57,49 +63,60 @@ export default {
   },
   data() {
     return {
+      categories: [
+        { name: '热销', icon: '/static/home/热销.svg' },
+        { name: '推荐', icon: '/static/home/推荐1.svg' },
+        { name: '优惠', icon: '/static/home/优惠.svg' },
+        { name: '活动', icon: '/static/home/活动.svg' }
+      ],
       goodsList: [
         {
           id: 1,
           title: 'iPhone 14 Pro Max',
           price: '7999.00',
-          description: '全新未拆封，256G 暗紫色',
-          image: '/static/goods/iphone.jpg'
+          description: '全新未拆封，256G 暗紫色//测试字数溢出',
+          image: '/static/home/goods/iphone14.jpg'
         },
         {
           id: 2,
           title: '耐克运动鞋',
           price: '599.00',
           description: 'Nike Air Max 270，9成新',
-          image: '/static/goods/nike.jpg'
+          image: '/static/home/goods/nike.jpg'
         },
         {
           id: 3,
           title: '索尼相机 A7M4',
           price: '15999.00',
           description: '95新，快门数3000次以内',
-          image: '/static/goods/sony.jpg'
+          image: '/static/home/goods/sony.jpg'
         },
         {
           id: 4,
           title: 'MacBook Pro M2',
           price: '12999.00',
           description: '2023年新款，带包装',
-          image: '/static/goods/macbook.jpg'
+          image: '/static/home/goods/macbook.jpg'
         },
         {
           id: 5,
           title: '华为手表 GT4',
           price: '1499.00',
           description: '全新未拆封，46mm',
-          image: '/static/goods/watch.jpg'
+          image: '/static/home/goods/watch.jpg'
         },
         {
           id: 6,
           title: 'AirPods Pro 2',
           price: '1299.00',
           description: '99新，带包装盒',
-          image: '/static/goods/airpods.jpg'
+          image: '/static/home/goods/airpods.jpg'
         }
+      ],
+      banners: [
+        {name : 'banner1', src : '/static/home/banner/banner1.png'},
+        {name : 'banner2', src : '/static/home/banner/banner2.png'},
+        {name : 'banner3', src : '/static/home/banner/banner3.png'}
       ]
     }
   }
@@ -170,15 +187,13 @@ export default {
     align-items: center;
     
     .category-icon {
-      width: 40px;
-      height: 40px;
-      background-color: #e0e0e0;
-      border-radius: 50%;
-      margin-bottom: 5px;
+      width: 80rpx;
+      height: 80rpx;
+      margin-bottom: 10rpx;
     }
     
     .category-text {
-      font-size: 12px;
+      font-size: 24rpx;
       color: #333;
     }
   }
@@ -186,73 +201,22 @@ export default {
 
 .recommend-section {
   background-color: #ffffff;
-  padding: 15px;
+  padding: 30rpx;
   
   .section-title {
-    font-size: 16px;
+    font-size: 32rpx;
     font-weight: bold;
-    margin-bottom: 15px;
+    margin-bottom: 30rpx;
   }
   
   .content-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
     
-    .content-item {
-      background-color: #ffffff;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      
-      .content-image-wrapper {
-        position: relative;
-        height: 120px;
-        
-        .content-image {
-          width: 100%;
-          height: 100%;
-          background-color: #e0e0e0;
-        }
-        
-        .price-tag {
-          position: absolute;
-          left: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.6);
-          padding: 4rpx 12rpx;
-          border-radius: 0 8rpx 0 0;
-          display: flex;
-          align-items: center;
-        }
-        
-        .price-symbol {
-          color: #fff;
-          font-size: 24rpx;
-          margin-right: 2rpx;
-        }
-        
-        .price-value {
-          color: #fff;
-          font-size: 28rpx;
-          font-weight: bold;
-        }
-      }
-      
-      .content-info {
-        padding: 8px;
-        
-        .content-title {
-          font-size: 14px;
-          font-weight: bold;
-          margin-bottom: 4px;
-        }
-        
-        .content-desc {
-          font-size: 12px;
-          color: #666;
-        }
-      }
+    .grid-item {
+      width: 50%;
+      padding: 10rpx;
+      box-sizing: border-box;
     }
   }
 }

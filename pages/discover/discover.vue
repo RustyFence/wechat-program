@@ -32,8 +32,12 @@
           v-for="(item, index) in categories" 
           :key="index"
         >
-          <view class="category-icon"></view>
-          <text class="category-text">{{item}}</text>
+          <image 
+            :src="item.icon" 
+            mode="aspectFit"
+            class="category-icon"
+          ></image>
+          <text class="category-text">{{item.name}}</text>
         </view>
       </view>
 
@@ -66,63 +70,72 @@ export default {
     return {
       currentFilter: 0,
       filters: ['全部', '最新', '热门', '附近', '低价', '高价'],
-      categories: ['数码', '服装', '美食', '图书', '运动', '生活', '家居', '其他'],
+      categories: [
+        { name: '数码', icon: '/static/discover/数码.svg' },
+        { name: '服装', icon: '/static/discover/服装.svg' },
+        { name: '美食', icon: '/static/discover/美食.svg' },
+        { name: '图书', icon: '/static/discover/图书.svg' },
+        { name: '运动', icon: '/static/discover/运动.svg' },
+        { name: '生活', icon: '/static/discover/生活.svg' },
+        { name: '居家', icon: '/static/discover/居家.svg' },
+        { name: '其他', icon: '/static/discover/其他.svg' }
+      ],
       goodsList: [
         {
           id: 7,
           title: '戴森吸尘器 V15',
           price: '3999.00',
           description: '全新未拆封，顺丰包邮',
-          image: '/static/goods/dyson.jpg'
+          image: '/static/discover/goods/dyson.jpg'
         },
         {
           id: 8,
           title: 'Switch OLED',
           price: '1999.00',
           description: '95新，带两个游戏',
-          image: '/static/goods/switch.jpg'
+          image: '/static/discover/goods/switch.jpg'
         },
         {
           id: 9,
           title: 'iPad Pro 12.9',
           price: '6999.00',
           description: '2022款，带妙控键盘',
-          image: '/static/goods/ipad.jpg'
+          image: '/static/discover/goods/ipad.jpg'
         },
         {
           id: 10,
           title: '索尼降噪耳机',
           price: '1799.00',
           description: 'WH-1000XM5，全新',
-          image: '/static/goods/headphone.jpg'
+          image: '/static/discover/goods/headphone.jpg'
         },
         {
           id: 11,
           title: '理光GR3x',
           price: '4999.00',
           description: '9成新，带UV镜',
-          image: '/static/goods/camera.jpg'
+          image: '/static/discover/goods/camera.jpg'
         },
         {
           id: 12,
           title: '机械键盘',
           price: '899.00',
           description: 'HHKB Pro 3，带包装',
-          image: '/static/goods/keyboard.jpg'
+          image: '/static/discover/goods/keyboard.jpg'
         },
         {
           id: 13,
           title: '显示器',
           price: '2999.00',
           description: 'LG 27寸4K显示器',
-          image: '/static/goods/monitor.jpg'
+          image: '/static/discover/goods/monitor.jpg'
         },
         {
           id: 14,
           title: '游戏主机',
           price: '3699.00',
           description: 'PS5光驱版，全新',
-          image: '/static/goods/ps5.jpg'
+          image: '/static/discover/goods/ps5.jpg'
         }
       ]
     }
@@ -202,30 +215,28 @@ export default {
 }
 
 .category-nav {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  padding: 15px;
-  background-color: #ffffff;
-  margin: 10px 0;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20rpx;
+  background: #fff;
   
   .category-item {
+    width: 25%; // 每行4个
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 20rpx 0;
+    
     
     .category-icon {
-      width: 40px;
-      height: 40px;
-      background-color: #e0e0e0;
-      border-radius: 50%;
-      margin-bottom: 5px;
+      width: 80rpx;
+      height: 80rpx;
+      margin-bottom: 10rpx;
     }
     
     .category-text {
-      font-size: 12px;
+      font-size: 24rpx;
       color: #333;
-      text-align: center;
     }
   }
 }

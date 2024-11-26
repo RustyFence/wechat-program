@@ -10,8 +10,8 @@
       </view>
     </view>
     <view class="content-info">
-      <text class="content-title">{{goods.title || '商品标题'}}</text>
-      <text class="content-desc">{{goods.description || '商品描述'}}</text>
+      <text class="content-title text-ellipsis">{{goods.title || '商品标题'}}</text>
+      <text class="content-desc text-ellipsis">{{goods.description || '商品描述'}}</text>
     </view>
   </view>
 </template>
@@ -83,18 +83,20 @@ export default {
       font-size: 14px;
       font-weight: bold;
       margin-bottom: 4px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
     
     .content-desc {
       font-size: 12px;
       color: #666;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
   }
+}
+
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  width: 100%;
 }
 </style> 

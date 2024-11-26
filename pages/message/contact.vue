@@ -1,13 +1,5 @@
 <template>
   <view class="contact-container">
-    <!-- 顶部导航栏 -->
-    <view class="nav-bar">
-      <view class="back-btn" @click="goBack">
-        <uni-icons type="back" size="24" color="#333"></uni-icons>
-      </view>
-      <view class="title">联系人</view>
-    </view>
-    
     <!-- 搜索框 -->
     <view class="search-box">
       <view class="search-bar">
@@ -112,10 +104,6 @@ export default {
     }
   },
   methods: {
-    goBack() {
-      uni.navigateBack()
-    },
-    
     onSearch(e) {
       // TODO: 实现搜索逻辑
       console.log('搜索:', this.searchKey)
@@ -141,28 +129,6 @@ export default {
   background: #f5f5f5;
   display: flex;
   flex-direction: column;
-}
-
-.nav-bar {
-  height: 88rpx;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  padding: 0 30rpx;
-  position: relative;
-  
-  .back-btn {
-    padding: 20rpx;
-    margin-left: -20rpx;
-  }
-  
-  .title {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 32rpx;
-    font-weight: 500;
-  }
 }
 
 .search-box {

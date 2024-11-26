@@ -9,15 +9,14 @@
 		{
 			"path": "pages/home/home",
 			"style": {
-				"navigationBarTitleText": "首页",
+				"navigationBarTitleText": "二手交易",
 				"enablePullDownRefresh": true
 			}
 		},
 		{
 			"path": "pages/login/login",
 			"style": {
-				"navigationBarTitleText": "登录",
-				"navigationStyle": "custom"
+				"navigationBarTitleText": "登录"
 			}
 		},
 		{
@@ -29,14 +28,13 @@
 		{
 			"path": "pages/publish/publish",
 			"style": {
-				"navigationBarTitleText": "发布"
+				"navigationBarTitleText": "发布商品"
 			}
 		},
 		{
 			"path": "pages/message/message",
 			"style": {
 				"navigationBarTitleText": "消息",
-				"navigationStyle": "default"
 			}
 		},
 		{
@@ -48,8 +46,7 @@
 		{
 			"path": "pages/login/register",
 			"style": {
-				"navigationBarTitleText": "注册",
-				"navigationStyle": "custom"
+				"navigationBarTitleText": "注册"
 			}
 		},
 		{
@@ -62,32 +59,35 @@
 			"path": "pages/message/chat",
 			"style": {
 				"navigationBarTitleText": "聊天",
-				"navigationStyle": "custom"
+				"navigationStyle": "default"
 			}
 		},
 		{
 			"path": "pages/message/contact",
 			"style": {
 				"navigationBarTitleText": "联系人",
-				"navigationStyle": "custom"
+				"navigationStyle": "default"
 			}
 		},
 		{
 			"path": "pages/myAccount/collection",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationBarTitleText": "我的收藏",
+				"navigationStyle": "default"
 			}
 		},
 		{
 			"path": "pages/myAccount/selling",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationBarTitleText": "在售商品",
+				"navigationStyle": "default"
 			}
 		},
 		{
 			"path": "pages/myAccount/sold",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationBarTitleText": "已售商品",
+				"navigationStyle": "default"
 			}
 		}
 	],
@@ -122,7 +122,7 @@
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
+		"navigationBarTitleText": "二手交易",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	}

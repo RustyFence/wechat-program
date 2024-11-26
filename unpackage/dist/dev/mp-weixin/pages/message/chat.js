@@ -3,6 +3,7 @@ const common_vendor = require("../../common/vendor.js");
 const _sfc_main = {
   data() {
     return {
+      statusBarHeight: 0,
       chatTitle: "",
       messages: [],
       inputMessage: "",
@@ -15,6 +16,8 @@ const _sfc_main = {
     };
   },
   onLoad(options) {
+    const systemInfo = common_vendor.index.getSystemInfoSync();
+    this.statusBarHeight = systemInfo.statusBarHeight;
     this.chatTitle = options.userName || "聊天";
     this.messages = [
       {
@@ -124,11 +127,9 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
-    a: common_vendor.o((...args) => $options.goBack && $options.goBack(...args)),
-    b: common_vendor.t($data.chatTitle),
-    c: $data.isLoading
+    a: $data.isLoading
   }, $data.isLoading ? {} : {}, {
-    d: common_vendor.f($data.messages, (msg, k0, i0) => {
+    b: common_vendor.f($data.messages, (msg, k0, i0) => {
       return common_vendor.e({
         a: msg.avatar,
         b: msg.type === "text"
@@ -144,28 +145,28 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         i: msg.isSelf ? 1 : ""
       });
     }),
-    e: $data.scrollTop,
-    f: $data.lastMessageId,
-    g: common_vendor.o((...args) => $options.loadMoreMessages && $options.loadMoreMessages(...args)),
-    h: common_vendor.n($data.isVoiceMode ? "icon-keyboard" : "icon-voice"),
-    i: common_vendor.o((...args) => $options.toggleInputMode && $options.toggleInputMode(...args)),
-    j: !$data.isVoiceMode
+    c: $data.scrollTop,
+    d: $data.lastMessageId,
+    e: common_vendor.o((...args) => $options.loadMoreMessages && $options.loadMoreMessages(...args)),
+    f: common_vendor.n($data.isVoiceMode ? "icon-keyboard" : "icon-voice"),
+    g: common_vendor.o((...args) => $options.toggleInputMode && $options.toggleInputMode(...args)),
+    h: !$data.isVoiceMode
   }, !$data.isVoiceMode ? {
-    k: common_vendor.o((...args) => $options.sendMessage && $options.sendMessage(...args)),
-    l: $data.inputMessage,
-    m: common_vendor.o(($event) => $data.inputMessage = $event.detail.value)
+    i: common_vendor.o((...args) => $options.sendMessage && $options.sendMessage(...args)),
+    j: $data.inputMessage,
+    k: common_vendor.o(($event) => $data.inputMessage = $event.detail.value)
   } : {
-    n: common_vendor.o((...args) => _ctx.startRecording && _ctx.startRecording(...args)),
-    o: common_vendor.o((...args) => _ctx.stopRecording && _ctx.stopRecording(...args)),
-    p: common_vendor.o((...args) => _ctx.cancelRecording && _ctx.cancelRecording(...args))
+    l: common_vendor.o((...args) => _ctx.startRecording && _ctx.startRecording(...args)),
+    m: common_vendor.o((...args) => _ctx.stopRecording && _ctx.stopRecording(...args)),
+    n: common_vendor.o((...args) => _ctx.cancelRecording && _ctx.cancelRecording(...args))
   }, {
-    q: common_vendor.o((...args) => $options.toggleEmoji && $options.toggleEmoji(...args)),
-    r: common_vendor.o((...args) => $options.toggleMore && $options.toggleMore(...args)),
-    s: $data.showEmoji
+    o: common_vendor.o((...args) => $options.toggleEmoji && $options.toggleEmoji(...args)),
+    p: common_vendor.o((...args) => $options.toggleMore && $options.toggleMore(...args)),
+    q: $data.showEmoji
   }, $data.showEmoji ? {} : {}, {
-    t: $data.showMore
+    r: $data.showMore
   }, $data.showMore ? {
-    v: common_vendor.o((...args) => $options.chooseImage && $options.chooseImage(...args))
+    s: common_vendor.o((...args) => $options.chooseImage && $options.chooseImage(...args))
   } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-013fa921"]]);

@@ -66,7 +66,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     d: $data.collectionList.length === 0
   }, $data.collectionList.length === 0 ? {
-    e: common_assets._imports_0$2
+    e: common_assets._imports_0$1
   } : {}, {
     f: common_vendor.o((...args) => $options.loadMore && $options.loadMore(...args)),
     g: common_vendor.o((...args) => $options.refresh && $options.refresh(...args))

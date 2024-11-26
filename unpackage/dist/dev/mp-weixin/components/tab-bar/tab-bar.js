@@ -4,7 +4,7 @@ const _sfc_main = {
   name: "TabBar",
   data() {
     return {
-      currentPath: "",
+      currentPath: "/pages/home/home",
       unreadCount: 0
     };
   },
@@ -14,21 +14,30 @@ const _sfc_main = {
     }
   },
   created() {
-    const pages = getCurrentPages();
-    const currentPage = pages[pages.length - 1];
-    this.currentPath = "/" + currentPage.route;
+    common_vendor.index.$on("hideTabBar", () => {
+      this.currentPath = "";
+    });
+    common_vendor.index.$on("showTabBar", (path) => {
+      this.currentPath = path || "/pages/home/home";
+    });
     common_vendor.index.$on("updateUnreadCount", this.updateUnreadCount);
     this.getUnreadCount();
   },
   beforeDestroy() {
-    common_vendor.index.$off("updateUnreadCount", this.updateUnreadCount);
+    common_vendor.index.$off("hideTabBar");
+    common_vendor.index.$off("showTabBar");
+    common_vendor.index.$off("updateUnreadCount");
   },
   methods: {
     switchTab(url) {
       if (this.currentPath === url)
         return;
       common_vendor.index.switchTab({
-        url
+        url,
+        success: () => {
+          this.currentPath = url;
+          common_vendor.index.$emit("showTabBar", url);
+        }
       });
     },
     updateUnreadCount(count) {
@@ -59,7 +68,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     b: $data.currentPath === "/pages/home/home" ? 1 : "",
     c: common_vendor.o(($event) => $options.switchTab("/pages/home/home")),
     d: common_vendor.p({
-      type: $data.currentPath === "/pages/discover/discover" ? "search-filled" : "search",
+      type: $data.currentPath === "/pages/discover/discover" ? "search" : "search",
       size: 24,
       color: $data.currentPath === "/pages/discover/discover" ? "#007AFF" : "#666"
     }),
@@ -98,5 +107,5 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     q: common_vendor.o(($event) => $options.switchTab("/pages/myAccount/myAccount"))
   });
 }
-const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-ffb3232c"]]);
+const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createComponent(Component);

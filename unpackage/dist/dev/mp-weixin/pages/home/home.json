@@ -1,8 +1,9 @@
 {
-  "navigationBarTitleText": "首页",
+  "navigationBarTitleText": "二手交易",
   "enablePullDownRefresh": true,
   "usingComponents": {
     "tab-bar": "../../components/tab-bar/tab-bar",
-    "goods-preview": "../../components/goods-preview/goods-preview"
+    "goods-preview": "../../components/goods-preview/goods-preview",
+    "uni-icons": "../../uni_modules/uni-icons/components/uni-icons/uni-icons"
   }
 }

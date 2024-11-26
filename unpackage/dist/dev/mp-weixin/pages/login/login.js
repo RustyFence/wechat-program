@@ -70,7 +70,7 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_assets._imports_0$1,
+    a: common_assets._imports_0,
     b: $data.username,
     c: common_vendor.o(($event) => $data.username = $event.detail.value),
     d: $data.password,

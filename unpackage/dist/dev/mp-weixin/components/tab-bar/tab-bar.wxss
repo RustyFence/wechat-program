@@ -1,5 +1,8 @@
 
-.tabbar.data-v-ffb3232c {
+ .uni-tabbar {
+  display: none !important;
+}
+.tabbar {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -8,8 +11,9 @@
   background: #fff;
   display: flex;
   border-top: 1px solid #eee;
+  z-index: 999;
 }
-.tab-item.data-v-ffb3232c {
+.tab-item {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -18,14 +22,14 @@
   font-size: 24rpx;
   color: #666;
 }
-.tab-item.active.data-v-ffb3232c {
+.tab-item.active {
   color: #007AFF;
 }
-.icon-wrapper.data-v-ffb3232c {
+.icon-wrapper {
   position: relative;
   display: inline-block;
   margin-bottom: 4rpx;
 }
-.tab-item text.data-v-ffb3232c {
+.tab-item text {
   margin-top: 4rpx;
 }

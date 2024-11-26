@@ -55,9 +55,6 @@ const _sfc_main = {
     };
   },
   methods: {
-    goBack() {
-      common_vendor.index.navigateBack();
-    },
     onSearch(e) {
       console.log("搜索:", this.searchKey);
     },
@@ -82,24 +79,18 @@ if (!Math) {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.p({
-      type: "back",
-      size: "24",
-      color: "#333"
-    }),
-    b: common_vendor.o((...args) => $options.goBack && $options.goBack(...args)),
-    c: common_vendor.p({
       type: "search",
       size: "20",
       color: "#666"
     }),
-    d: common_vendor.o([($event) => $data.searchKey = $event.detail.value, (...args) => $options.onSearch && $options.onSearch(...args)]),
-    e: $data.searchKey,
-    f: common_vendor.f($data.contactGroups, (group, index, i0) => {
+    b: common_vendor.o([($event) => $data.searchKey = $event.detail.value, (...args) => $options.onSearch && $options.onSearch(...args)]),
+    c: $data.searchKey,
+    d: common_vendor.f($data.contactGroups, (group, index, i0) => {
       return {
         a: common_vendor.t(group.title),
         b: common_vendor.f(group.items, (contact, k1, i1) => {
           return {
-            a: "857908fa-2-" + i0 + "-" + i1,
+            a: "857908fa-1-" + i0 + "-" + i1,
             b: common_vendor.t(contact.name),
             c: common_vendor.t(contact.description),
             d: contact.id,
@@ -109,7 +100,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         c: index
       };
     }),
-    g: common_vendor.p({
+    e: common_vendor.p({
       type: "contact",
       size: "40",
       color: "#666"

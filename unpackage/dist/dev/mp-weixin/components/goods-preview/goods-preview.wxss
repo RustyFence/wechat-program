@@ -42,14 +42,15 @@
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 4px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .content-item .content-info .content-desc.data-v-4d8bc7a2 {
   font-size: 12px;
   color: #666;
+}
+.text-ellipsis.data-v-4d8bc7a2 {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  display: block;
+  width: 100%;
 }

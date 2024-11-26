@@ -1,13 +1,5 @@
 <template>
   <view class="chat-container">
-    <!-- 顶部导航栏 -->
-    <view class="nav-bar" :style="{ paddingTop: statusBarHeight + 'px' }">
-      <view class="back-btn" @click="goBack">
-        <uni-icons type="left" size="20" color="#000"></uni-icons>
-      </view>
-      <view class="title">{{chatTitle}}</view>
-    </view>
-    
     <!-- 聊天内容区域 -->
     <scroll-view 
       class="chat-content" 
@@ -257,37 +249,6 @@ export default {
   flex-direction: column;
   height: 100vh;
   background: #f5f5f5;
-  padding-top: calc(88rpx + var(--status-bar-height));
-}
-
-.nav-bar {
-  background: #fff;
-  display: flex;
-  align-items: center;
-  padding: 0 30rpx;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  
-  .back-btn {
-    height: 88rpx;
-    display: flex;
-    align-items: center;
-    padding: 0 20rpx;
-    margin-left: -20rpx;
-  }
-  
-  .title {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 32rpx;
-    font-weight: 500;
-    height: 88rpx;
-    line-height: 88rpx;
-  }
 }
 
 .chat-content {

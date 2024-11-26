@@ -81,7 +81,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     d: $data.sellingList.length === 0
   }, $data.sellingList.length === 0 ? {
-    e: common_assets._imports_0$3,
+    e: common_assets._imports_0$2,
     f: common_vendor.o((...args) => $options.navigateToPublish && $options.navigateToPublish(...args))
   } : {}, {
     g: common_vendor.o((...args) => $options.loadMore && $options.loadMore(...args)),

@@ -58,7 +58,7 @@ export default {
   name: 'TabBar',
   data() {
     return {
-      currentPath: '',
+      currentPath: '/pages/home/home',
       unreadCount: 0
     }
   },
@@ -68,10 +68,15 @@ export default {
     }
   },
   created() {
-    this.initCurrentPath()
+    // 监听页面显示
+    uni.$on('hideTabBar', () => {
+      this.currentPath = ''
+    })
     
-    // 监听页面切换
-    uni.$on('tabChange', this.initCurrentPath)
+    uni.$on('showTabBar', (path) => {
+      this.currentPath = path || '/pages/home/home'
+    })
+    
     // 监听未读消息数量变化
     uni.$on('updateUnreadCount', this.updateUnreadCount)
     
@@ -79,24 +84,18 @@ export default {
     this.getUnreadCount()
   },
   beforeDestroy() {
-    uni.$off('tabChange', this.initCurrentPath)
-    uni.$off('updateUnreadCount', this.updateUnreadCount)
+    uni.$off('hideTabBar')
+    uni.$off('showTabBar')
+    uni.$off('updateUnreadCount')
   },
   methods: {
-    initCurrentPath() {
-      // 获取当前页面路径
-      const pages = getCurrentPages()
-      const currentPage = pages[pages.length - 1]
-      this.currentPath = '/' + currentPage.route
-    },
-    
     switchTab(url) {
       if (this.currentPath === url) return
       uni.switchTab({
         url,
         success: () => {
           this.currentPath = url
-          uni.$emit('tabChange')
+          uni.$emit('showTabBar', url)
         }
       })
     },
@@ -108,14 +107,15 @@ export default {
     getUnreadCount() {
       this.unreadCount = 5
     }
-  },
-  onShow() {
-    this.initCurrentPath()
   }
 }
 </script>
 
 <style>
+:deep(.uni-tabbar) {
+  display: none !important;
+}
+
 .tabbar {
   position: fixed;
   bottom: 0;
