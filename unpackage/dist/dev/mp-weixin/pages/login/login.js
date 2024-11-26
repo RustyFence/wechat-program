@@ -20,7 +20,16 @@ const _sfc_main = {
       }
       if (this.username === "admin" && this.password === "123456") {
         common_vendor.index.switchTab({
-          url: "/pages/home/home"
+          url: "/pages/home/home",
+          success: () => {
+            console.log("导航成功");
+          },
+          fail: (err) => {
+            console.error("导航失败:", err);
+            common_vendor.index.reLaunch({
+              url: "/pages/home/home"
+            });
+          }
         });
       } else {
         common_vendor.index.showToast({
@@ -61,7 +70,7 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_assets._imports_0,
+    a: common_assets._imports_0$1,
     b: $data.username,
     c: common_vendor.o(($event) => $data.username = $event.detail.value),
     d: $data.password,

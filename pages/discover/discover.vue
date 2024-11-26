@@ -3,7 +3,7 @@
     <!-- 搜索框 -->
     <view class="search-box">
       <view class="search-bar">
-        <image src="/static/icons/search.png" class="search-icon"></image>
+        <uni-icons type="search" size="18" color="#666"></uni-icons>
         <input type="text" placeholder="搜索" placeholder-class="search-placeholder"/>
       </view>
     </view>
@@ -27,7 +27,11 @@
     <scroll-view class="content-area" scroll-y>
       <!-- 分区导航 -->
       <view class="category-nav">
-        <view class="category-item" v-for="(item, index) in categories" :key="index">
+        <view 
+          class="category-item" 
+          v-for="(item, index) in categories" 
+          :key="index"
+        >
           <view class="category-icon"></view>
           <text class="category-text">{{item}}</text>
         </view>
@@ -156,15 +160,10 @@ export default {
   border-radius: 20px;
   padding: 8px 15px;
   
-  .search-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-  }
-  
   input {
     flex: 1;
     font-size: 14px;
+    margin-left: 8px;
   }
 }
 
@@ -172,19 +171,28 @@ export default {
   background: #fff;
   padding: 10px 0;
   white-space: nowrap;
+  width: 100%;
   
   .filter-list {
     display: inline-flex;
     padding: 0 15px;
+    flex-wrap: nowrap;
+    width: auto;
   }
   
   .filter-item {
+    display: inline-block;
     padding: 6px 16px;
     margin-right: 10px;
     font-size: 14px;
     color: #666;
     background: #f5f5f5;
     border-radius: 16px;
+    white-space: nowrap;
+    
+    &:last-child {
+      margin-right: 0;
+    }
     
     &.active {
       color: #fff;
@@ -194,18 +202,17 @@ export default {
 }
 
 .category-nav {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
   padding: 15px;
   background-color: #ffffff;
   margin: 10px 0;
   
   .category-item {
-    width: 25%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 15px;
     
     .category-icon {
       width: 40px;
@@ -218,6 +225,7 @@ export default {
     .category-text {
       font-size: 12px;
       color: #333;
+      text-align: center;
     }
   }
 }

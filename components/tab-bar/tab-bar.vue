@@ -5,7 +5,7 @@
       :class="{ active: currentPath === '/pages/home/home' }"
       @click="switchTab('/pages/home/home')"
     >
-      <text class="iconfont icon-home"></text>
+      <uni-icons :type="currentPath === '/pages/home/home' ? 'home-filled' : 'home'" :size="24" :color="currentPath === '/pages/home/home' ? '#007AFF' : '#666'"></uni-icons>
       <text>首页</text>
     </view>
     <view 
@@ -13,7 +13,7 @@
       :class="{ active: currentPath === '/pages/discover/discover' }"
       @click="switchTab('/pages/discover/discover')"
     >
-      <text class="iconfont icon-discover"></text>
+      <uni-icons :type="currentPath === '/pages/discover/discover' ? 'search' : 'search'" :size="24" :color="currentPath === '/pages/discover/discover' ? '#007AFF' : '#666'"></uni-icons>
       <text>发现</text>
     </view>
     <view 
@@ -21,7 +21,7 @@
       :class="{ active: currentPath === '/pages/publish/publish' }"
       @click="switchTab('/pages/publish/publish')"
     >
-      <text class="iconfont icon-publish"></text>
+      <uni-icons type="plusempty" :size="24" :color="currentPath === '/pages/publish/publish' ? '#007AFF' : '#666'"></uni-icons>
       <text>发布</text>
     </view>
     <view 
@@ -30,8 +30,15 @@
       @click="switchTab('/pages/message/message')"
     >
       <view class="icon-wrapper">
-        <text class="iconfont icon-message"></text>
-        <view class="badge" v-if="unreadCount > 0">{{formatUnreadCount}}</view>
+        <uni-icons :type="currentPath === '/pages/message/message' ? 'chat-filled' : 'chat'" :size="24" :color="currentPath === '/pages/message/message' ? '#007AFF' : '#666'"></uni-icons>
+        <uni-badge 
+          :text="formatUnreadCount" 
+          :offset="[8, -8]"
+          size="small"
+          type="error"
+          v-if="unreadCount > 0"
+          absolute="rightTop"
+        ></uni-badge>
       </view>
       <text>消息</text>
     </view>
@@ -40,7 +47,7 @@
       :class="{ active: currentPath === '/pages/myAccount/myAccount' }"
       @click="switchTab('/pages/myAccount/myAccount')"
     >
-      <text class="iconfont icon-my"></text>
+      <uni-icons :type="currentPath === '/pages/myAccount/myAccount' ? 'person-filled' : 'person'" :size="24" :color="currentPath === '/pages/myAccount/myAccount' ? '#007AFF' : '#666'"></uni-icons>
       <text>我的</text>
     </view>
   </view>
@@ -52,20 +59,19 @@ export default {
   data() {
     return {
       currentPath: '',
-      unreadCount: 0 // 未读消息数量
+      unreadCount: 0
     }
   },
   computed: {
     formatUnreadCount() {
-      return this.unreadCount > 99 ? '99+' : this.unreadCount
+      return this.unreadCount > 99 ? '99+' : this.unreadCount.toString()
     }
   },
   created() {
-    // 获取当前页面路径
-    const pages = getCurrentPages()
-    const currentPage = pages[pages.length - 1]
-    this.currentPath = '/' + currentPage.route
+    this.initCurrentPath()
     
+    // 监听页面切换
+    uni.$on('tabChange', this.initCurrentPath)
     // 监听未读消息数量变化
     uni.$on('updateUnreadCount', this.updateUnreadCount)
     
@@ -73,33 +79,43 @@ export default {
     this.getUnreadCount()
   },
   beforeDestroy() {
-    // 移除事件监听
+    uni.$off('tabChange', this.initCurrentPath)
     uni.$off('updateUnreadCount', this.updateUnreadCount)
   },
   methods: {
+    initCurrentPath() {
+      // 获取当前页面路径
+      const pages = getCurrentPages()
+      const currentPage = pages[pages.length - 1]
+      this.currentPath = '/' + currentPage.route
+    },
+    
     switchTab(url) {
       if (this.currentPath === url) return
       uni.switchTab({
-        url
+        url,
+        success: () => {
+          this.currentPath = url
+          uni.$emit('tabChange')
+        }
       })
     },
     
-    // 更新未读消息数量
     updateUnreadCount(count) {
       this.unreadCount = count
     },
     
-    // 获取未读消息数量
     getUnreadCount() {
-      // TODO: 从服务器获取未读消息数量
-      // 这里模拟一些未读消息
       this.unreadCount = 5
     }
+  },
+  onShow() {
+    this.initCurrentPath()
   }
 }
 </script>
 
-<style scoped>
+<style>
 .tabbar {
   position: fixed;
   bottom: 0;
@@ -109,6 +125,7 @@ export default {
   background: #fff;
   display: flex;
   border-top: 1px solid #eee;
+  z-index: 999;
 }
 
 .tab-item {
@@ -125,30 +142,13 @@ export default {
   color: #007AFF;
 }
 
-.tab-item .iconfont {
-  font-size: 40rpx;
-  margin-bottom: 4rpx;
-}
-
 .icon-wrapper {
   position: relative;
   display: inline-block;
+  margin-bottom: 4rpx;
 }
 
-.badge {
-  position: absolute;
-  right: -12rpx;
-  top: -6rpx;
-  min-width: 32rpx;
-  height: 32rpx;
-  line-height: 32rpx;
-  text-align: center;
-  background: #ff4d4f;
-  color: #fff;
-  font-size: 20rpx;
-  border-radius: 16rpx;
-  padding: 0 6rpx;
-  transform: scale(0.8);
-  transform-origin: right top;
+.tab-item text {
+  margin-top: 4rpx;
 }
 </style>

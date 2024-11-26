@@ -6,7 +6,7 @@
     <!-- 搜索框 -->
     <view class="search-box">
       <view class="search-bar">
-        <image src="/static/icons/search.png" class="search-icon"></image>
+        <uni-icons type="search" size="18" color="#666"></uni-icons>
         <input type="text" placeholder="搜索" placeholder-class="search-placeholder"/>
       </view>
     </view>
@@ -135,15 +135,10 @@ export default {
   border-radius: 20px;
   padding: 8px 15px;
   
-  .search-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-  }
-  
   input {
     flex: 1;
     font-size: 14px;
+    margin-left: 8px;
   }
 }
 

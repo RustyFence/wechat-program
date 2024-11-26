@@ -48,7 +48,17 @@ export default {
       // 模拟登录,暂不调用后端API
       if(this.username === 'admin' && this.password === '123456') {
         uni.switchTab({
-          url: '/pages/home/home'
+          url: '/pages/home/home',
+          success: () => {
+            console.log('导航成功')
+          },
+          fail: (err) => {
+            console.error('导航失败:', err)
+            // 如果导航失败，尝试使用 reLaunch
+            uni.reLaunch({
+              url: '/pages/home/home'
+            })
+          }
         })
       } else {
         uni.showToast({

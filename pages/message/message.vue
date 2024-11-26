@@ -4,14 +4,14 @@
     <view class="nav-bar">
       <view class="title">消息</view>
       <view class="contact-btn" @click="navigateToContacts">
-        <image src="/static/icons/contacts.png" class="contact-icon"></image>
+        <uni-icons type="contact" size="24" color="#333"></uni-icons>
       </view>
     </view>
     
     <!-- 搜索框 -->
     <view class="search-box">
       <view class="search-bar">
-        <image src="/static/icons/search.png" class="search-icon"></image>
+        <uni-icons type="search" size="20" color="#666"></uni-icons>
         <input type="text" placeholder="搜索消息" placeholder-class="search-placeholder"/>
       </view>
     </view>
@@ -71,10 +71,13 @@ export default {
           avatar: '/static/avatar/default.png',
           lastMessage: '好的，我知道了',
           time: '昨天',
-          unread: 0
+          unread: 3
         }
       ]
     }
+  },
+  onShow() {
+    this.updateTotalUnread()
   },
   methods: {
     navigateToContacts() {
@@ -86,13 +89,18 @@ export default {
     openChat(item) {
       if (item.unread > 0) {
         item.unread = 0
-        const totalUnread = this.messageList.reduce((sum, msg) => sum + (msg.unread || 0), 0)
-        uni.$emit('updateUnreadCount', totalUnread)
+        this.updateTotalUnread()
       }
       
       uni.navigateTo({
         url: `/pages/message/chat?userId=${item.id}&userName=${item.name}`
       })
+    },
+    
+    updateTotalUnread() {
+      const totalUnread = this.messageList.reduce((sum, msg) => sum + (msg.unread || 0), 0)
+      console.log('计算得到未读数:', totalUnread)
+      uni.$emit('updateUnreadCount', totalUnread)
     }
   }
 }
@@ -131,11 +139,6 @@ export default {
     position: absolute;
     right: 15px;
     padding: 8px;
-    
-    .contact-icon {
-      width: 24px;
-      height: 24px;
-    }
   }
 }
 

@@ -3,7 +3,7 @@
     <!-- 顶部导航栏 -->
     <view class="nav-bar">
       <view class="back-btn" @click="goBack">
-        <text class="iconfont icon-back"></text>
+        <uni-icons type="back" size="24" color="#333"></uni-icons>
       </view>
       <view class="title">联系人</view>
     </view>
@@ -11,7 +11,7 @@
     <!-- 搜索框 -->
     <view class="search-box">
       <view class="search-bar">
-        <image src="/static/icons/search.png" class="search-icon"></image>
+        <uni-icons type="search" size="20" color="#666"></uni-icons>
         <input 
           type="text" 
           v-model="searchKey"
@@ -41,11 +41,9 @@
               :key="contact.id"
               @tap="openChat(contact)"
             >
-              <image 
-                :src="contact.avatar" 
-                class="avatar" 
-                mode="aspectFill"
-              ></image>
+              <view class="avatar">
+                <uni-icons type="contact" size="40" color="#666"></uni-icons>
+              </view>
               <view class="info">
                 <text class="name">{{contact.name}}</text>
                 <text class="description">{{contact.description}}</text>
@@ -53,18 +51,6 @@
             </view>
           </view>
         </view>
-      </view>
-      
-      <!-- 右侧索引条 -->
-      <view class="index-bar">
-        <text 
-          v-for="(letter, index) in indexList" 
-          :key="index"
-          class="index-item"
-          @tap="scrollToLetter(letter)"
-        >
-          {{letter}}
-        </text>
       </view>
     </scroll-view>
   </view>

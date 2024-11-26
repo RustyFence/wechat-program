@@ -21,7 +21,11 @@
 .tab-item.active.data-v-ffb3232c {
   color: #007AFF;
 }
-.tab-item .iconfont.data-v-ffb3232c {
-  font-size: 40rpx;
+.icon-wrapper.data-v-ffb3232c {
+  position: relative;
+  display: inline-block;
   margin-bottom: 4rpx;
+}
+.tab-item text.data-v-ffb3232c {
+  margin-top: 4rpx;
 }

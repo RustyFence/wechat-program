@@ -1,9 +1,9 @@
 <template>
   <view class="chat-container">
     <!-- 顶部导航栏 -->
-    <view class="nav-bar">
+    <view class="nav-bar" :style="{ paddingTop: statusBarHeight + 'px' }">
       <view class="back-btn" @click="goBack">
-        <text class="iconfont icon-back"></text>
+        <uni-icons type="left" size="20" color="#000"></uni-icons>
       </view>
       <view class="title">{{chatTitle}}</view>
     </view>
@@ -113,6 +113,7 @@
 export default {
   data() {
     return {
+      statusBarHeight: 0,
       chatTitle: '',
       messages: [],
       inputMessage: '',
@@ -125,6 +126,10 @@ export default {
     }
   },
   onLoad(options) {
+    // 获取状态栏高度
+    const systemInfo = uni.getSystemInfoSync()
+    this.statusBarHeight = systemInfo.statusBarHeight
+    
     this.chatTitle = options.userName || '聊天'
     // 模拟一些消息数据
     this.messages = [
@@ -252,18 +257,25 @@ export default {
   flex-direction: column;
   height: 100vh;
   background: #f5f5f5;
+  padding-top: calc(88rpx + var(--status-bar-height));
 }
 
 .nav-bar {
-  height: 88rpx;
   background: #fff;
   display: flex;
   align-items: center;
   padding: 0 30rpx;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
   
   .back-btn {
-    padding: 20rpx;
+    height: 88rpx;
+    display: flex;
+    align-items: center;
+    padding: 0 20rpx;
     margin-left: -20rpx;
   }
   
@@ -273,6 +285,8 @@ export default {
     transform: translateX(-50%);
     font-size: 32rpx;
     font-weight: 500;
+    height: 88rpx;
+    line-height: 88rpx;
   }
 }
 

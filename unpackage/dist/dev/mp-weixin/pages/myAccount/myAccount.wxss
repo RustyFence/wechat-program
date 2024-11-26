@@ -1,0 +1,107 @@
+/* 水平间距 */
+/* 水平间距 */
+.myaccount-container.data-v-0628a342 {
+  min-height: 100vh;
+  background: #f8f8f8;
+  padding-bottom: 100rpx;
+}
+.user-card.data-v-0628a342 {
+  background: #fff;
+  padding: 40rpx 30rpx;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.user-card .avatar-section.data-v-0628a342 {
+  position: relative;
+  margin-right: 30rpx;
+}
+.user-card .avatar-section .avatar.data-v-0628a342 {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+}
+.user-card .avatar-section .edit-hint.data-v-0628a342 {
+  position: absolute;
+  bottom: -30rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20rpx;
+  color: #999;
+  white-space: nowrap;
+}
+.user-card .user-info .nickname.data-v-0628a342 {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  display: block;
+}
+.user-card .user-info .user-id.data-v-0628a342 {
+  font-size: 24rpx;
+  color: #999;
+}
+.info-list.data-v-0628a342 {
+  background: #fff;
+  margin-bottom: 20rpx;
+}
+.info-list .info-item.data-v-0628a342 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #eee;
+}
+.info-list .info-item .item-label.data-v-0628a342 {
+  font-size: 28rpx;
+  color: #333;
+}
+.info-list .info-item .item-content.data-v-0628a342 {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: #666;
+}
+.info-list .info-item .item-content .iconfont.data-v-0628a342 {
+  margin-left: 10rpx;
+  color: #999;
+}
+.function-list.data-v-0628a342 {
+  background: #fff;
+  margin-bottom: 20rpx;
+}
+.function-list .function-item.data-v-0628a342 {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #eee;
+}
+.function-list .function-item .iconfont.data-v-0628a342 {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+  color: #007AFF;
+}
+.function-list .function-item text.data-v-0628a342 {
+  font-size: 28rpx;
+  color: #333;
+}
+.function-list .function-item .count.data-v-0628a342 {
+  margin-left: auto;
+  background: #f5f5f5;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+.logout-btn.data-v-0628a342 {
+  margin: 40rpx 30rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  background: #fff;
+  border-radius: 8rpx;
+  color: #ff4d4f;
+  font-size: 32rpx;
+}
+.logout-btn.data-v-0628a342:active {
+  opacity: 0.8;
+}
