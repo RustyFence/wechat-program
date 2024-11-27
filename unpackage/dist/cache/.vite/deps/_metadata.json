@@ -1,15 +1,8 @@
 {
-  "hash": "894a7df3",
-  "configHash": "4ba41c95",
-  "lockfileHash": "9064053d",
-  "browserHash": "67ef24d9",
-  "optimized": {
-    "lottie-miniprogram": {
-      "src": "../../../../../node_modules/lottie-miniprogram/miniprogram_dist/index.js",
-      "file": "lottie-miniprogram.js",
-      "fileHash": "84558c7f",
-      "needsInterop": true
-    }
-  },
+  "hash": "d9f276cc",
+  "configHash": "e55c2678",
+  "lockfileHash": "24600b03",
+  "browserHash": "bfe6eec3",
+  "optimized": {},
   "chunks": {}
 }

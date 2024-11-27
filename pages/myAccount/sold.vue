@@ -1,13 +1,5 @@
 <template>
   <view class="sold-container">
-    <!-- 顶部导航栏 -->
-    <view class="nav-bar">
-      <view class="back-btn" @click="goBack">
-        <uni-icons type="back" size="24" color="#333"></uni-icons>
-      </view>
-      <view class="title">已下架</view>
-    </view>
-    
     <!-- 商品列表 -->
     <scroll-view 
       class="goods-list" 
@@ -62,10 +54,6 @@ export default {
     }
   },
   methods: {
-    goBack() {
-      uni.navigateBack()
-    },
-    
     // 重新上架商品
     relistGoods(goods) {
       uni.showModal({
@@ -90,7 +78,8 @@ export default {
     refresh() {
       // TODO: 刷新下架列表
     }
-  }
+  },
+  navigationBarTitleText: '已售商品'  // 设置原生导航栏标题
 }
 </script>
 
@@ -98,32 +87,11 @@ export default {
 .sold-container {
   min-height: 100vh;
   background: #f8f8f8;
-}
-
-.nav-bar {
-  height: 88rpx;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  padding: 0 30rpx;
-  position: relative;
-  
-  .back-btn {
-    padding: 20rpx;
-    margin-left: -20rpx;
-  }
-  
-  .title {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 32rpx;
-    font-weight: 500;
-  }
+  padding-top: 20rpx;
 }
 
 .goods-list {
-  height: calc(100vh - 88rpx);
+  height: calc(100vh - 20rpx);
 }
 
 .sold-list {

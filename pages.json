@@ -34,7 +34,7 @@
 		{
 			"path": "pages/message/message",
 			"style": {
-				"navigationBarTitleText": "消息",
+				"navigationBarTitleText": "消息"
 			}
 		},
 		{
