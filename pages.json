@@ -86,7 +86,7 @@
 		}
 	],
 	"tabBar": {
-		"custom": true,
+		"custom": false,
 		"color": "#999999",
 		"selectedColor": "#007AFF",
 		"backgroundColor": "#ffffff",
@@ -94,23 +94,35 @@
 		"list": [
 			{
 				"pagePath": "pages/home/home",
-				"text": "首页"
+				"text": "首页",
+				"iconPath": "static/tabbar/home.png",
+				"selectedIconPath": "static/tabbar/home-active.png"
 			},
 			{
 				"pagePath": "pages/discover/discover",
-				"text": "发现"
+				"text": "发现",
+				"iconPath": "static/tabbar/discover.png",
+				"selectedIconPath": "static/tabbar/discover-active.png"
 			},
 			{
 				"pagePath": "pages/publish/publish",
-				"text": "发布"
+				"text": "发布",
+				"iconPath": "static/tabbar/publish.png",
+				"selectedIconPath": "static/tabbar/publish-active.png"
 			},
 			{
 				"pagePath": "pages/message/message",
-				"text": "消息"
+				"text": "消息",
+				"iconPath": "static/tabbar/message.png",
+				"selectedIconPath": "static/tabbar/message-active.png",
+				"badge": "5"
 			},
 			{
 				"pagePath": "pages/myAccount/myAccount",
-				"text": "我的"
+				"text": "我的",
+				"iconPath": "static/tabbar/my.png",
+				"selectedIconPath": "static/tabbar/my-active.png",
+				"badge": ""
 			}
 		]
 	},

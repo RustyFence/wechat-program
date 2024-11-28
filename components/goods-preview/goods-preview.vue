@@ -1,7 +1,7 @@
 <template>
   <view class="content-item" @click.stop="goToGoodsInfo">
     <view class="content-image-wrapper">
-      <image :src="goods.image || '/static/goods/default.png'" 
+      <image :src="goods.images?.[0] || goods.image || '/static/goods/default.png'" 
              mode="aspectFill" 
              class="content-image"></image>
       <view class="price-tag">

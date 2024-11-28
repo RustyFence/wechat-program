@@ -69,6 +69,18 @@
         <button @tap="submitComment" type="primary">提交评价</button>
       </view>
     </uni-popup>
+
+    <!-- 添加收藏按钮 -->
+    <view class="action-buttons">
+      <button 
+        class="collect-btn" 
+        :class="{ active: isCollected }"
+        @tap="toggleCollect"
+      >
+        <uni-icons :type="isCollected ? 'star-filled' : 'star'" size="20"></uni-icons>
+        <text>{{ isCollected ? '已收藏' : '收藏' }}</text>
+      </button>
+    </view>
   </view>
 </template>
 
@@ -111,7 +123,8 @@ export default {
       ],
       userRating: 5,
       userComment: '',
-      averageRating: 0
+      averageRating: 0,
+      isCollected: false
     }
   },
   computed: {
@@ -176,56 +189,56 @@ export default {
           title: '戴森吸尘器 V15',
           price: '3999.00',
           description: '全新未拆封，顺丰包邮',
-          images: ['/static/discover/goods/dyson.jpg']
+          images: ['/static/goods/dyson.jpg']
         },
         8: {
           id: 8,
           title: 'Switch OLED',
           price: '1999.00',
           description: '95新，带两个游戏',
-          images: ['/static/discover/goods/switch.jpg']
+          images: ['/static/goods/switch.jpg']
         },
         9: {
           id: 9,
           title: 'iPad Pro 12.9',
           price: '6999.00',
           description: '2022款，带妙控键盘',
-          images: ['/static/discover/goods/ipad.jpg']
+          images: ['/static/goods/ipad.jpg']
         },
         10: {
           id: 10,
           title: '索尼降噪耳机',
           price: '1799.00',
           description: 'WH-1000XM5，全新',
-          images: ['/static/discover/goods/headphone.jpg']
+          images: ['/static/goods/headphone.jpg']
         },
         11: {
           id: 11,
           title: '理光GR3x',
           price: '4999.00',
           description: '9成新，带UV镜',
-          images: ['/static/discover/goods/camera.jpg']
+          images: ['/static/goods/camera.jpg']
         },
         12: {
           id: 12,
           title: '机械键盘',
           price: '899.00',
           description: 'HHKB Pro 3，带包装',
-          images: ['/static/discover/goods/keyboard.jpg']
+          images: ['/static/goods/keyboard.jpg']
         },
         13: {
           id: 13,
           title: '显示器',
           price: '2999.00',
           description: 'LG 27寸4K显示器',
-          images: ['/static/discover/goods/monitor.jpg']
+          images: ['/static/goods/monitor.jpg']
         },
         14: {
           id: 14,
           title: '游戏主机',
           price: '3699.00',
           description: 'PS5光驱版，全新',
-          images: ['/static/discover/goods/ps5.jpg']
+          images: ['/static/goods/ps5.jpg']
         }
       }
 
@@ -306,6 +319,14 @@ export default {
       }
       const sum = this.comments.reduce((acc, curr) => acc + curr.rating, 0)
       this.averageRating = Number((sum / this.comments.length).toFixed(1))
+    },
+    // 切换收藏状态
+    toggleCollect() {
+      this.isCollected = !this.isCollected
+      uni.showToast({
+        title: this.isCollected ? '已收藏' : '已取消收藏',
+        icon: 'success'
+      })
     }
   }
 }
@@ -450,6 +471,36 @@ export default {
     font-size: 24rpx;
     color: #ff4400;
     margin-left: 10rpx;
+  }
+}
+
+.action-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  padding: 20rpx;
+  background: #fff;
+  border-top: 1rpx solid #eee;
+  
+  .collect-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 30rpx;
+    height: 80rpx;
+    border-radius: 40rpx;
+    background: #f5f5f5;
+    margin-right: 20rpx;
+    
+    &.active {
+      color: #ff6b00;
+    }
+    
+    text {
+      margin-left: 8rpx;
+    }
   }
 }
 </style>
