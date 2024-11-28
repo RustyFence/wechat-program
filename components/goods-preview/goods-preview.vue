@@ -1,5 +1,5 @@
 <template>
-  <view class="content-item" @click="openGoodsDetail">
+  <view class="content-item" @click.stop="goToGoodsInfo">
     <view class="content-image-wrapper">
       <image :src="goods.image || '/static/goods/default.png'" 
              mode="aspectFill" 
@@ -26,9 +26,9 @@ export default {
     }
   },
   methods: {
-    openGoodsDetail() {
+    goToGoodsInfo() {
       uni.navigateTo({
-        url: `/pages/discover/goods-info?id=${this.goods.id}`
+        url: `/pages/goods-info/goods-info?id=${this.goods.id}`
       })
     }
   }

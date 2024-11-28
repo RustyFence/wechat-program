@@ -40,7 +40,11 @@
       <view class="recommend-section">
         <view class="section-title">推荐内容</view>
         <view class="content-grid">
-          <view class="grid-item" v-for="(item, index) in goodsList" :key="index">
+          <view 
+            class="grid-item" 
+            v-for="(item, index) in goodsList" 
+            :key="index"
+          >
             <goods-preview :goods="item"></goods-preview>
           </view>
         </view>
@@ -118,6 +122,13 @@ export default {
         {name : 'banner2', src : '/static/home/banner/banner2.png'},
         {name : 'banner3', src : '/static/home/banner/banner3.png'}
       ]
+    }
+  },
+  methods: {
+    goToGoodsInfo(goodsId) {
+      uni.navigateTo({
+        url: `/pages/goods-info/goods-info?id=${goodsId}`
+      })
     }
   }
 }
