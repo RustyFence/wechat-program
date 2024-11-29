@@ -57,29 +57,26 @@
   background: #007AFF;
 }
 .category-nav {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  padding: 15px;
-  background-color: #ffffff;
-  margin: 10px 0;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20rpx;
+  background: #fff;
 }
 .category-nav .category-item {
+  width: 25%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 20rpx 0;
 }
 .category-nav .category-item .category-icon {
-  width: 40px;
-  height: 40px;
-  background-color: #e0e0e0;
-  border-radius: 50%;
-  margin-bottom: 5px;
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 10rpx;
 }
 .category-nav .category-item .category-text {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #333;
-  text-align: center;
 }
 .goods-section {
   background-color: #ffffff;

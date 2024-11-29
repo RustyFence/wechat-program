@@ -4,7 +4,7 @@ const _sfc_main = {
   name: "TabBar",
   data() {
     return {
-      currentPath: "/pages/home/home",
+      currentPath: "",
       unreadCount: 0
     };
   },
@@ -14,11 +14,21 @@ const _sfc_main = {
     }
   },
   created() {
+    const pages = getCurrentPages();
+    if (pages.length > 0) {
+      const currentPage = pages[pages.length - 1];
+      this.currentPath = `/${currentPage.route}`;
+    }
     common_vendor.index.$on("hideTabBar", () => {
       this.currentPath = "";
     });
     common_vendor.index.$on("showTabBar", (path) => {
       this.currentPath = path || "/pages/home/home";
+    });
+    common_vendor.index.$on("onPageShow", (path) => {
+      if (path) {
+        this.currentPath = path;
+      }
     });
     common_vendor.index.$on("updateUnreadCount", this.updateUnreadCount);
     this.getUnreadCount();
@@ -27,6 +37,7 @@ const _sfc_main = {
     common_vendor.index.$off("hideTabBar");
     common_vendor.index.$off("showTabBar");
     common_vendor.index.$off("updateUnreadCount");
+    common_vendor.index.$off("onPageShow");
   },
   methods: {
     switchTab(url) {
@@ -37,6 +48,9 @@ const _sfc_main = {
         success: () => {
           this.currentPath = url;
           common_vendor.index.$emit("showTabBar", url);
+        },
+        fail: (err) => {
+          console.error("Tab切换失败:", err);
         }
       });
     },

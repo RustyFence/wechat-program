@@ -3,28 +3,10 @@
 .sold-container.data-v-8f7ac795 {
   min-height: 100vh;
   background: #f8f8f8;
-}
-.nav-bar.data-v-8f7ac795 {
-  height: 88rpx;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  padding: 0 30rpx;
-  position: relative;
-}
-.nav-bar .back-btn.data-v-8f7ac795 {
-  padding: 20rpx;
-  margin-left: -20rpx;
-}
-.nav-bar .title.data-v-8f7ac795 {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 32rpx;
-  font-weight: 500;
+  padding-top: 20rpx;
 }
 .goods-list.data-v-8f7ac795 {
-  height: calc(100vh - 88rpx);
+  height: calc(100vh - 20rpx);
 }
 .sold-list.data-v-8f7ac795 {
   padding: 20rpx;

@@ -3,28 +3,10 @@
 .selling-container.data-v-116c5b3f {
   min-height: 100vh;
   background: #f8f8f8;
-}
-.nav-bar.data-v-116c5b3f {
-  height: 88rpx;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  padding: 0 30rpx;
-  position: relative;
-}
-.nav-bar .back-btn.data-v-116c5b3f {
-  padding: 20rpx;
-  margin-left: -20rpx;
-}
-.nav-bar .title.data-v-116c5b3f {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 32rpx;
-  font-weight: 500;
+  padding-top: 20rpx;
 }
 .goods-list.data-v-116c5b3f {
-  height: calc(100vh - 88rpx);
+  height: calc(100vh - 20rpx);
 }
 .goods-grid.data-v-116c5b3f {
   display: grid;

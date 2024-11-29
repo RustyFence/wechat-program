@@ -2,7 +2,6 @@
   "navigationBarTitleText": "在售商品",
   "navigationStyle": "default",
   "usingComponents": {
-    "goods-preview": "../../components/goods-preview/goods-preview",
-    "uni-icons": "../../uni_modules/uni-icons/components/uni-icons/uni-icons"
+    "goods-preview": "../../components/goods-preview/goods-preview"
   }
 }

@@ -9,7 +9,7 @@ if (!Math) {
   "./pages/message/message.js";
   "./pages/myAccount/myAccount.js";
   "./pages/login/register.js";
-  "./pages/discover/goods-info.js";
+  "./pages/goods-info/goods-info.js";
   "./pages/message/chat.js";
   "./pages/message/contact.js";
   "./pages/myAccount/collection.js";

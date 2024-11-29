@@ -3,7 +3,7 @@
 		{
 			"path": "pages/home/home",
 			"style": {
-				"navigationBarTitleText": "二手交易",
+				"navigationBarTitleText": "wechat-miniprojectTest",
 				"enablePullDownRefresh": true
 			}
 		},
@@ -94,35 +94,25 @@
 		"list": [
 			{
 				"pagePath": "pages/home/home",
-				"text": "首页",
-				"iconPath": "static/tabbar/home.png",
-				"selectedIconPath": "static/tabbar/home-active.png"
+				"text": "首页"
+
 			},
 			{
 				"pagePath": "pages/discover/discover",
-				"text": "发现",
-				"iconPath": "static/tabbar/discover.png",
-				"selectedIconPath": "static/tabbar/discover-active.png"
+				"text": "发现"
 			},
 			{
 				"pagePath": "pages/publish/publish",
-				"text": "发布",
-				"iconPath": "static/tabbar/publish.png",
-				"selectedIconPath": "static/tabbar/publish-active.png"
+				"text": "发布"
 			},
 			{
 				"pagePath": "pages/message/message",
 				"text": "消息",
-				"iconPath": "static/tabbar/message.png",
-				"selectedIconPath": "static/tabbar/message-active.png",
 				"badge": "5"
 			},
 			{
 				"pagePath": "pages/myAccount/myAccount",
-				"text": "我的",
-				"iconPath": "static/tabbar/my.png",
-				"selectedIconPath": "static/tabbar/my-active.png",
-				"badge": ""
+				"text": "我的"
 			}
 		]
 	},

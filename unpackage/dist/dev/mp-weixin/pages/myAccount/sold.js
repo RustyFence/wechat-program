@@ -22,9 +22,6 @@ const _sfc_main = {
     };
   },
   methods: {
-    goBack() {
-      common_vendor.index.navigateBack();
-    },
     // 重新上架商品
     relistGoods(goods) {
       common_vendor.index.showModal({
@@ -44,29 +41,23 @@ const _sfc_main = {
     },
     refresh() {
     }
-  }
+  },
+  navigationBarTitleText: "已售商品"
+  // 设置原生导航栏标题
 };
 if (!Array) {
-  const _easycom_uni_icons2 = common_vendor.resolveComponent("uni-icons");
   const _easycom_goods_preview2 = common_vendor.resolveComponent("goods-preview");
-  (_easycom_uni_icons2 + _easycom_goods_preview2)();
+  _easycom_goods_preview2();
 }
-const _easycom_uni_icons = () => "../../uni_modules/uni-icons/components/uni-icons/uni-icons.js";
 const _easycom_goods_preview = () => "../../components/goods-preview/goods-preview.js";
 if (!Math) {
-  (_easycom_uni_icons + _easycom_goods_preview)();
+  _easycom_goods_preview();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
-    a: common_vendor.p({
-      type: "back",
-      size: "24",
-      color: "#333"
-    }),
-    b: common_vendor.o((...args) => $options.goBack && $options.goBack(...args)),
-    c: common_vendor.f($data.soldList, (item, k0, i0) => {
+    a: common_vendor.f($data.soldList, (item, k0, i0) => {
       return {
-        a: "8f7ac795-1-" + i0,
+        a: "8f7ac795-0-" + i0,
         b: common_vendor.p({
           goods: item
         }),
@@ -75,12 +66,12 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         e: item.id
       };
     }),
-    d: $data.soldList.length === 0
+    b: $data.soldList.length === 0
   }, $data.soldList.length === 0 ? {
-    e: common_assets._imports_0$3
+    c: common_assets._imports_0$3
   } : {}, {
-    f: common_vendor.o((...args) => $options.loadMore && $options.loadMore(...args)),
-    g: common_vendor.o((...args) => $options.refresh && $options.refresh(...args))
+    d: common_vendor.o((...args) => $options.loadMore && $options.loadMore(...args)),
+    e: common_vendor.o((...args) => $options.refresh && $options.refresh(...args))
   });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-8f7ac795"]]);

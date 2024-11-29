@@ -9,20 +9,21 @@ const _sfc_main = {
     }
   },
   methods: {
-    openGoodsDetail() {
+    goToGoodsInfo() {
       common_vendor.index.navigateTo({
-        url: `/pages/discover/goods-info?id=${this.goods.id}`
+        url: `/pages/goods-info/goods-info?id=${this.goods.id}`
       });
     }
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _a;
   return {
-    a: $props.goods.image || "/static/goods/default.png",
+    a: ((_a = $props.goods.images) == null ? void 0 : _a[0]) || $props.goods.image || "/static/goods/default.png",
     b: common_vendor.t($props.goods.price || "0.00"),
     c: common_vendor.t($props.goods.title || "商品标题"),
     d: common_vendor.t($props.goods.description || "商品描述"),
-    e: common_vendor.o((...args) => $options.openGoodsDetail && $options.openGoodsDetail(...args))
+    e: common_vendor.o((...args) => $options.goToGoodsInfo && $options.goToGoodsInfo(...args))
   };
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-4d8bc7a2"]]);

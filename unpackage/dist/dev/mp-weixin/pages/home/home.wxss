@@ -57,14 +57,12 @@
   align-items: center;
 }
 .category-nav .category-item .category-icon {
-  width: 40px;
-  height: 40px;
-  background-color: #e0e0e0;
-  border-radius: 50%;
-  margin-bottom: 5px;
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 10rpx;
 }
 .category-nav .category-item .category-text {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #333;
 }
 .recommend-section {

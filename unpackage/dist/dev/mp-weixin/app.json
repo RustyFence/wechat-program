@@ -7,7 +7,7 @@
     "pages/message/message",
     "pages/myAccount/myAccount",
     "pages/login/register",
-    "pages/discover/goods-info",
+    "pages/goods-info/goods-info",
     "pages/message/chat",
     "pages/message/contact",
     "pages/myAccount/collection",
@@ -21,7 +21,7 @@
     "backgroundColor": "#F8F8F8"
   },
   "tabBar": {
-    "custom": true,
+    "custom": false,
     "color": "#999999",
     "selectedColor": "#007AFF",
     "backgroundColor": "#ffffff",
@@ -41,7 +41,8 @@
       },
       {
         "pagePath": "pages/message/message",
-        "text": "消息"
+        "text": "消息",
+        "badge": "5"
       },
       {
         "pagePath": "pages/myAccount/myAccount",

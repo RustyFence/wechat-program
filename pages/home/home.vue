@@ -52,7 +52,7 @@
     </scroll-view>
 
     <!-- 使用底部导航栏组件 -->
-    <tab-bar></tab-bar>
+    <!-- <tab-bar></tab-bar> -->
   </view>
 </template>
 

@@ -1,8 +1,7 @@
 {
-  "navigationBarTitleText": "二手交易",
+  "navigationBarTitleText": "wechat-miniprojectTest",
   "enablePullDownRefresh": true,
   "usingComponents": {
-    "tab-bar": "../../components/tab-bar/tab-bar",
     "goods-preview": "../../components/goods-preview/goods-preview",
     "uni-icons": "../../uni_modules/uni-icons/components/uni-icons/uni-icons"
   }

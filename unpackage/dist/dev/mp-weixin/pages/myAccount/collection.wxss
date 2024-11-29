@@ -1,50 +1,28 @@
 /* 水平间距 */
 /* 水平间距 */
-.collection-container.data-v-a3f0690f {
+.collection-container {
   min-height: 100vh;
-  background: #f8f8f8;
-}
-.nav-bar.data-v-a3f0690f {
-  height: 88rpx;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  padding: 0 30rpx;
-  position: relative;
-}
-.nav-bar .back-btn.data-v-a3f0690f {
+  background-color: #f8f8f8;
   padding: 20rpx;
-  margin-left: -20rpx;
 }
-.nav-bar .title.data-v-a3f0690f {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 32rpx;
-  font-weight: 500;
-}
-.goods-list.data-v-a3f0690f {
-  height: calc(100vh - 88rpx);
-}
-.goods-grid.data-v-a3f0690f {
+.content-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20rpx;
-  padding: 20rpx;
 }
-.empty-state.data-v-a3f0690f {
+.empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding-top: 200rpx;
 }
-.empty-state .empty-icon.data-v-a3f0690f {
+.empty-state .empty-image {
   width: 200rpx;
   height: 200rpx;
   margin-bottom: 20rpx;
 }
-.empty-state text.data-v-a3f0690f {
-  font-size: 28rpx;
+.empty-state .empty-text {
   color: #999;
+  font-size: 28rpx;
 }

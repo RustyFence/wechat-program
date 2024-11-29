@@ -1,0 +1,143 @@
+/* 水平间距 */
+/* 水平间距 */
+.container {
+  padding-bottom: 100rpx;
+}
+.goods-swiper {
+  height: 750rpx;
+}
+.goods-swiper .goods-image {
+  width: 100%;
+  height: 100%;
+}
+.goods-detail {
+  padding: 20rpx;
+  background: #fff;
+}
+.goods-detail .price {
+  color: #ff4400;
+  font-size: 40rpx;
+  font-weight: bold;
+}
+.goods-detail .title {
+  font-size: 32rpx;
+  margin: 10rpx 0;
+}
+.goods-detail .description {
+  font-size: 28rpx;
+  color: #666;
+}
+.comment-section {
+  margin-top: 20rpx;
+  background: #fff;
+  padding: 20rpx;
+}
+.comment-section .comment-header {
+  border-bottom: 1rpx solid #eee;
+  padding-bottom: 20rpx;
+}
+.comment-section .comment-header .section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+.comment-section .comment-header .comment-count {
+  font-size: 24rpx;
+  color: #999;
+  margin-left: 10rpx;
+}
+.comment-item {
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #eee;
+}
+.comment-item .comment-user {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+.comment-item .comment-user .user-avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+.comment-item .comment-user .user-info {
+  flex: 1;
+}
+.comment-item .comment-user .user-info .user-name {
+  font-size: 28rpx;
+}
+.comment-item .comment-user .comment-time {
+  font-size: 24rpx;
+  color: #999;
+}
+.comment-item .comment-content {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.5;
+}
+.comment-popup {
+  background: #fff;
+  padding: 30rpx;
+  border-radius: 20rpx 20rpx 0 0;
+}
+.comment-popup .popup-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30rpx;
+}
+.comment-popup .popup-header .close-btn {
+  font-size: 40rpx;
+  color: #999;
+}
+.comment-popup .rating-input {
+  margin-bottom: 20rpx;
+}
+.comment-popup .comment-textarea {
+  width: 100%;
+  height: 200rpx;
+  border: 1rpx solid #eee;
+  border-radius: 10rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+.overall-rating {
+  display: flex;
+  align-items: center;
+  margin-top: 10rpx;
+}
+.overall-rating .rating-text {
+  font-size: 24rpx;
+  color: #666;
+  margin-right: 20rpx;
+}
+.overall-rating .rating-value {
+  font-size: 24rpx;
+  color: #ff4400;
+  margin-left: 10rpx;
+}
+.action-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  padding: 20rpx;
+  background: #fff;
+  border-top: 1rpx solid #eee;
+}
+.action-buttons .collect-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 30rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  background: #f5f5f5;
+  margin-right: 20rpx;
+}
+.action-buttons .collect-btn.active {
+  color: #ff6b00;
+}
+.action-buttons .collect-btn text {
+  margin-left: 8rpx;
+}
