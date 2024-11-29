@@ -58,7 +58,7 @@ export default {
   name: 'TabBar',
   data() {
     return {
-      currentPath: '/pages/home/home',
+      currentPath: '',
       unreadCount: 0
     }
   },
@@ -68,6 +68,13 @@ export default {
     }
   },
   created() {
+    // 添加初始化当前路径
+    const pages = getCurrentPages()
+    if (pages.length > 0) {
+      const currentPage = pages[pages.length - 1]
+      this.currentPath = `/${currentPage.route}`
+    }
+
     // 监听页面显示
     uni.$on('hideTabBar', () => {
       this.currentPath = ''
@@ -75,6 +82,13 @@ export default {
     
     uni.$on('showTabBar', (path) => {
       this.currentPath = path || '/pages/home/home'
+    })
+    
+    // 添加页面显示事件监听
+    uni.$on('onPageShow', (path) => {
+      if (path) {
+        this.currentPath = path
+      }
     })
     
     // 监听未读消息数量变化
@@ -87,6 +101,7 @@ export default {
     uni.$off('hideTabBar')
     uni.$off('showTabBar')
     uni.$off('updateUnreadCount')
+    uni.$off('onPageShow')  // 移除页面显示事件监听
   },
   methods: {
     switchTab(url) {
@@ -96,6 +111,9 @@ export default {
         success: () => {
           this.currentPath = url
           uni.$emit('showTabBar', url)
+        },
+        fail: (err) => {
+          console.error('Tab切换失败:', err)
         }
       })
     },
