@@ -42,42 +42,19 @@
         </view>
       </view>
     </scroll-view>
-
-    <tab-bar></tab-bar>
   </view>
 </template>
 
 <script>
-import TabBar from '@/components/tab-bar/tab-bar.vue'
 
 export default {
-  components: {
-    TabBar
-  },
   data() {
     return {
-      messageList: [
-        {
-          id: 1,
-          name: '张三',
-          avatar: '/static/avatar/default.png',
-          lastMessage: '请问商品还在吗？',
-          time: '12:30',
-          unread: 2
-        },
-        {
-          id: 2,
-          name: '李四',
-          avatar: '/static/avatar/default.png',
-          lastMessage: '好的，我知道了',
-          time: '昨天',
-          unread: 3
-        }
-      ]
+      messageList: []
     }
   },
   onShow() {
-    this.updateTotalUnread()
+    this.getMessageList()
   },
   methods: {
     navigateToContacts() {
@@ -87,20 +64,37 @@ export default {
     },
     
     openChat(item) {
-      if (item.unread > 0) {
-        item.unread = 0
-        this.updateTotalUnread()
-      }
+      this.markAsRead(item.id)
       
       uni.navigateTo({
         url: `/pages/message/chat?userId=${item.id}&userName=${item.name}`
       })
     },
     
-    updateTotalUnread() {
-      const totalUnread = this.messageList.reduce((sum, msg) => sum + (msg.unread || 0), 0)
-      console.log('计算得到未读数:', totalUnread)
-      uni.$emit('updateUnreadCount', totalUnread)
+    async markAsRead(messageId) {
+      try {
+        // 模拟标记已读
+        const app = getApp()
+        const message = app.globalData.messageList.find(msg => msg.id === messageId)
+        if (message) {
+          message.unread = 0
+          // 更新本地列表
+          this.messageList = [...app.globalData.messageList]
+          // 更新角标
+          app.checkUnreadMessages()
+        }
+      } catch (error) {
+        console.error('标记已读失败:', error)
+      }
+    },
+    
+    async getMessageList() {
+      try {
+        // 使用全局的静态数据
+        this.messageList = [...getApp().globalData.messageList]
+      } catch (error) {
+        console.error('获取消息列表失败:', error)
+      }
     }
   }
 }

@@ -38,19 +38,12 @@
     <view class="publish-btn-area">
       <button class="publish-btn" @click="handlePublish">发布商品</button>
     </view>
-    
-    <!-- 添加底部导航栏 -->
-    <tab-bar></tab-bar>
+
   </view>
 </template>
 
 <script>
-import TabBar from '@/components/tab-bar/tab-bar.vue'
-
 export default {
-  components: {
-    TabBar
-  },
   data() {
     return {
       title: '',

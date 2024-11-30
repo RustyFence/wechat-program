@@ -72,18 +72,11 @@
     <view class="logout-btn" @tap="logout">
       退出登录
     </view>
-    
-    <tab-bar></tab-bar>
   </view>
 </template>
 
 <script>
-import TabBar from '@/components/tab-bar/tab-bar.vue'
-
 export default {
-  components: {
-    TabBar
-  },
   data() {
     return {
       userInfo: {

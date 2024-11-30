@@ -52,18 +52,14 @@
         </view>
       </view>
     </scroll-view>
-
-    <tab-bar></tab-bar>
   </view>
 </template>
 
 <script>
-import TabBar from '@/components/tab-bar/tab-bar.vue'
 import GoodsPreview from '@/components/goods-preview/goods-preview.vue'
 
 export default {
   components: {
-    TabBar,
     GoodsPreview
   },
   data() {

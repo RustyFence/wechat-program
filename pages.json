@@ -3,7 +3,7 @@
 		{
 			"path": "pages/home/home",
 			"style": {
-				"navigationBarTitleText": "wechat-miniprojectTest",
+				"navigationBarTitleText": "首页",
 				"enablePullDownRefresh": true
 			}
 		},
@@ -16,7 +16,8 @@
 		{
 			"path": "pages/discover/discover",
 			"style": {
-				"navigationBarTitleText": "发现"
+				"navigationBarTitleText": "发现",
+				"enablePullDownRefresh": true
 			}
 		},
 		{
@@ -87,38 +88,51 @@
 	],
 	"tabBar": {
 		"custom": false,
-		"color": "#999999",
-		"selectedColor": "#007AFF",
+		"color": "#8F8F8F",
+		"selectedColor": "#1296db",
 		"backgroundColor": "#ffffff",
-		"borderStyle": "black",
+		"borderStyle": "white",
+		"height": "50px",
+		"fontSize": "10px",
+		"iconWidth": "27px",
+		"spacing": "3px",
 		"list": [
 			{
 				"pagePath": "pages/home/home",
-				"text": "首页"
-
+				"text": "首页",
+				"iconPath": "static/tabbar/home.svg",
+				"selectedIconPath": "static/tabbar/home.svg"
 			},
 			{
 				"pagePath": "pages/discover/discover",
-				"text": "发现"
+				"text": "发现",
+				"iconPath": "static/tabbar/discover.svg",
+				"selectedIconPath": "static/tabbar/discover.svg"
 			},
 			{
 				"pagePath": "pages/publish/publish",
-				"text": "发布"
+				"text": "发布",
+				"iconPath": "static/tabbar/publish.svg",
+				"selectedIconPath": "static/tabbar/publish.svg"
 			},
 			{
 				"pagePath": "pages/message/message",
 				"text": "消息",
+				"iconPath": "static/tabbar/message.svg",
+				"selectedIconPath": "static/tabbar/message.svg",
 				"badge": "5"
 			},
 			{
 				"pagePath": "pages/myAccount/myAccount",
-				"text": "我的"
+				"text": "我的",
+				"iconPath": "static/tabbar/myAccount.svg",
+				"selectedIconPath": "static/tabbar/myAccount.svg"
 			}
 		]
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "二手交易",
+		"navigationBarTitleText": "校园二手交易",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	}
