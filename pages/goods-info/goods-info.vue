@@ -3,7 +3,7 @@
     <!-- 商品基本信息部分 -->
     <view class="goods-info">
       <swiper class="goods-swiper" indicator-dots autoplay circular>
-        <swiper-item v-for="(img, index) in goodsImages" :key="index">
+        <swiper-item v-for="(img, index) in goods.images" :key="index">
           <image :src="img" mode="aspectFill" class="goods-image"></image>
         </swiper-item>
       </swiper>
@@ -80,6 +80,14 @@
         <uni-icons :type="isCollected ? 'star-filled' : 'star'" size="20"></uni-icons>
         <text>{{ isCollected ? '已收藏' : '收藏' }}</text>
       </button>
+      
+      <button 
+        class="contact-btn" 
+        @tap="contactSeller"
+      >
+        <uni-icons type="chat" size="20"></uni-icons>
+        <text>联系卖家</text>
+      </button>
     </view>
   </view>
 </template>
@@ -92,35 +100,10 @@ export default {
         id: '',
         title: '',
         price: '',
-        description: ''
+        description: '',
+        images: []
       },
-      goodsImages: [],
-      comments: [
-        {
-          id: 1,
-          userAvatar: '/static/avatar/user1.png',
-          userName: '张三',
-          rating: 5,
-          content: '商品质量非常好，和卖家描述的一样，发货速度也很快，很满意的一次购物！',
-          time: '2024-01-15 14:30'
-        },
-        {
-          id: 2,
-          userAvatar: '/static/avatar/user2.png',
-          userName: '李四',
-          rating: 4,
-          content: '整体不错，就是发货稍微有点慢，其他都挺好的。',
-          time: '2024-01-14 16:45'
-        },
-        {
-          id: 3,
-          userAvatar: '/static/avatar/user3.png',
-          userName: '王五',
-          rating: 5,
-          content: '卖家服务态度很好，商品完全符合预期，下次还会继续购买！',
-          time: '2024-01-13 09:20'
-        }
-      ],
+      comments: [],
       userRating: 5,
       userComment: '',
       averageRating: 0,
@@ -137,137 +120,49 @@ export default {
     this.loadGoodsInfo(goodsId)
   },
   methods: {
-    loadGoodsInfo(id) {
-      // 模拟商品数据库
-      const mockGoodsDatabase = {
-        // home页面的商品
-        1: {
-          id: 1,
-          title: 'iPhone 14 Pro Max',
-          price: '7999.00',
-          description: '全新未拆封，256G 暗紫色//测试字数溢出',
-          images: ['/static/goods/iphone14.jpg']
-        },
-        2: {
-          id: 2,
-          title: '耐克运动鞋',
-          price: '599.00',
-          description: 'Nike Air Max 270，9成新',
-          images: ['/static/goods/nike.jpg']
-        },
-        3: {
-          id: 3,
-          title: '索尼相机 A7M4',
-          price: '15999.00',
-          description: '95新，快门数3000次以内',
-          images: ['/static/goods/sony.jpg']
-        },
-        4: {
-          id: 4,
-          title: 'MacBook Pro M2',
-          price: '12999.00',
-          description: '2023年新款，带包装',
-          images: ['/static/goods/macbook.jpg']
-        },
-        5: {
-          id: 5,
-          title: '华为手表 GT4',
-          price: '1499.00',
-          description: '全新未拆封，46mm',
-          images: ['/static/goods/watch.jpg']
-        },
-        6: {
-          id: 6,
-          title: 'AirPods Pro 2',
-          price: '1299.00',
-          description: '99新，带包装盒',
-          images: ['/static/goods/airpods.jpg']
-        },
-        // discover页面的商品
-        7: {
-          id: 7,
-          title: '戴森吸尘器 V15',
-          price: '3999.00',
-          description: '全新未拆封，顺丰包邮',
-          images: ['/static/goods/dyson.jpg']
-        },
-        8: {
-          id: 8,
-          title: 'Switch OLED',
-          price: '1999.00',
-          description: '95新，带两个游戏',
-          images: ['/static/goods/switch.jpg']
-        },
-        9: {
-          id: 9,
-          title: 'iPad Pro 12.9',
-          price: '6999.00',
-          description: '2022款，带妙控键盘',
-          images: ['/static/goods/ipad.jpg']
-        },
-        10: {
-          id: 10,
-          title: '索尼降噪耳机',
-          price: '1799.00',
-          description: 'WH-1000XM5，全新',
-          images: ['/static/goods/headphone.jpg']
-        },
-        11: {
-          id: 11,
-          title: '理光GR3x',
-          price: '4999.00',
-          description: '9成新，带UV镜',
-          images: ['/static/goods/camera.jpg']
-        },
-        12: {
-          id: 12,
-          title: '机械键盘',
-          price: '899.00',
-          description: 'HHKB Pro 3，带包装',
-          images: ['/static/goods/keyboard.jpg']
-        },
-        13: {
-          id: 13,
-          title: '显示器',
-          price: '2999.00',
-          description: 'LG 27寸4K显示器',
-          images: ['/static/goods/monitor.jpg']
-        },
-        14: {
-          id: 14,
-          title: '游戏主机',
-          price: '3699.00',
-          description: 'PS5光驱版，全新',
-          images: ['/static/goods/ps5.jpg']
-        }
-      }
+    async loadGoodsInfo(id) {
+      try {
+        const res = await uni.request({
+          url: `/api/goods/${id}`,
+          method: 'GET'
+        })
+        
+        if (res.data.code === 200) {  
 
-      // 根据ID获取对应商品信息
-      const goodsInfo = mockGoodsDatabase[id]
-      
-      if (goodsInfo) {
-        this.goods = {
-          id: goodsInfo.id,
-          title: goodsInfo.title,
-          price: goodsInfo.price,
-          description: goodsInfo.description
+          const goodsInfo = res.data.data  
+          this.goods = { ...goodsInfo }
+        
+          // 获取商品评论
+          this.loadComments(id)
+        } else {
+          uni.showToast({
+            title: res.data.message,  
+            icon: 'none'
+          })
         }
-        this.goodsImages = goodsInfo.images
-      } else {
-        // 修改返回逻辑
+      } catch (error) {
+        console.error('获取商品信息失败:', error)
         uni.showToast({
-          title: '商品不存在',
-          icon: 'none',
-          complete: () => {
-            uni.navigateBack({
-              delta: 1
-            })
-          }
+          title: '获取商品信息失败',
+          icon: 'none'
         })
       }
-      
-      // 计算平均评分
-      this.calculateAverageRating()
+    },
+    
+    async loadComments(goodsId) {
+      try {
+        const res = await uni.request({
+          url: `/api/goods/${goodsId}/comments`,
+          method: 'GET'
+        })
+
+        if (res.data.code === 200) {
+          this.comments = res.data.data.list
+          this.calculateAverageRating()
+        }
+      } catch (error) {
+        console.error('获取评论失败:', error)
+      }
     },
     showCommentModal() {
       this.$refs.commentPopup.open()
@@ -286,7 +181,7 @@ export default {
       
       // 构造评论对象
       const newComment = {
-        id: this.comments.length + 1,
+        id: Date.now(),
         userAvatar: '/static/avatar/default.png',
         userName: '用户' + Math.floor(Math.random() * 1000),
         rating: this.userRating,
@@ -300,11 +195,9 @@ export default {
       // 重新计算平均评分
       this.calculateAverageRating()
       
-      // 清空输入
+      // 清空输入并关闭弹窗
       this.userComment = ''
       this.userRating = 5
-      
-      // 关闭弹窗
       this.closeCommentModal()
       
       uni.showToast({
@@ -321,11 +214,35 @@ export default {
       this.averageRating = Number((sum / this.comments.length).toFixed(1))
     },
     // 切换收藏状态
-    toggleCollect() {
-      this.isCollected = !this.isCollected
-      uni.showToast({
-        title: this.isCollected ? '已收藏' : '已取消收藏',
-        icon: 'success'
+    async toggleCollect() {
+      try {
+        const res = await uni.request({
+          url: '/api/goods/favorite',
+          method: 'POST',
+          data: {
+            goodsId: this.goods.id,
+            action: this.isCollected ? 'remove' : 'add'
+          }
+        })
+        
+        if (res.data.code === 200) {
+          this.isCollected = res.data.data.isCollected
+          uni.showToast({
+            title: res.data.message,
+            icon: 'success'
+          })
+        }
+      } catch (error) {
+        console.error('收藏操作失败:', error)
+        uni.showToast({
+          title: '操作失败',
+          icon: 'none'
+        })
+      }
+    },
+    contactSeller() {
+      uni.navigateTo({
+        url: '/pages/chat/chat?sellerId=' + this.goods.sellerId
       })
     }
   }
@@ -335,6 +252,17 @@ export default {
 <style lang="scss">
 .container {
   padding-bottom: 100rpx;
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+}
+
+@mixin text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .goods-swiper {
@@ -359,6 +287,7 @@ export default {
   .title {
     font-size: 32rpx;
     margin: 10rpx 0;
+    @include text-ellipsis;
   }
   
   .description {
@@ -394,8 +323,7 @@ export default {
   border-bottom: 1rpx solid #eee;
   
   .comment-user {
-    display: flex;
-    align-items: center;
+    @include flex-center;
     margin-bottom: 10rpx;
     
     .user-avatar {
@@ -480,27 +408,37 @@ export default {
   left: 0;
   right: 0;
   display: flex;
-  padding: 20rpx;
+  justify-content: space-between;
+  padding: 20rpx 30rpx;
   background: #fff;
   border-top: 1rpx solid #eee;
   
-  .collect-btn {
+  .collect-btn, .contact-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 30rpx;
     height: 80rpx;
     border-radius: 40rpx;
+    width: 48%;
+    font-size: 28rpx;
+    
+    text {
+      margin-left: 10rpx;
+    }
+  }
+  
+  .collect-btn {
     background: #f5f5f5;
-    margin-right: 20rpx;
     
     &.active {
       color: #ff6b00;
+      background: #fff0e6;
     }
-    
-    text {
-      margin-left: 8rpx;
-    }
+  }
+  
+  .contact-btn {
+    background: #ff6b00;
+    color: #fff;
   }
 }
 </style>

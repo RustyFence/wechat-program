@@ -1,3 +1,7 @@
+// 开发环境下使用 mock
+if (process.env.NODE_ENV === 'development') {
+  import('./mock/goods.js')
+}
 
 // #ifndef VUE3
 import Vue from 'vue'
