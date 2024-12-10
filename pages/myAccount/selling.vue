@@ -42,23 +42,46 @@ export default {
   },
   data() {
     return {
-      sellingList: [
-        {
-          id: 1,
-          title: 'MacBook Pro M2',
-          price: '12999.00',
-          description: '2023年新款，带包装',
-          image: '/static/goods/macbook.jpg'
-        }
-        // ... 更多在售商品
-      ]
+      sellingList: [],
+      publisherId: uni.getStorageSync('userId') // 当前用户ID为发布者ID
     }
   },
+  mounted() {
+    this.loadSellingGoods();
+    uni.$on('refreshSellingList', this.loadSellingGoods);
+  },
+  beforeDestroy() {
+    uni.$off('refreshSellingList', this.loadSellingGoods);
+  },
   methods: {
+    async loadSellingGoods() {
+      try {
+        const res = await uni.request({
+          url: `/api/user/published?userId=${this.publisherId}`,
+          method: 'GET'
+        });
+
+        if (res.data.code === 200) {
+          this.sellingList = res.data.data;
+        } else {
+          uni.showToast({
+            title: res.data.message,
+            icon: 'none'
+          });
+        }
+      } catch (error) {
+        console.error('获取在售商品失败:', error);
+        uni.showToast({
+          title: '获取在售商品失败',
+          icon: 'none'
+        });
+      }
+    },
+
     editGoods(goods) {
       uni.navigateTo({
         url: `/pages/publish/publish?id=${goods.id}`
-      })
+      });
     },
     
     deleteGoods(goods) {
@@ -70,13 +93,13 @@ export default {
             // TODO: 实现下架逻辑
           }
         }
-      })
+      });
     },
     
     navigateToPublish() {
       uni.switchTab({
         url: '/pages/publish/publish'
-      })
+      });
     },
     
     loadMore() {
@@ -110,20 +133,23 @@ export default {
 }
 
 .goods-item {
+  background: #fff;
+  border-radius: 8rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+
   .action-bar {
     display: flex;
     justify-content: space-between;
-    padding: 20rpx;
-    background: #fff;
-    border-radius: 0 0 8rpx 8rpx;
-    margin-top: -8rpx;
+    padding: 10rpx;
+    background: #f5f5f5;
     
     .action-btn {
       flex: 1;
       height: 60rpx;
       line-height: 60rpx;
       font-size: 24rpx;
-      margin: 0 10rpx;
+      margin: 0 5rpx;
       
       &.edit {
         background: #007AFF;

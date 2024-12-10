@@ -74,7 +74,7 @@ export default {
     },
     
     // 发布商品
-    handlePublish() {
+    async handlePublish() {
       if (!this.title || !this.price || !this.description) {
         uni.showToast({
           title: '请填写完整商品信息',
@@ -91,18 +91,50 @@ export default {
         return
       }
       
-      // TODO: 实现发布逻辑
-      uni.showToast({
-        title: '发布成功',
-        icon: 'success',
-        success: () => {
-          setTimeout(() => {
-            uni.switchTab({
-              url: this.getPageUrl('home') // 使用辅助函数生成 URL
-            })
-          }, 1500)
-        }
-      })
+      try {
+        const response = await new Promise((resolve, reject) => {
+          uni.request({
+            url: '/api/publish',
+            method: 'POST',
+            data: {
+              title: this.title,
+              price: this.price,
+              description: this.description,
+              images: this.images
+            },
+            success: (res) => {
+              const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+              if (data && data.code === 200) {
+                resolve(data);
+              } else {
+                reject(new Error('发布失败'));
+              }
+            },
+            fail: (error) => {
+              console.error('Request failed:', error);
+              reject(error);
+            }
+          });
+        });
+
+        uni.showToast({
+          title: '发布成功',
+          icon: 'success',
+          success: () => {
+            setTimeout(() => {
+              uni.switchTab({
+                url: this.getPageUrl('home')
+              })
+            }, 1500)
+          }
+        });
+      } catch (error) {
+        uni.showToast({
+          title: '发布失败',
+          icon: 'none'
+        });
+        console.error('发布失败:', error.message || '未知错误');
+      }
     }
   }
 }

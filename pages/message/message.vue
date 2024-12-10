@@ -33,7 +33,7 @@
         <!-- 消息内容 -->
         <view class="content">
           <view class="top-row">
-            <text class="name">{{item.name}}</text>
+            <text class="name">{{item.sender}}</text>
             <text class="time">{{item.time}}</text>
           </view>
           <view class="bottom-row">
@@ -50,50 +50,116 @@
 export default {
   data() {
     return {
-      messageList: []
+      messageList: [],
+      currentUserId: uni.getStorageSync('userId')// 获取当前用户ID
     }
   },
   onShow() {
-    this.getMessageList()
+    this.getMessageList();
   },
   methods: {
     navigateToContacts() {
       uni.navigateTo({
         url: '/pages/message/contact'
-      })
+      });
     },
     
     openChat(item) {
-      this.markAsRead(item.id)
+      this.markAsRead(item.senderId);
       
       uni.navigateTo({
-        url: `/pages/message/chat?userId=${item.id}&userName=${item.name}`
-      })
+        url: `/pages/message/chat?senderId=${item.senderId}&userName=${item.sender}`
+      });
     },
     
     async markAsRead(messageId) {
       try {
-        // 模拟标记已读
-        const app = getApp()
-        const message = app.globalData.messageList.find(msg => msg.id === messageId)
+        const message = this.messageList.find(msg => msg.senderId === messageId);
         if (message) {
-          message.unread = 0
-          // 更新本地列表
-          this.messageList = [...app.globalData.messageList]
-          // 更新角标
-          app.checkUnreadMessages()
+          message.unread = 0;
         }
       } catch (error) {
-        console.error('标记已读失败:', error)
+        console.error('标记已读失败:', error);
       }
     },
     
     async getMessageList() {
       try {
-        // 使用全局的静态数据
-        this.messageList = [...getApp().globalData.messageList]
+        const response = await new Promise((resolve, reject) => {
+          uni.request({
+            url: `/api/messages?userId=${this.currentUserId}`,
+            method: 'GET',
+            success: (res) => {
+              try {
+                const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+                if (data && data.code === 200 && Array.isArray(data.data.messages)) {
+                  resolve(data);
+                } else {
+                  reject(new Error('Invalid response format or error code'));
+                }
+              } catch (error) {
+                reject(new Error('Failed to parse response data'));
+              }
+            },
+            fail: (error) => {
+              console.error('Request failed:', error);
+              reject(error);
+            }
+          });
+        });
+
+        this.messageList = this.processMessageList(response.data.messages);
+        uni.setStorageSync('messages', response.data.messages); // 存储消息到本地存储
       } catch (error) {
-        console.error('获取消息列表失败:', error)
+        console.error('获取消息列表失败:', error.message || '未知错误');
+      }
+    },
+
+    processMessageList(messages) {
+      if (!Array.isArray(messages)) {
+        console.error('Invalid messages format:', messages);
+        return [];
+      }
+
+      // 使用 Map 来存储每个 senderId 的最后一条消息
+      const lastMessagesMap = new Map();
+
+      messages.forEach(msg => {
+        lastMessagesMap.set(msg.senderId, msg);
+      });
+
+      // 将 Map 转换为数组
+      return Array.from(lastMessagesMap.values()).map(msg => ({
+        senderId: msg.senderId,
+        sender: msg.sender,
+        avatar: msg.avatar,
+        lastMessage: msg.content,
+        time: msg.time,
+        unread: 0 // 可以根据需求修改未读消息的逻辑
+      }));
+    },
+
+    async fetchAllMessages() {
+      try {
+        const response = await new Promise((resolve, reject) => {
+          uni.request({
+            url: `/api/messages?userId=${this.currentUserId}`,
+            method: 'GET',
+            success: resolve,
+            fail: reject
+          });
+        });
+
+        const data = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
+
+        if (response.statusCode === 200 && data && data.data && Array.isArray(data.data.messages)) {
+          // 假设使用 Vuex 存储消息
+          this.$store.commit('setMessages', data.data.messages);
+        } else {
+          console.error('获取消息列表失败:', data.message || '响应格式不正确');
+        }
+      } catch (error) {
+        console.error('获取消息列表失败:', error);
       }
     }
   }

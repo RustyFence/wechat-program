@@ -24,13 +24,16 @@
 </template>
 
 <script>
+import { register } from '../../mock/auth.js';
+
 export default {
   data() {
     return {
       username: '',
       password: '',
       confirmPassword: '',
-      phone: ''
+      phone: '',
+      errorMessage: ''
     }
   },
   methods: {
@@ -39,34 +42,37 @@ export default {
         uni.showToast({
           title: '请填写完整信息',
           icon: 'none'
-        })
-        return
+        });
+        return;
       }
-      
+
       if (this.password !== this.confirmPassword) {
         uni.showToast({
           title: '两次输入的密码不一致',
           icon: 'none'
-        })
-        return
+        });
+        return;
       }
-      
-      // TODO: 实现注册逻辑
-      uni.showToast({
-        title: '注册成功',
-        icon: 'success',
-        success: () => {
-          setTimeout(() => {
-            uni.switchTab({
-              url: '/pages/index/index'
-            })
-          }, 1500)
+
+      try {
+        const response = await register(this.username, this.password);
+        if (response && response.success) {
+          console.log('Registration successful:', response);
+          uni.navigateTo({
+            url: '/pages/login/login'
+          });
+        } else {
+          uni.showToast({
+            title: response.message || 'Registration failed',
+            icon: 'none'
+          });
         }
-      })
+      } catch (error) {
+        this.errorMessage = error.message || 'An error occurred during registration';
+      }
     },
-    
     goBack() {
-      uni.navigateBack()
+      uni.navigateBack();
     }
   }
 }

@@ -28,43 +28,33 @@
 </template>
 
 <script>
+import { login } from '../../mock/auth.js';
+
 export default {
   data() {
     return {
       username: '',
-      password: ''
+      password: '',
+      errorMessage: ''
     }
   },
   methods: {
     // 普通登录
     async handleLogin() {
-      if (!this.username || !this.password) {
-        uni.showToast({
-          title: '请输入用户名和密码',
-          icon: 'none'
-        })
-        return
-      }
-      // 模拟登录,暂不调用后端API
-      if(this.username === 'admin' && this.password === '123456') {
-        uni.switchTab({
-          url: '/pages/home/home',
-          success: () => {
-            console.log('导航成功')
-          },
-          fail: (err) => {
-            console.error('导航失败:', err)
-            // 如果导航失败，尝试使用 reLaunch
-            uni.reLaunch({
-              url: '/pages/home/home'
-            })
-          }
-        })
-      } else {
-        uni.showToast({
-          title: '用户名或密码错误',
-          icon: 'none'
-        })
+      try {
+        const response = await login(this.username, this.password);
+        if (response.success) {
+          console.log('Login successful:', response.token);
+          // 存储 token
+          uni.setStorageSync('userToken', response.token);
+          uni.setStorageSync('userId', response.userId);
+          uni.switchTab({
+            url: '/pages/home/home'
+          });
+        }
+      } catch (error) {
+        // 登录失败，处理错误逻辑
+        this.errorMessage = error.message || 'Login failed';
       }
     },
     

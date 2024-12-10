@@ -101,7 +101,9 @@ export default {
         title: '',
         price: '',
         description: '',
-        images: []
+        images: [],
+        publisherId: '',
+        publisherName: ''
       },
       comments: [],
       userRating: 5,
@@ -132,6 +134,9 @@ export default {
           const goodsInfo = res.data.data  
           this.goods = { ...goodsInfo }
         
+          // 获取发布者信息
+          this.loadPublisherInfo(goodsInfo.publisherId)
+
           // 获取商品评论
           this.loadComments(id)
         } else {
@@ -146,6 +151,23 @@ export default {
           title: '获取商品信息失败',
           icon: 'none'
         })
+      }
+    },
+    
+    async loadPublisherInfo(publisherId) {
+      try {
+        const res = await uni.request({
+          url: `/api/users/${publisherId}`,
+          method: 'GET'
+        })
+
+        if (res.data.code === 200) {
+          this.goods.publisherName = res.data.data.name
+        } else {
+          console.error('获取发布者信息失败:', res.data.message)
+        }
+      } catch (error) {
+        console.error('获取发布者信息失败:', error)
       }
     },
     
@@ -242,7 +264,7 @@ export default {
     },
     contactSeller() {
       uni.navigateTo({
-        url: '/pages/chat/chat?sellerId=' + this.goods.sellerId
+        url: `/pages/message/chat?senderId=${this.goods.publisherId}&userName=${this.goods.publisherName}`
       })
     }
   }
