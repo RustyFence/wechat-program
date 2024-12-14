@@ -8,19 +8,41 @@ const _sfc_main = {
   },
   data() {
     return {
-      sellingList: [
-        {
-          id: 1,
-          title: "MacBook Pro M2",
-          price: "12999.00",
-          description: "2023年新款，带包装",
-          image: "/static/goods/macbook.jpg"
-        }
-        // ... 更多在售商品
-      ]
+      sellingList: [],
+      publisherId: common_vendor.index.getStorageSync("userId")
+      // 当前用户ID为发布者ID
     };
   },
+  mounted() {
+    this.loadSellingGoods();
+    common_vendor.index.$on("refreshSellingList", this.loadSellingGoods);
+  },
+  beforeDestroy() {
+    common_vendor.index.$off("refreshSellingList", this.loadSellingGoods);
+  },
   methods: {
+    async loadSellingGoods() {
+      try {
+        const res = await common_vendor.index.request({
+          url: `/api/user/published?userId=${this.publisherId}`,
+          method: "GET"
+        });
+        if (res.data.code === 200) {
+          this.sellingList = res.data.data;
+        } else {
+          common_vendor.index.showToast({
+            title: res.data.message,
+            icon: "none"
+          });
+        }
+      } catch (error) {
+        console.error("获取在售商品失败:", error);
+        common_vendor.index.showToast({
+          title: "获取在售商品失败",
+          icon: "none"
+        });
+      }
+    },
     editGoods(goods) {
       common_vendor.index.navigateTo({
         url: `/pages/publish/publish?id=${goods.id}`

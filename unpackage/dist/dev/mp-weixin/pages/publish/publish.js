@@ -1,10 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
-const TabBar = () => "../../components/tab-bar/tab-bar.js";
 const _sfc_main = {
-  components: {
-    TabBar
-  },
   data() {
     return {
       title: "",
@@ -32,7 +28,7 @@ const _sfc_main = {
       this.images.splice(index, 1);
     },
     // 发布商品
-    handlePublish() {
+    async handlePublish() {
       if (!this.title || !this.price || !this.description) {
         common_vendor.index.showToast({
           title: "请填写完整商品信息",
@@ -47,29 +43,52 @@ const _sfc_main = {
         });
         return;
       }
-      common_vendor.index.showToast({
-        title: "发布成功",
-        icon: "success",
-        success: () => {
-          setTimeout(() => {
-            common_vendor.index.switchTab({
-              url: this.getPageUrl("home")
-              // 使用辅助函数生成 URL
-            });
-          }, 1500);
-        }
-      });
+      try {
+        const response = await new Promise((resolve, reject) => {
+          common_vendor.index.request({
+            url: "/api/publish",
+            method: "POST",
+            data: {
+              title: this.title,
+              price: this.price,
+              description: this.description,
+              images: this.images
+            },
+            success: (res) => {
+              const data = typeof res.data === "string" ? JSON.parse(res.data) : res.data;
+              if (data && data.code === 200) {
+                resolve(data);
+              } else {
+                reject(new Error("发布失败"));
+              }
+            },
+            fail: (error) => {
+              console.error("Request failed:", error);
+              reject(error);
+            }
+          });
+        });
+        common_vendor.index.showToast({
+          title: "发布成功",
+          icon: "success",
+          success: () => {
+            setTimeout(() => {
+              common_vendor.index.switchTab({
+                url: this.getPageUrl("home")
+              });
+            }, 1500);
+          }
+        });
+      } catch (error) {
+        common_vendor.index.showToast({
+          title: "发布失败",
+          icon: "none"
+        });
+        console.error("发布失败:", error.message || "未知错误");
+      }
     }
   }
 };
-if (!Array) {
-  const _easycom_tab_bar2 = common_vendor.resolveComponent("tab-bar");
-  _easycom_tab_bar2();
-}
-const _easycom_tab_bar = () => "../../components/tab-bar/tab-bar.js";
-if (!Math) {
-  _easycom_tab_bar();
-}
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: $data.title,

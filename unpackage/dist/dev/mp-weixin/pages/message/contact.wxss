@@ -1,76 +1,76 @@
 /* 水平间距 */
 /* 水平间距 */
-.contact-container.data-v-857908fa {
+.contact-container {
   min-height: 100vh;
   background: #f5f5f5;
   display: flex;
   flex-direction: column;
 }
-.search-box.data-v-857908fa {
+.search-box {
   background: #fff;
   padding: 20rpx 30rpx;
   border-bottom: 1rpx solid #eee;
 }
-.search-box .search-bar.data-v-857908fa {
+.search-box .search-bar {
   display: flex;
   align-items: center;
   background: #f5f5f5;
   border-radius: 8rpx;
   padding: 16rpx;
 }
-.search-box .search-bar .search-icon.data-v-857908fa {
+.search-box .search-bar .search-icon {
   width: 32rpx;
   height: 32rpx;
   margin-right: 16rpx;
 }
-.search-box .search-bar input.data-v-857908fa {
+.search-box .search-bar input {
   flex: 1;
   font-size: 28rpx;
 }
-.contact-list.data-v-857908fa {
+.contact-list {
   flex: 1;
   position: relative;
 }
-.index-list.data-v-857908fa {
+.index-list {
   padding-bottom: 40rpx;
 }
-.index-list .group-title.data-v-857908fa {
+.index-list .group-title {
   padding: 16rpx 30rpx;
   background: #f5f5f5;
   font-size: 24rpx;
   color: #999;
 }
-.index-list .contact-group.data-v-857908fa {
+.index-list .contact-group {
   background: #fff;
 }
-.index-list .contact-item.data-v-857908fa {
+.index-list .contact-item {
   display: flex;
   align-items: center;
   padding: 20rpx 30rpx;
   border-bottom: 1rpx solid #eee;
 }
-.index-list .contact-item.data-v-857908fa:active {
+.index-list .contact-item:active {
   background: #f5f5f5;
 }
-.index-list .contact-item .avatar.data-v-857908fa {
+.index-list .contact-item .avatar {
   width: 80rpx;
   height: 80rpx;
   border-radius: 50%;
   margin-right: 20rpx;
 }
-.index-list .contact-item .info.data-v-857908fa {
+.index-list .contact-item .info {
   flex: 1;
 }
-.index-list .contact-item .info .name.data-v-857908fa {
+.index-list .contact-item .info .name {
   font-size: 32rpx;
   color: #333;
   margin-bottom: 4rpx;
 }
-.index-list .contact-item .info .description.data-v-857908fa {
+.index-list .contact-item .info .description {
   font-size: 24rpx;
   color: #999;
 }
-.index-bar.data-v-857908fa {
+.index-bar {
   position: fixed;
   right: 0;
   top: 50%;
@@ -80,12 +80,12 @@
   border-radius: 30rpx;
   margin-right: 10rpx;
 }
-.index-bar .index-item.data-v-857908fa {
+.index-bar .index-item {
   display: block;
   font-size: 24rpx;
   color: #fff;
   padding: 4rpx 10rpx;
 }
-.index-bar .index-item.data-v-857908fa:active {
+.index-bar .index-item:active {
   color: #007AFF;
 }

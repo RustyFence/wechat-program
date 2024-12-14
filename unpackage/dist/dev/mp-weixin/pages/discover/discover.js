@@ -1,10 +1,8 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
-const TabBar = () => "../../components/tab-bar/tab-bar.js";
 const GoodsPreview = () => "../../components/goods-preview/goods-preview.js";
 const _sfc_main = {
   components: {
-    TabBar,
     GoodsPreview
   },
   data() {
@@ -90,14 +88,12 @@ const _sfc_main = {
 if (!Array) {
   const _easycom_uni_icons2 = common_vendor.resolveComponent("uni-icons");
   const _easycom_goods_preview2 = common_vendor.resolveComponent("goods-preview");
-  const _easycom_tab_bar2 = common_vendor.resolveComponent("tab-bar");
-  (_easycom_uni_icons2 + _easycom_goods_preview2 + _easycom_tab_bar2)();
+  (_easycom_uni_icons2 + _easycom_goods_preview2)();
 }
 const _easycom_uni_icons = () => "../../uni_modules/uni-icons/components/uni-icons/uni-icons.js";
 const _easycom_goods_preview = () => "../../components/goods-preview/goods-preview.js";
-const _easycom_tab_bar = () => "../../components/tab-bar/tab-bar.js";
 if (!Math) {
-  (_easycom_uni_icons + _easycom_goods_preview + _easycom_tab_bar)();
+  (_easycom_uni_icons + _easycom_goods_preview)();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {

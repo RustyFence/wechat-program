@@ -1,14 +1,14 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
-const TabBar = () => "../../components/tab-bar/tab-bar.js";
 const GoodsPreview = () => "../../components/goods-preview/goods-preview.js";
 const _sfc_main = {
   components: {
-    TabBar,
     GoodsPreview
   },
   data() {
     return {
+      userId: common_vendor.index.setStorageSync("userId", 1),
+      // 设置当前用户ID为1 ，测试用，后续改为从登录状态获取
       categories: [
         { name: "热销", icon: "/static/home/热销.svg" },
         { name: "推荐", icon: "/static/home/推荐1.svg" },

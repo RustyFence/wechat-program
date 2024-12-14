@@ -52,4 +52,19 @@ Mock.mock('/api/messages/send', 'post', (options) => {
   };
 });
 
+// 模拟聊天接口
+Mock.mock('/api/chat/send', 'post', (options) => {
+  const { senderId, receiverId, message } = JSON.parse(options.body)
+  return {
+    code: 200,
+    data: {
+      senderId,
+      receiverId,
+      message,
+      time: Mock.Random.datetime('yyyy-MM-dd HH:mm:ss')
+    },
+    message: '消息发送成功'
+  }
+})
+
 export { messageList };

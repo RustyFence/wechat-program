@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "wechat-miniprojectTest",
+  "navigationBarTitleText": "首页",
   "enablePullDownRefresh": true,
   "usingComponents": {
     "goods-preview": "../../components/goods-preview/goods-preview",

@@ -16,37 +16,47 @@
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "二手交易",
+    "navigationBarTitleText": "校园二手交易",
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
   },
   "tabBar": {
     "custom": false,
-    "color": "#999999",
-    "selectedColor": "#007AFF",
+    "color": "#8F8F8F",
+    "selectedColor": "#1296db",
     "backgroundColor": "#ffffff",
-    "borderStyle": "black",
+    "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/home/home",
-        "text": "首页"
+        "text": "首页",
+        "iconPath": "static/tabbar/home.png",
+        "selectedIconPath": "static/tabbar/homeSelected.png"
       },
       {
         "pagePath": "pages/discover/discover",
-        "text": "发现"
+        "text": "发现",
+        "iconPath": "static/tabbar/discover.png",
+        "selectedIconPath": "static/tabbar/discoverSelected.png"
       },
       {
         "pagePath": "pages/publish/publish",
-        "text": "发布"
+        "text": "发布",
+        "iconPath": "static/tabbar/publish.png",
+        "selectedIconPath": "static/tabbar/publishSelected.png"
       },
       {
         "pagePath": "pages/message/message",
         "text": "消息",
+        "iconPath": "static/tabbar/message.png",
+        "selectedIconPath": "static/tabbar/messageSelected.png",
         "badge": "5"
       },
       {
         "pagePath": "pages/myAccount/myAccount",
-        "text": "我的"
+        "text": "我的",
+        "iconPath": "static/tabbar/myAccount.png",
+        "selectedIconPath": "static/tabbar/myAccountSelected.png"
       }
     ]
   },

@@ -40,20 +40,36 @@ export default {
   },
   data() {
     return {
-      soldList: [
-        {
-          id: 1,
-          title: 'AirPods Pro 2',
-          price: '1299.00',
-          description: '99新，带包装盒',
-          image: '/static/goods/airpods.jpg',
-          soldTime: '2024-03-20 15:30'
-        }
-        // ... 更多下架商品
-      ]
+      soldList: [],
+      publisherId: uni.getStorageSync('userId')
     }
   },
   methods: {
+    async loadSoldGoods() {
+      try {
+        const res = await uni.request({
+          url: `/api/user/published?userId=${this.publisherId}`,
+          method: 'GET'
+        });
+
+        if (res.data.code === 200) {
+          // Filter to only include inactive goods
+          this.soldList = res.data.data.filter(goods => !goods.isActive);
+          console.log('>>>>>已售商品列表<<<<<', this.soldList);
+        } else {
+          uni.showToast({
+            title: res.data.message,
+            icon: 'none'
+          });
+        }
+      } catch (error) {
+        console.error('获取已售商品失败:', error);
+        uni.showToast({
+          title: '获取已售商品失败',
+          icon: 'none'
+        });
+      }
+    },
     // 重新上架商品
     relistGoods(goods) {
       uni.showModal({

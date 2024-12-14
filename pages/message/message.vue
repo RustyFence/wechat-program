@@ -59,8 +59,10 @@ export default {
   },
   methods: {
     navigateToContacts() {
-      uni.navigateTo({
-        url: '/pages/message/contact'
+      uni.showToast({
+        title: '联系人功能锐意开发中，\n敬请期待',
+        icon: 'none', 
+        duration: 2000
       });
     },
     
@@ -89,6 +91,9 @@ export default {
           uni.request({
             url: `/api/messages?userId=${this.currentUserId}`,
             method: 'GET',
+            header: {
+              'Authorization': `Bearer ${uni.getStorageSync('token')}`
+            }, 
             success: (res) => {
               try {
                 const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
@@ -153,7 +158,6 @@ export default {
         const data = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
 
         if (response.statusCode === 200 && data && data.data && Array.isArray(data.data.messages)) {
-          // 假设使用 Vuex 存储消息
           this.$store.commit('setMessages', data.data.messages);
         } else {
           console.error('获取消息列表失败:', data.message || '响应格式不正确');

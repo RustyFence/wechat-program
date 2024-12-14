@@ -1,41 +1,30 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const mock_auth = require("../../mock/auth.js");
 const common_assets = require("../../common/assets.js");
 const _sfc_main = {
   data() {
     return {
       username: "",
-      password: ""
+      password: "",
+      errorMessage: ""
     };
   },
   methods: {
     // 普通登录
     async handleLogin() {
-      if (!this.username || !this.password) {
-        common_vendor.index.showToast({
-          title: "请输入用户名和密码",
-          icon: "none"
-        });
-        return;
-      }
-      if (this.username === "admin" && this.password === "123456") {
-        common_vendor.index.switchTab({
-          url: "/pages/home/home",
-          success: () => {
-            console.log("导航成功");
-          },
-          fail: (err) => {
-            console.error("导航失败:", err);
-            common_vendor.index.reLaunch({
-              url: "/pages/home/home"
-            });
-          }
-        });
-      } else {
-        common_vendor.index.showToast({
-          title: "用户名或密码错误",
-          icon: "none"
-        });
+      try {
+        const response = await mock_auth.login(this.username, this.password);
+        if (response.success) {
+          console.log("Login successful:", response.token);
+          common_vendor.index.setStorageSync("userToken", response.token);
+          common_vendor.index.setStorageSync("userId", response.userId);
+          common_vendor.index.switchTab({
+            url: "/pages/home/home"
+          });
+        }
+      } catch (error) {
+        this.errorMessage = error.message || "Login failed";
       }
     },
     // 微信登录

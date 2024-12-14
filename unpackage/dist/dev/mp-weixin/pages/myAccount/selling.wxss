@@ -14,20 +14,24 @@
   gap: 20rpx;
   padding: 20rpx;
 }
+.goods-item.data-v-116c5b3f {
+  background: #fff;
+  border-radius: 8rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+}
 .goods-item .action-bar.data-v-116c5b3f {
   display: flex;
   justify-content: space-between;
-  padding: 20rpx;
-  background: #fff;
-  border-radius: 0 0 8rpx 8rpx;
-  margin-top: -8rpx;
+  padding: 10rpx;
+  background: #f5f5f5;
 }
 .goods-item .action-bar .action-btn.data-v-116c5b3f {
   flex: 1;
   height: 60rpx;
   line-height: 60rpx;
   font-size: 24rpx;
-  margin: 0 10rpx;
+  margin: 0 5rpx;
 }
 .goods-item .action-bar .action-btn.edit.data-v-116c5b3f {
   background: #007AFF;

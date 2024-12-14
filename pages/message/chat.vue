@@ -97,6 +97,7 @@ export default {
 .chat-list {
   flex: 1;
   padding: 10px;
+  overflow-y: auto;
 }
 
 .chat-message {
@@ -137,22 +138,22 @@ export default {
   padding: 10px;
   background-color: #fff;
   border-top: 1px solid #ddd;
+}
 
-  input {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-right: 10px;
-  }
+.chat-input input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 10px;
+}
 
-  button {
-    padding: 8px 16px;
-    background-color: #007aff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
+.chat-input button {
+  padding: 8px 16px;
+  background-color: #007aff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 </style>

@@ -22,6 +22,9 @@
 .goods-detail .title {
   font-size: 32rpx;
   margin: 10rpx 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .goods-detail .description {
   font-size: 28rpx;
@@ -121,23 +124,31 @@
   left: 0;
   right: 0;
   display: flex;
-  padding: 20rpx;
+  justify-content: space-between;
+  padding: 20rpx 30rpx;
   background: #fff;
   border-top: 1rpx solid #eee;
 }
-.action-buttons .collect-btn {
+.action-buttons .collect-btn, .action-buttons .contact-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 30rpx;
   height: 80rpx;
   border-radius: 40rpx;
+  width: 48%;
+  font-size: 28rpx;
+}
+.action-buttons .collect-btn text, .action-buttons .contact-btn text {
+  margin-left: 10rpx;
+}
+.action-buttons .collect-btn {
   background: #f5f5f5;
-  margin-right: 20rpx;
 }
 .action-buttons .collect-btn.active {
   color: #ff6b00;
+  background: #fff0e6;
 }
-.action-buttons .collect-btn text {
-  margin-left: 8rpx;
+.action-buttons .contact-btn {
+  background: #ff6b00;
+  color: #fff;
 }

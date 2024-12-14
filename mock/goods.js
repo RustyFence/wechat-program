@@ -68,27 +68,6 @@ Mock.mock('/api/chat/send', 'post', (options) => {
   }
 })
 
-// 模拟下架商品接口
-Mock.mock('/api/goods/remove', 'post', (options) => {
-  const { goodsId } = JSON.parse(options.body)
-  const goods = goodsList[goodsId]
-  
-  if (goods) {
-    goods.isActive = false  // 将商品标记为不可用
-    return {
-      code: 200,
-      data: goods,
-      message: '商品已下架'
-    }
-  } else {
-    return {
-      code: 404,
-      data: null,
-      message: '商品不存在'
-    }
-  }
-})
-
 // 模拟删除商品接口
 Mock.mock('/api/goods/delete', 'post', (options) => {
   const { goodsId } = JSON.parse(options.body)
@@ -99,71 +78,6 @@ Mock.mock('/api/goods/delete', 'post', (options) => {
       code: 200,
       data: null,
       message: '商品已删除'
-    }
-  } else {
-    return {
-      code: 404,
-      data: null,
-      message: '商品不存在'
-    }
-  }
-})
-
-// 模拟重新上架商品接口
-Mock.mock('/api/goods/relist', 'post', (options) => {
-  const { goodsId } = JSON.parse(options.body)
-  const goods = goodsList[goodsId]
-  
-  if (goods) {
-    goods.isActive = true  // 将商品标记为可用
-    return {
-      code: 200,
-      data: goods,
-      message: '商品已重新上架'
-    }
-  } else {
-    return {
-      code: 404,
-      data: null,
-      message: '商品不存在'
-    }
-  }
-})
-
-// 模拟发布商品接口
-Mock.mock('/api/user/publish', 'post', (options) => {
-  const { userId, goodsId, action } = JSON.parse(options.body)
-  const goods = goodsList[goodsId]
-
-  if (goods) {
-    if (action === 'add') {
-      goods.publisherId = userId  // 设置商品的发布者
-      return {
-        code: 200,
-        data: goods,
-        message: '商品发布成功'
-      }
-    } else if (action === 'remove') {
-      if (goods.publisherId === userId) {
-        goods.publisherId = null  // 移除商品的发布者
-        return {
-          code: 200,
-          data: goods,
-          message: '商品取消发布成功'
-        }
-      } else {
-        return {
-          code: 403,
-          data: null,
-          message: '无权限取消发布'
-        }
-      }
-    } else {
-      return {
-        code: 400,
-        data: null,
-        message: '无效的操作'
-      }
     }
   } else {
     return {

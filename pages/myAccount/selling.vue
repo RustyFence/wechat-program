@@ -62,7 +62,7 @@ export default {
         });
 
         if (res.data.code === 200) {
-          this.sellingList = res.data.data;
+          this.sellingList = res.data.data.filter(goods => goods.isActive);
         } else {
           uni.showToast({
             title: res.data.message,
@@ -78,19 +78,44 @@ export default {
       }
     },
 
-    editGoods(goods) {
+    async editGoods(goods) {
       uni.navigateTo({
         url: `/pages/publish/publish?id=${goods.id}`
       });
     },
     
-    deleteGoods(goods) {
+    async deleteGoods(goods) {
       uni.showModal({
         title: '提示',
         content: '确定要下架该商品吗？',
-        success: (res) => {
+        success: async (res) => {
           if (res.confirm) {
-            // TODO: 实现下架逻辑
+            try {
+              const response = await uni.request({
+                url: '/api/goods/remove',
+                method: 'POST',
+                data: { id: goods.id }
+              });
+
+              if (response.data.code === 200) {
+                uni.showToast({
+                  title: '商品已下架',
+                  icon: 'success'
+                });
+                this.loadSellingGoods(); // Refresh the list
+              } else {
+                uni.showToast({
+                  title: response.data.message,
+                  icon: 'none'
+                });
+              }
+            } catch (error) {
+              console.error('下架商品失败:', error);
+              uni.showToast({
+                title: '下架商品失败',
+                icon: 'none'
+              });
+            }
           }
         }
       });

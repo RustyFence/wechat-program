@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const mock_auth = require("../../mock/auth.js");
 const common_assets = require("../../common/assets.js");
 const _sfc_main = {
   data() {
@@ -7,7 +8,8 @@ const _sfc_main = {
       username: "",
       password: "",
       confirmPassword: "",
-      phone: ""
+      phone: "",
+      errorMessage: ""
     };
   },
   methods: {
@@ -26,17 +28,22 @@ const _sfc_main = {
         });
         return;
       }
-      common_vendor.index.showToast({
-        title: "注册成功",
-        icon: "success",
-        success: () => {
-          setTimeout(() => {
-            common_vendor.index.switchTab({
-              url: "/pages/index/index"
-            });
-          }, 1500);
+      try {
+        const response = await mock_auth.register(this.username, this.password);
+        if (response && response.success) {
+          console.log("Registration successful:", response);
+          common_vendor.index.navigateTo({
+            url: "/pages/login/login"
+          });
+        } else {
+          common_vendor.index.showToast({
+            title: response.message || "Registration failed",
+            icon: "none"
+          });
         }
-      });
+      } catch (error) {
+        this.errorMessage = error.message || "An error occurred during registration";
+      }
     },
     goBack() {
       common_vendor.index.navigateBack();
