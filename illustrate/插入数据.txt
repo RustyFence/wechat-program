@@ -1,0 +1,15 @@
+INSERT INTO Goods (goods_id, title, price, description, images, tags, is_active, publisher_id) VALUES
+(1, 'iPhone 14 Pro Max', 7999.00, '全新未拆封，256G 暗紫色//测试字数溢出', JSON_ARRAY('/static/goods/iphone14.jpg'), JSON_ARRAY('数码', '电子产品', '苹果', '热销','home1'), TRUE, 1),
+(2, '耐克运动鞋', 599.00, 'Nike Air Max 270，9成新', JSON_ARRAY('/static/goods/nike.jpg'), JSON_ARRAY('运动', '鞋子', '耐克', '推荐','home1'), TRUE, 1),
+(3, '索尼相机 A7M4', 15999.00, '95新，快门数3000次以内', JSON_ARRAY('/static/goods/sony.jpg'), JSON_ARRAY('数码', '相机', '索尼', '优惠','home1'), TRUE, 1),
+(4, 'MacBook Pro M2', 12999.00, '2023年新款，带包装', JSON_ARRAY('/static/goods/macbook.jpg'), JSON_ARRAY('数码', '笔记本', '苹果', '活动','home1'), TRUE, 1),
+(5, '华为手表 GT4', 1499.00, '全新未拆封，46mm', JSON_ARRAY('/static/goods/watch.jpg'), JSON_ARRAY('数码', '手表', '华为', '热销','home1'), TRUE, 1),
+(6, 'AirPods Pro 2', 1299.00, '99新，带包装盒', JSON_ARRAY('/static/goods/airpods.jpg'), JSON_ARRAY('数码', '耳机', '苹果', '推荐','home1'), TRUE, 1),
+(7, '戴森吸尘器 V15', 3999.00, '全新未拆封，顺丰包邮', JSON_ARRAY('/static/goods/dyson.jpg'), JSON_ARRAY('居家', '吸尘器', '戴森', '优惠','home2'), TRUE, 1),
+(8, 'Switch OLED', 1999.00, '95新，带两个手柄', JSON_ARRAY('/static/goods/switch.jpg'), JSON_ARRAY('数码', '游戏机', '任天堂', '活动','home2'), TRUE, 1),
+(9, 'iPad Pro 12.9', 6999.00, '2022款，带妙控键盘', JSON_ARRAY('/static/goods/ipad.jpg'), JSON_ARRAY('数码', '平板', '苹果', '热销','home2'), TRUE, 1),
+(10, '索尼降噪耳机', 1799.00, 'WH-1000XM5，全新', JSON_ARRAY('/static/goods/headphone.jpg'), JSON_ARRAY('数码', '耳机', '索尼', '推荐','home2'), TRUE, 1),
+(11, '理光GR3x', 4999.00, '9成新，带UV镜', JSON_ARRAY('/static/goods/camera.jpg'), JSON_ARRAY('数码', '相机', '理光', '优惠','home2'), TRUE, 1),
+(12, '机械键盘', 899.00, 'HHKB Pro 3，带包装', JSON_ARRAY('/static/goods/keyboard.jpg'), JSON_ARRAY('数码', '键盘', 'HHKB', '活动','home2'), TRUE, 1),
+(13, '显示器', 2999.00, 'LG 27寸4K显示器', JSON_ARRAY('/static/goods/monitor.jpg'), JSON_ARRAY('数码', '显示器', 'LG', '热销','home2'), TRUE, 1),
+(14, '游戏主机', 3699.00, 'PS5光驱版，全新', JSON_ARRAY('/static/goods/ps5.jpg'), JSON_ARRAY('数码', '游戏机', '索尼', '推荐','home2'), TRUE, 1);

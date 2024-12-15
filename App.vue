@@ -1,26 +1,5 @@
 <script>
 	export default {
-		globalData: {
-			messageUnreadCount: 0,
-			messageList: [
-				{
-					id: 1,
-					name: '张三',
-					avatar: '/static/avatar/default.png',
-					lastMessage: '请问商品还在吗？',
-					time: '12:30',
-					unread: 2
-				},
-				{
-					id: 2,
-					name: '李四',
-					avatar: '/static/avatar/default.png',
-					lastMessage: '好的，我知道了',
-					time: '昨天',
-					unread: 3
-				}
-			]
-		},
 		onLaunch: function() {
 			console.warn('当前组件仅支持 uni_modules 目录结构 ，请升级 HBuilderX 到 3.1.0 版本以上！')
 			console.log('App Launch')

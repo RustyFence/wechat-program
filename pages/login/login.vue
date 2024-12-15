@@ -28,38 +28,53 @@
 </template>
 
 <script>
-import { login } from '../../mock/auth.js';
 
 export default {
   data() {
     return {
       username: '',
       password: '',
-      errorMessage: ''
     }
   },
   methods: {
     // 普通登录
     async handleLogin() {
-      try {
-        const response = await login(this.username, this.password);
-        if (response.success) {
-          console.log('Login successful:', response.token);
-          // 存储 token
-          uni.setStorageSync('userToken', response.token);
-          uni.setStorageSync('userId', response.userId);
+      try { 
+        const res = await uni.request({
+          url: `/api/users/login`,
+          method: 'POST',
+          data: {
+            username: this.username,
+            password: this.password
+          }
+        });
+        if (res.data.code === 200) {
+          uni.showToast({
+            title: '登录成功',
+            icon: 'none'
+          });
+          console.log(res)
+          uni.setStorageSync('token', res.data.data.token);
           uni.switchTab({
             url: '/pages/home/home'
           });
+        } else {
+          uni.showToast({
+            title: '登录失败',
+            icon: 'none'
+          });
         }
       } catch (error) {
-        // 登录失败，处理错误逻辑
-        this.errorMessage = error.message || 'Login failed';
+        uni.showToast({
+          title: '登录失败',
+          icon: 'none'
+        }); 
+        console.error('登录失败:', error)
       }
     },
     
     // 微信登录
-    handleWXLogin() {
+    async handleWXLogin() {
       // 获取微信登录授权
       uni.login({
         provider: 'weixin',

@@ -32,7 +32,30 @@
           </view>
         </view>
       </view>
+
+          <!-- 标签输入区域 -->
+      <view class="form-item">
+        <view class="tags-title">添加标签</view>
+        <view class="tags-input-area">
+          <input 
+            type="text" 
+            v-model="tagInput"
+            placeholder="输入标签后点击添加(多个标签用空格分隔)" 
+            class="tag-input"
+            @confirm="addTags"
+          />
+          <button class="add-tag-btn" @click="addTags">添加</button>
+        </view>
+        <view class="tags-list" v-if="tags.length > 0">
+          <view class="tag-item" v-for="(tag, index) in tags" :key="index">
+            {{tag}}
+            <text class="delete-tag" @click="removeTag(index)">×</text>
+          </view>
+        </view>
+      </view>
     </view>
+
+
     
     <!-- 发布按钮 -->
     <view class="publish-btn-area">
@@ -49,7 +72,9 @@ export default {
       title: '',
       price: '',
       description: '',
-      images: []
+      images: [],
+      tags: [],
+      tagInput: ''
     }
   },
   methods: {
@@ -73,6 +98,20 @@ export default {
       this.images.splice(index, 1)
     },
     
+    // 添加标签
+    addTags() {
+      if (this.tagInput.trim()) {
+        const newTags = this.tagInput.split(' ').filter(tag => tag);
+        this.tags = [...this.tags, ...newTags];
+        this.tagInput = '';
+      }
+    },
+    
+    // 删除标签
+    removeTag(index) {
+      this.tags.splice(index, 1);
+    },
+    
     // 发布商品
     async handlePublish() {
       if (!this.title || !this.price || !this.description) {
@@ -92,48 +131,53 @@ export default {
       }
       
       try {
-        const response = await new Promise((resolve, reject) => {
-          uni.request({
-            url: '/api/publish',
-            method: 'POST',
-            data: {
+        const uploadResults = []
+        for(let i = 0; i < this.images.length; i++){
+          const uploadResult = await uni.uploadFile({
+            url: '/api/upload',
+            filePath: this.images[i],
+            name: 'image',
+            formData: {
               title: this.title,
               price: this.price,
               description: this.description,
-              images: this.images
-            },
-            success: (res) => {
-              const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
-              if (data && data.code === 200) {
-                resolve(data);
-              } else {
-                reject(new Error('发布失败'));
-              }
-            },
-            fail: (error) => {
-              console.error('Request failed:', error);
-              reject(error);
-            }
-          });
-        });
-
-        uni.showToast({
-          title: '发布成功',
-          icon: 'success',
-          success: () => {
-            setTimeout(() => {
-              uni.switchTab({
-                url: this.getPageUrl('home')
-              })
-            }, 1500)
-          }
-        });
+            },  
+          })
+          const tempFilePaths=JSON.parse(uploadResult.data)
+          uploadResults.push(tempFilePaths.data.url)
+          console.log('uploadResults', uploadResults)
+        } 
+        const res = await uni.request({
+          header: {
+            Authorization: 'Bearer ' + uni.getStorageSync('token')
+          },  
+          url: '/api/goods',
+          method: 'POST',
+          data: {
+            title: this.title,
+            price: this.price,
+            description: this.description,
+            images: JSON.stringify(uploadResults),
+            tags: JSON.stringify(this.tags)
+          },  
+        })
+        if(res.statusCode === 200){
+          uni.showToast({
+            title: '发布成功',
+            icon: 'success',
+          })
+        }else{
+          uni.showToast({
+            title: res.data.message,
+            icon: 'none'
+          })
+        }
       } catch (error) {
         uni.showToast({
           title: '发布失败',
           icon: 'none'
         });
-        console.error('发布失败:', error.message || '未知错误');
+        console.error(error);
       }
     }
   }
@@ -267,5 +311,57 @@ export default {
   border-radius: 12rpx;
   height: 88rpx;
   line-height: 88rpx;
+}
+
+.tags-title {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.tags-input-area {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.tag-input {
+  flex: 1;
+  height: 88rpx;
+  border: 1px solid #eee;
+  border-radius: 12rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+}
+
+.add-tag-btn {
+  margin-left: 20rpx;
+  background: #007AFF;
+  color: #fff;
+  border-radius: 12rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  padding: 0 30rpx;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.tag-item {
+  background: #f0f0f0;
+  border-radius: 12rpx;
+  padding: 10rpx 20rpx;
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+}
+
+.delete-tag {
+  margin-left: 10rpx;
+  color: #ff4d4f;
+  cursor: pointer;
 }
 </style>

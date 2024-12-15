@@ -28,8 +28,9 @@ export default {
   methods: {
     goToGoodsInfo() {
       uni.navigateTo({
-        url: `/pages/goods-info/goods-info?id=${this.goods.id}`
+        url: `/pages/goods-info/goods-info?id=${this.goods.goodsId}`
       })
+      console.log('this.goods', this.goods)
     }
   }
 }

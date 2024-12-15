@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import { register } from '../../mock/auth.js';
 
 export default {
   data() {
@@ -55,20 +54,35 @@ export default {
       }
 
       try {
-        const response = await register(this.username, this.password);
-        if (response && response.success) {
-          console.log('Registration successful:', response);
+        const res = await uni.request({
+          url: `/api/users/register`,
+          method: 'POST',
+          data: {
+            username: this.username,
+            password: this.password,
+            phone: this.phone
+          },
+        })
+        if (res.data.code === 200) {  
+          uni.showToast({
+            title: '注册成功',
+            icon: 'none'
+          })
           uni.navigateTo({
             url: '/pages/login/login'
-          });
+          })
         } else {
           uni.showToast({
-            title: response.message || 'Registration failed',
+            title: res.data.message,  
             icon: 'none'
-          });
+          })
         }
       } catch (error) {
-        this.errorMessage = error.message || 'An error occurred during registration';
+        uni.showToast({
+          title: '注册失败',
+          icon: 'none'
+        })
+        console.error('注册失败:', error)
       }
     },
     goBack() {

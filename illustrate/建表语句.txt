@@ -1,0 +1,54 @@
+CREATE TABLE Users (                                                -- 用户表
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,                           -- 用户名长度限制为50
+    password VARCHAR(50) NOT NULL,                                  -- 密码长度限制为50
+    email VARCHAR(255),  
+    phone VARCHAR(20) NOT NULL UNIQUE,
+    avatar VARCHAR(255),                                            -- 头像的url
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Goods (                                                -- 二手商品表
+    goods_id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    price DECIMAL(10, 2) NOT NULL,                 
+    images JSON,                                                    -- 商品图片url的数组
+    tags JSON,                                                      -- 标签数组，分类，搜索用的
+    is_active BOOLEAN DEFAULT TRUE,                                 -- 是否在售/有无下架
+    publisher_id INT,                                               -- 发布者
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (publisher_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE Messages (                                             -- 消息表
+    message_id INT PRIMARY KEY AUTO_INCREMENT,
+    sender_id INT,
+    receiver_id INT,
+    content TEXT NOT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_read BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (sender_id) REFERENCES Users(user_id),
+    FOREIGN KEY (receiver_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE Comments (                                             -- 评论表
+    comment_id INT PRIMARY KEY AUTO_INCREMENT,
+    goods_id INT,
+    user_id INT,
+    content TEXT NOT NULL,
+    rating INT CHECK (rating >= 1 AND rating <= 5),                 -- 评分
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (goods_id) REFERENCES Goods(goods_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE Favorites (                                            -- 收藏表
+    user_id INT,
+    goods_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, goods_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (goods_id) REFERENCES Goods(goods_id)
+);

@@ -132,7 +132,11 @@ export default {
         if (res.data.code === 200) {  
 
           const goodsInfo = res.data.data  
-          this.goods = { ...goodsInfo }
+          console.log('goodsInfo', goodsInfo)
+          this.goods = { ...goodsInfo,
+            images: JSON.parse(goodsInfo.images),
+            tags: JSON.parse(goodsInfo.tags)
+           }
         
           // 获取发布者信息
           this.loadPublisherInfo(goodsInfo.publisherId)

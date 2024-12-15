@@ -413,3 +413,28 @@
     ]
   }
   ```
+
+## 图片上传接口
+- **Endpoint**: `POST /api/upload` 
+- **请求头**:
+  ```json
+  {
+    "Content-Type": "multipart/form-data"
+  }
+  ```
+- **请求数据**:
+  ```json
+  {
+    "image": "file"
+  }
+  ```
+- **响应数据**:
+  ```json
+  {
+    "code": 201,
+    "msg": "Image uploaded successfully",
+    "data": {
+      "url": "string"
+    }
+  }
+  ```

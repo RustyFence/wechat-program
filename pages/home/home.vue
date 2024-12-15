@@ -3,16 +3,22 @@
     <!-- 状态栏占位 -->
     <view class="status-bar"></view>
     
-    <!-- 搜索框 -->
-    <view class="search-box">
+
+
+    <!-- 内容区域 -->
+    <scroll-view 
+      class="content-area" 
+      scroll-y 
+      @scrolltolower="loadMore"
+      style="height: 90vh;"
+    >
+        <!-- 搜索框 -->
+        <view class="search-box">
       <view class="search-bar">
         <uni-icons type="search" size="18" color="#666"></uni-icons>
         <input type="text" placeholder="搜索" placeholder-class="search-placeholder"/>
       </view>
     </view>
-
-    <!-- 内容区域 -->
-    <scroll-view class="content-area" scroll-y>
       <!-- 轮播图 -->
       <swiper class="banner" indicator-dots autoplay circular>
         <swiper-item v-for="(item, index) in banners" :key="index">
@@ -54,65 +60,23 @@
 </template>
 
 <script>
-import GoodsPreview from '@/components/goods-preview/goods-preview.vue'
 
+import GoodsPreview from '@/components/goods-preview/goods-preview.vue'
 export default {
   components: {
     GoodsPreview
   },
   data() {
     return {
-      //userId: uni.setStorageSync('userId', 1), // 设置当前用户ID为1 ，测试用，后续改为从登录状态获取
       categories: [
         { name: '热销', icon: '/static/home/热销.svg' },
         { name: '推荐', icon: '/static/home/推荐1.svg' },
         { name: '优惠', icon: '/static/home/优惠.svg' },
         { name: '活动', icon: '/static/home/活动.svg' }
       ],
-      goodsList: [
-        {
-          id: 1,
-          title: 'iPhone 14 Pro Max',
-          price: '7999.00',
-          description: '全新未拆封，256G 暗紫色//测试字数溢出',
-          images: ['/static/goods/iphone14.jpg']
-        },
-        {
-          id: 2,
-          title: '耐克运动鞋',
-          price: '599.00',
-          description: 'Nike Air Max 270，9成新',
-          images: ['/static/goods/nike.jpg']
-        },
-        {
-          id: 3,
-          title: '索尼相机 A7M4',
-          price: '15999.00',
-          description: '95新，快门数3000次以内',
-          images: ['/static/goods/sony.jpg']
-        },
-        {
-          id: 4,
-          title: 'MacBook Pro M2',
-          price: '12999.00',
-          description: '2023年新款，带包装',
-          images: ['/static/goods/macbook.jpg']
-        },
-        {
-          id: 5,
-          title: '华为手表 GT4',
-          price: '1499.00',
-          description: '全新未拆封，46mm',
-          images: ['/static/goods/watch.jpg']
-        },
-        {
-          id: 6,
-          title: 'AirPods Pro 2',
-          price: '1299.00',
-          description: '99新，带包装盒',
-          images: ['/static/goods/airpods.jpg']
-        }
-      ],
+      goodsList: [],
+      currentPage: 1,
+      loading: false,
       banners: [
         {name : 'banner1', src : '/static/home/banner/banner1.png'},
         {name : 'banner2', src : '/static/home/banner/banner2.png'},
@@ -125,18 +89,65 @@ export default {
       uni.navigateTo({
         url: `/pages/goods-info/goods-info?id=${goodsId}`
       })
+    },
+    async loadGoodsList() {
+      if (this.loading) return;
+      this.loading = true;
+      try {
+        const res = await uni.request({
+          url: `/api/goods?tags=home${this.currentPage}`,
+          method: 'GET',
+        });
+        if (res.data.code === 200) {
+          // 解析 images 和 tags 字段
+          const parsedData = res.data.data.map(item => ({
+            ...item,
+            images: JSON.parse(item.images),
+            tags: JSON.parse(item.tags)
+          }));
+          
+          this.goodsList = [...this.goodsList, ...parsedData];
+          if (this.goodsList.length === 0) {
+            uni.showToast({
+              title: '没有更多商品了',
+              icon: 'none'
+            });
+          }
+        } else {
+          console.log(res);
+          uni.showToast({
+            title: res.data.msg,
+            icon: 'none'
+          });
+        }
+      } catch (error) {
+        console.error('获取商品列表失败:', error);
+      } finally {
+        this.currentPage++;
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000);
+      }
+    },
+    loadMore() {
+      console.log('request page:home'+this.currentPage);
+      this.loadGoodsList();
     }
+  },
+  onLoad() {
+    this.loadGoodsList();
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss">s
+
 .container {
   min-height: 100vh;
+  height: 100vh;
   background-color: #f8f8f8;
   display: flex;
   flex-direction: column;
-  padding-bottom: 50px; /* 为系统tabBar预留空间 */
 }
 
 .status-bar {
@@ -209,7 +220,7 @@ export default {
 .recommend-section {
   background-color: #ffffff;
   padding: 30rpx;
-  
+
   .section-title {
     font-size: 32rpx;
     font-weight: bold;
