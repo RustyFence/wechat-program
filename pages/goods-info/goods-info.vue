@@ -15,6 +15,12 @@
       </view>
     </view>
 
+    <!-- 发布者信息 -->
+    <view class="publisher-info">
+      <image :src="goods.publisherAvatar" class="publisher-avatar"></image>
+      <text class="publisher-name">{{ goods.publisherName }}</text>
+    </view>
+
     <!-- 评价区域 -->
     <view class="comment-section">
       <view class="comment-header">
@@ -33,7 +39,7 @@
       <view class="comment-list">
         <view v-for="(comment, index) in comments" :key="index" class="comment-item">
           <view class="comment-user">
-            <image :src="comment.userAvatar" class="user-avatar"></image>
+            <image :src="comment.avatar" class="user-avatar"></image>
             <view class="user-info">
               <text class="user-name">{{ comment.username }}</text>
               <uni-rate :value="comment.rating" disabled size="12" />
@@ -143,9 +149,9 @@ export default {
           const goodsInfo = res.data.data  
           this.goods = { ...goodsInfo,
             images: JSON.parse(goodsInfo.images),
-            tags: JSON.parse(goodsInfo.tags)
+            tags: JSON.parse(goodsInfo.tags),
            }
-           
+           console.log(this.goods)
           // 获取商品评论
           this.loadComments(id)
         } else {
@@ -205,7 +211,6 @@ export default {
             rating: this.userRating
           }
         })
-        console.log(this.userRating)
         if (res.data.code === 201) {
           // 清空输入并关闭弹窗
           this.userComment = ''
@@ -233,7 +238,6 @@ export default {
     },
     async deleteComment(commentId) {
       try {
-        console.log(commentId)
         const res = await uni.request({
           url: `/api/comments/${commentId}`,
           method: 'DELETE',
@@ -560,6 +564,28 @@ export default {
   .contact-btn {
     background: #ff6b00;
     color: #fff;
+  }
+}
+
+.publisher-info {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #eee;
+
+  .publisher-avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    margin-right: 20rpx;
+    border: 2rpx solid #ddd;
+  }
+
+  .publisher-name {
+    font-size: 28rpx;
+    font-weight: bold;
+    color: #333;
   }
 }
 </style>

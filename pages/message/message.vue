@@ -21,7 +21,7 @@
       <view 
         class="message-item" 
         v-for="(item, index) in messageList" 
-        :key="index"
+        :key="item.messageId"
         @click="openChat(item)"
       >
         <!-- 头像 -->
@@ -33,11 +33,11 @@
         <!-- 消息内容 -->
         <view class="content">
           <view class="top-row">
-            <text class="name">{{item.sender}}</text>
-            <text class="time">{{item.time}}</text>
+            <text class="name">{{item.senderName}}</text>
+            <text class="time">{{formatTime(item.timestamp)}}</text>
           </view>
           <view class="bottom-row">
-            <text class="preview">{{item.lastMessage}}</text>
+            <text class="preview">{{item.content}}</text>
           </view>
         </view>
       </view>
@@ -46,12 +46,11 @@
 </template>
 
 <script>
-
 export default {
   data() {
     return {
       messageList: [],
-      currentUserId: uni.getStorageSync('userId')// 获取当前用户ID
+      currentUserId: uni.getStorageSync('userId') // 获取当前用户ID
     }
   },
   onShow() {
@@ -67,16 +66,16 @@ export default {
     },
     
     openChat(item) {
-      this.markAsRead(item.senderId);
+      this.markAsRead(item.messageId);
       
       uni.navigateTo({
-        url: `/pages/message/chat?senderId=${item.senderId}&userName=${item.sender}`
+        url: `/pages/message/chat?senderId=${item.senderId}&userName=${item.senderName}`
       });
     },
     
     async markAsRead(messageId) {
       try {
-        const message = this.messageList.find(msg => msg.senderId === messageId);
+        const message = this.messageList.find(msg => msg.messageId === messageId);
         if (message) {
           message.unread = 0;
         }
@@ -87,84 +86,45 @@ export default {
     
     async getMessageList() {
       try {
-        const response = await new Promise((resolve, reject) => {
-          uni.request({
-            url: `/api/messages?userId=${this.currentUserId}`,
-            method: 'GET',
-            header: {
-              'Authorization': `Bearer ${uni.getStorageSync('token')}`
-            }, 
-            success: (res) => {
-              try {
-                const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
-                if (data && data.code === 200 && Array.isArray(data.data.messages)) {
-                  resolve(data);
-                } else {
-                  reject(new Error('Invalid response format or error code'));
-                }
-              } catch (error) {
-                reject(new Error('Failed to parse response data'));
-              }
-            },
-            fail: (error) => {
-              console.error('Request failed:', error);
-              reject(error);
+        const response = await uni.request({
+          url: `/api/messages`,
+          method: 'GET',
+          header: {
+            'Authorization': `Bearer ${uni.getStorageSync('token')}`
+          }
+        });
+
+        if (response.data.code === 200) {
+          const messages = response.data.data;
+          const uniqueConversations = {};
+
+          messages.forEach(msg => {
+            const userId = msg.senderId === this.receiverId ? msg.receiverId : msg.senderId;
+            if (!uniqueConversations[userId]) {
+              uniqueConversations[userId] = msg;
             }
           });
-        });
 
-        this.messageList = this.processMessageList(response.data.messages);
-        uni.setStorageSync('messages', response.data.messages); // 存储消息到本地存储
-      } catch (error) {
-        console.error('获取消息列表失败:', error.message || '未知错误');
-      }
-    },
-
-    processMessageList(messages) {
-      if (!Array.isArray(messages)) {
-        console.error('Invalid messages format:', messages);
-        return [];
-      }
-
-      // 使用 Map 来存储每个 senderId 的最后一条消息
-      const lastMessagesMap = new Map();
-
-      messages.forEach(msg => {
-        lastMessagesMap.set(msg.senderId, msg);
-      });
-
-      // 将 Map 转换为数组
-      return Array.from(lastMessagesMap.values()).map(msg => ({
-        senderId: msg.senderId,
-        sender: msg.sender,
-        avatar: msg.avatar,
-        lastMessage: msg.content,
-        time: msg.time,
-        unread: 0 // 可以根据需求修改未读消息的逻辑
-      }));
-    },
-
-    async fetchAllMessages() {
-      try {
-        const response = await new Promise((resolve, reject) => {
-          uni.request({
-            url: `/api/messages?userId=${this.currentUserId}`,
-            method: 'GET',
-            success: resolve,
-            fail: reject
-          });
-        });
-
-        const data = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
-
-        if (response.statusCode === 200 && data && data.data && Array.isArray(data.data.messages)) {
-          this.$store.commit('setMessages', data.data.messages);
+          this.messageList = Object.values(uniqueConversations).map(msg => ({
+            messageId: msg.messageId,
+            senderId: msg.senderId,
+            senderName: msg.senderName,
+            avatar: msg.avatar || '/static/default-avatar.png',
+            content: msg.content,
+            timestamp: msg.timestamp,
+            unread: msg.isRead ? 0 : 1
+          }));
         } else {
-          console.error('获取消息列表失败:', data.message || '响应格式不正确');
+          console.error('获取消息列表失败:', response.data.msg);
         }
       } catch (error) {
         console.error('获取消息列表失败:', error);
       }
+    },
+
+    formatTime(timestamp) {
+      const date = new Date(timestamp);
+      return date.toLocaleString();
     }
   }
 }

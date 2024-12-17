@@ -31,7 +31,6 @@ export default {
       uni.navigateTo({
         url: `/pages/goods-info/goods-info?id=${this.goods.goodsId}`
       })
-      console.log('this.goods', this.goods)
     },
     formatDate(dateString) {
       if (!dateString) return '未知时间';

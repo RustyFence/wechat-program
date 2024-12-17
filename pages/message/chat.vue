@@ -1,13 +1,18 @@
 <template>
   <view class="chat-container">
     <scroll-view class="chat-list" scroll-y>
-      <view v-for="(msg, index) in messages" :key="index" :class="['chat-message', msg.sender === 'You' ? 'sent' : 'received']">
+      <view 
+        class="chat-item" 
+        v-for="(msg, index) in chatMessages" 
+        :key="msg.messageId"
+        :class="{ 'from-me': msg.senderId === this.receiverId, 'from-them': msg.receiverId !== this.receiverId }"
+      >
         <text class="message-content">{{ msg.content }}</text>
-        <text class="time">{{ msg.time }}</text>
+        <text class="message-time">{{ formatTime(msg.timestamp) }}</text>
       </view>
     </scroll-view>
 
-    <view class="chat-input">
+    <view class="input-bar">
       <input v-model="newMessage" placeholder="输入消息..." />
       <button @click="sendMessage">发送</button>
     </view>
@@ -15,78 +20,79 @@
 </template>
 
 <script>
-
 export default {
   data() {
     return {
-      messages: [],
-      senderId: null,
-      userId: uni.getStorageSync('userId'), // 获取当前用户ID
-      newMessage: ''
+      chatMessages: [],
+      newMessage: '',
+      receiverId: null
     }
   },
   onLoad(options) {
-    this.senderId = options.senderId;
-    this.fetchMessages();
+    this.receiverId = parseInt(options.senderId);
+    this.loadChatMessages();
   },
   methods: {
-    fetchMessages() {
-      // 从本地存储中获取所有消息
-      const allMessages = uni.getStorageSync('messages') || [];
-
-      // 过滤出与特定 senderId 相关的所有消息
-      this.messages = allMessages.filter(msg => msg.senderId === this.senderId);
-      console.log(`>>>>>与senderId:${this.senderId}<<<<<的聊天记录`);
-      console.log('messages', this.messages);
+    async loadChatMessages() {
+      try {
+        const res = await uni.request({
+          url: `/api/messages`,
+          method: 'GET',
+          header: {
+            'Authorization': `Bearer ${uni.getStorageSync('token')}`
+          }
+        });
+        if (res.data.code === 200) {
+          this.chatMessages = res.data.data
+        } else {
+          console.error('获取聊天记录失败:', res.data.msg);
+        }
+      } catch (error) {
+        console.error('获取聊天记录失败:', error);
+      }
     },
 
     async sendMessage() {
-      if (!this.newMessage.trim()) {
-        console.error('消息内容不能为空');
-        return;
-      }
+      if (!this.newMessage.trim()) return;
 
       try {
-        const response = await new Promise((resolve, reject) => {
-          uni.request({
-            url: `/api/messages/send`,
-            method: 'POST',
-            data: {
-              userId: this.userId,
-              senderId: this.senderId,
-              content: this.newMessage
-            },
-            success: (res) => {
-              const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
-              if (data && data.code === 200) {
-                resolve(data);
-              } else {
-                reject(new Error('发送消息失败'));
-              }
-            },
-            fail: (error) => {
-              console.error('Request failed:', error);
-              reject(error);
-            }
-          });
+        const res = await uni.request({
+          url: `/api/messages`,
+          method: 'POST',
+          header: {
+            'Authorization': `Bearer ${uni.getStorageSync('token')}`
+          },
+          data: {
+            receiverId: this.receiverId,
+            content: this.newMessage
+          }
         });
-
-        console.log('消息发送成功:', response.message);
-        this.messages.push({
-          sender: 'You',
-          content: this.newMessage,
-          time: new Date().toLocaleString()
-        });
-        this.newMessage = '';
+        if (res.data.code === 201) {
+          this.chatMessages.push({
+            messageId: res.data.data.messageId,
+            senderId: this.receiverId,
+            receiverId: this.receiverId,
+            content: this.newMessage,
+            timestamp: new Date().toISOString()
+          })
+          this.newMessage = ''
+        } else {
+          console.error('发送消息失败:', res.data.msg)
+        }
       } catch (error) {
-        console.error('发送消息失败:', error.message || '未知错误');
+        console.error('发送消息失败:', error)
       }
+    },
+
+    formatTime(timestamp) {
+      const date = new Date(timestamp);
+      return date.toLocaleString();
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .chat-container {
   display: flex;
   flex-direction: column;
@@ -100,7 +106,7 @@ export default {
   overflow-y: auto;
 }
 
-.chat-message {
+.chat-item {
   margin-bottom: 10px;
   display: flex;
   flex-direction: column;
@@ -110,13 +116,13 @@ export default {
   position: relative;
 }
 
-.sent {
+.from-me {
   align-self: flex-end;
   background-color: #007aff;
   color: #fff;
 }
 
-.received {
+.from-them {
   align-self: flex-start;
   background-color: #e5e5ea;
   color: #000;
@@ -126,21 +132,21 @@ export default {
   font-size: 14px;
 }
 
-.time {
+.message-time {
   font-size: 12px;
   color: #999;
   align-self: flex-end;
   margin-top: 4px;
 }
 
-.chat-input {
+.input-bar {
   display: flex;
   padding: 10px;
   background-color: #fff;
   border-top: 1px solid #ddd;
 }
 
-.chat-input input {
+.input-bar input {
   flex: 1;
   padding: 8px;
   border: 1px solid #ddd;
@@ -148,7 +154,7 @@ export default {
   margin-right: 10px;
 }
 
-.chat-input button {
+.input-bar button {
   padding: 8px 16px;
   background-color: #007aff;
   color: #fff;

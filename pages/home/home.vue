@@ -11,7 +11,7 @@
       style="height: 90vh;"
     >
         <!-- 搜索框 -->
-        <view class="search-box">
+        <view class="search-box" >
       <view class="search-bar">
         <uni-icons type="search" size="18" color="#666"></uni-icons>
         <input type="text" placeholder="搜索" placeholder-class="search-placeholder"/>
