@@ -7,17 +7,17 @@
         <text class="edit-hint">点击更换头像</text>
       </view>
       <view class="user-info">
-        <text class="nickname">{{userInfo.nickname}}</text>
+        <text class="nickname">{{userInfo.username}}</text>
         <text class="user-id">ID: {{userInfo.userId}}</text>
       </view>
     </view>
     
     <!-- 信息列表 -->
     <view class="info-list">
-      <view class="info-item" @tap="editInfo('nickname')">
+      <view class="info-item" @tap="editInfo('username')">
         <text class="item-label">昵称</text>
         <view class="item-content">
-          <text>{{userInfo.nickname}}</text>
+          <text>{{userInfo.username}}</text>
           <text class="iconfont icon-right"></text>
         </view>
       </view>
@@ -34,14 +34,6 @@
         <text class="item-label">邮箱</text>
         <view class="item-content">
           <text>{{userInfo.email || '未设置'}}</text>
-          <text class="iconfont icon-right"></text>
-        </view>
-      </view>
-      
-      <view class="info-item" @tap="editInfo('address')">
-        <text class="item-label">收货地址</text>
-        <view class="item-content">
-          <text>{{userInfo.address ? '已设置' : '未设置'}}</text>
           <text class="iconfont icon-right"></text>
         </view>
       </view>
@@ -81,11 +73,10 @@ export default {
     return {
       userInfo: {
         avatar: '/static/avatar/default.png',
-        nickname: '用户昵称',
+        username: '用户昵称',
         userId: '10086',
         phone: '13800138000',
         email: 'example@email.com',
-        address: ''
       },
       counts: {
         collection: 12,
@@ -94,117 +85,174 @@ export default {
       }
     }
   },
+  mounted() {
+    this.fetchUserInfo();
+  },
   methods: {
+    // 获取用户信息
+    async fetchUserInfo() {
+      try {
+        const res = await uni.request({
+          url: '/api/users',
+          method: 'GET',
+          header: {
+            Authorization: 'Bearer ' + uni.getStorageSync('token')
+          }
+        });
+        if (res.data.code === 200) {
+          this.userInfo = res.data.data;
+        } else {
+          uni.showToast({
+            title: res.data.msg,
+            icon: 'none'
+          });
+        }
+      } catch (error) {
+        console.error('获取用户信息失败:', error);
+        uni.showToast({
+          title: '获取用户信息失败',
+          icon: 'none'
+        });
+      }
+    },
+    
     // 更换头像
-    changeAvatar() {
+    async changeAvatar() {
       uni.chooseImage({
         count: 1,
-        success: (res) => {
-          // TODO: 上传头像
-          this.userInfo.avatar = res.tempFilePaths[0]
+        success: async (res) => {
+          const filePath = res.tempFilePaths[0];
+          try {
+            const uploadResult = await uni.uploadFile({
+              url: '/api/upload',
+              filePath: filePath,
+              name: 'image',
+              header: {
+                Authorization: 'Bearer ' + uni.getStorageSync('token')
+              }
+            });
+            console.log(uploadResult)
+            const response = JSON.parse(uploadResult.data);
+            if (response.code === 201) {
+              console.log(response.data.url)
+              this.userInfo.avatar = response.data.url;
+              this.updateUserInfo();
+              uni.showToast({
+                title: '头像上传成功',
+                icon: 'success'
+              });
+            } else {
+              uni.showToast({
+                title: response.msg,
+                icon: 'none'
+              });
+            }
+          } catch (error) {
+            console.error('头像上传失败:', error);
+            uni.showToast({
+              title: '头像上传失败',
+              icon: 'none'
+            });
+          }
         }
-      })
+      });
     },
     
     // 编辑信息
     editInfo(type) {
+      let title = '';
+      let content = '';
       switch(type) {
-        case 'nickname':
-          uni.showModal({
-            title: '修改昵称',
-            editable: true,
-            content: this.userInfo.nickname,
-            success: (res) => {
-              if (res.confirm && res.content) {
-                this.userInfo.nickname = res.content
-              }
-            }
-          })
-          break
-        
+        case 'username':
+          title = '修改昵称';
+          content = this.userInfo.username;
+          break;
         case 'phone':
-          uni.showModal({
-            title: '修改手机号',
-            editable: true,
-            content: this.userInfo.phone,
-            success: (res) => {
-              if (res.confirm && res.content) {
-                // 验证手机号格式
-                if (/^1[3-9]\d{9}$/.test(res.content)) {
-                  this.userInfo.phone = res.content
-                } else {
-                  uni.showToast({
-                    title: '手机号格式不正确',
-                    icon: 'none'
-                  })
-                }
-              }
-            }
-          })
-          break
-        
+          title = '修改手机号';
+          content = this.userInfo.phone;
+          break;
         case 'email':
-          uni.showModal({
-            title: '修改邮箱',
-            editable: true,
-            content: this.userInfo.email || '',
-            success: (res) => {
-              if (res.confirm && res.content) {
-                // 验证邮箱格式
-                if (/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(res.content)) {
-                  this.userInfo.email = res.content
-                } else {
-                  uni.showToast({
-                    title: '邮箱格式不正确',
-                    icon: 'none'
-                  })
-                }
-              }
+          title = '修改邮箱';
+          content = this.userInfo.email || '';
+          break;
+      }
+      uni.showModal({
+        title: title,
+        editable: true,
+        content: content,
+        success: (res) => {
+          if (res.confirm && res.content) {
+            if (type === 'phone' && !/^1[3-9]\d{9}$/.test(res.content)) {
+              uni.showToast({
+                title: '手机号格式不正确',
+                icon: 'none'
+              });
+              return;
             }
-          })
-          break
-        
-        case 'address':
-          // 使用地址选择器
-          uni.chooseLocation({
-            success: (res) => {
-              this.userInfo.address = res.address
-              // 可以保存更详细的地址信息
-              this.userInfo.addressDetail = {
-                name: res.name,
-                address: res.address,
-                latitude: res.latitude,
-                longitude: res.longitude
-              }
-            },
-            fail: () => {
-              // 如果没有选择地址，打开手动输入
-              uni.showModal({
-                title: '修改地址',
-                editable: true,
-                content: this.userInfo.address || '',
-                success: (res) => {
-                  if (res.confirm && res.content) {
-                    this.userInfo.address = res.content
-                  }
-                }
-              })
+            if (type === 'email' && !/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(res.content)) {
+              uni.showToast({
+                title: '邮箱格式不正确',
+                icon: 'none'
+              });
+              return;
             }
-          })
-          break
+            this.userInfo[type] = res.content;
+            this.updateUserInfo();
+          }
+        }
+      });
+    },
+    
+    // 更新用户信息
+    async updateUserInfo() {
+      try {
+        const res = await uni.request({
+          url: '/api/users',
+          method: 'PUT',
+          header: {
+            Authorization: 'Bearer ' + uni.getStorageSync('token')
+          },
+          data: this.userInfo
+        });
+        if (res.data.code === 204) {
+          uni.showToast({
+            title: '信息更新成功',
+            icon: 'success'
+          });
+          if(this.userInfo.username!==uni.getStorageSync('userName')){
+            uni.reLaunch({
+              url: '/pages/login/login'
+            });
+            uni.showToast({
+              title:'用户名更改，本地令牌失效，请重新登录',
+              icon: 'none'
+            });
+          }
+        } else {
+          uni.showToast({
+            title: res.data.msg,
+            icon: 'none'
+          });
+        }
+      } catch (error) {
+        console.error('更新用户信息失败:', error);
+        uni.showToast({
+          title: '更新用户信息失败',
+          icon: 'none'
+        });
       }
     },
     
     // 格式化手机号
     formatPhone(phone) {
-      return phone ? phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') : ''
+      return phone ? phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') : '';
     },
     
     // 页面导航
     navigateTo(page) {
       uni.navigateTo({
         url: `/pages/myAccount/${page}`
-      })
+      });
     },
     
     // 退出登录
@@ -214,22 +262,12 @@ export default {
         content: '确定要退出登录吗？',
         success: (res) => {
           if (res.confirm) {
-            // TODO: 清除登录状态
             uni.reLaunch({
               url: '/pages/login/login'
-            })
+            });
           }
         }
-      })
-    },
-    
-    // 保存信息到服务器
-    saveUserInfo() {
-      // TODO: 实现保存逻辑
-      uni.showToast({
-        title: '保存成功',
-        icon: 'success'
-      })
+      });
     }
   }
 }

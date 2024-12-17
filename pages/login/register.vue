@@ -24,7 +24,6 @@
 </template>
 
 <script>
-
 export default {
   data() {
     return {
@@ -53,6 +52,14 @@ export default {
         return;
       }
 
+      if (!/^\d{11}$/.test(this.phone)) {
+        uni.showToast({
+          title: '手机号格式不正确',
+          icon: 'none'
+        });
+        return;
+      }
+
       try {
         const res = await uni.request({
           url: `/api/users/register`,
@@ -72,8 +79,9 @@ export default {
             url: '/pages/login/login'
           })
         } else {
+          console.log(res.data)
           uni.showToast({
-            title: res.data.message,  
+            title: res.data.msg,  
             icon: 'none'
           })
         }

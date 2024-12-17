@@ -2,8 +2,6 @@
   <view class="container">
     <!-- 状态栏占位 -->
     <view class="status-bar"></view>
-    
-
 
     <!-- 内容区域 -->
     <scroll-view 
@@ -51,7 +49,7 @@
             v-for="(item, index) in goodsList" 
             :key="index"
           >
-            <goods-preview :goods="item"></goods-preview>
+            <goods-preview :goods="item" v-if="item.isActive"></goods-preview>
           </view>
         </view>
       </view>
@@ -85,11 +83,6 @@ export default {
     }
   },
   methods: {
-    goToGoodsInfo(goodsId) {
-      uni.navigateTo({
-        url: `/pages/goods-info/goods-info?id=${goodsId}`
-      })
-    },
     async loadGoodsList() {
       if (this.loading) return;
       this.loading = true;
@@ -105,14 +98,15 @@ export default {
             images: JSON.parse(item.images),
             tags: JSON.parse(item.tags)
           }));
-          
-          this.goodsList = [...this.goodsList, ...parsedData];
-          if (this.goodsList.length === 0) {
+          if (parsedData.length === 0) {
             uni.showToast({
               title: '没有更多商品了',
               icon: 'none'
             });
-          }
+          }else{
+            this.goodsList = [...this.goodsList, ...parsedData.filter(goods => goods.isActive)];
+            this.currentPage++;
+          } 
         } else {
           console.log(res);
           uni.showToast({
@@ -123,7 +117,6 @@ export default {
       } catch (error) {
         console.error('获取商品列表失败:', error);
       } finally {
-        this.currentPage++;
         setTimeout(() => {
           this.loading = false;
         }, 1000);

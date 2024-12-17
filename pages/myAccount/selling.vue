@@ -12,13 +12,13 @@
         <view 
           class="goods-item" 
           v-for="item in sellingList" 
-          :key="item.id"
+          :key="item.goodsId"
         >
           <goods-preview :goods="item"></goods-preview>
           <!-- 操作按钮 -->
           <view class="action-bar">
             <button class="action-btn edit" @tap="editGoods(item)">编辑</button>
-            <button class="action-btn delete" @tap="deleteGoods(item)">下架</button>
+            <button class="action-btn delete" @tap="deactivateGoods(item)">下架</button>
           </view>
         </view>
       </view>
@@ -57,15 +57,24 @@ export default {
     async loadSellingGoods() {
       try {
         const res = await uni.request({
-          url: `/api/user/published?userId=${this.publisherId}`,
-          method: 'GET'
+          url: '/api/goods/myGoods',
+          method: 'GET',
+          header: {
+            Authorization: 'Bearer ' + uni.getStorageSync('token')
+          }
         });
 
         if (res.data.code === 200) {
-          this.sellingList = res.data.data.filter(goods => goods.isActive);
+          // 解析 images 和 tags 字段
+          const parsedData = res.data.data.map(item => ({
+            ...item,
+            images: JSON.parse(item.images),
+            tags: JSON.parse(item.tags)
+          }));
+          this.sellingList = parsedData.filter(goods => goods.isActive);
         } else {
           uni.showToast({
-            title: res.data.message,
+            title: res.data.msg,
             icon: 'none'
           });
         }
@@ -80,11 +89,11 @@ export default {
 
     async editGoods(goods) {
       uni.navigateTo({
-        url: `/pages/publish/publish?id=${goods.id}`
+        url: `/pages/publish/publish?id=${goods.goodsId}`
       });
     },
     
-    async deleteGoods(goods) {
+    async deactivateGoods(goods) {
       uni.showModal({
         title: '提示',
         content: '确定要下架该商品吗？',
@@ -92,12 +101,15 @@ export default {
           if (res.confirm) {
             try {
               const response = await uni.request({
-                url: '/api/goods/remove',
-                method: 'POST',
-                data: { id: goods.id }
+                url: `/api/goods/${goods.goodsId}`,
+                method: 'PUT',
+                header: {
+                  Authorization: 'Bearer ' + uni.getStorageSync('token')
+                },
+                data: { isActive: false }
               });
 
-              if (response.data.code === 200) {
+              if (response.data.code === 204) {
                 uni.showToast({
                   title: '商品已下架',
                   icon: 'success'
@@ -105,7 +117,7 @@ export default {
                 this.loadSellingGoods(); // Refresh the list
               } else {
                 uni.showToast({
-                  title: response.data.message,
+                  title: response.data.msg,
                   icon: 'none'
                 });
               }
@@ -132,7 +144,7 @@ export default {
     },
     
     refresh() {
-      // TODO: 刷新在售列表
+      this.loadSellingGoods();
     }
   },
   navigationBarTitleText: '在售商品'  // 设置原生导航栏标题
@@ -217,6 +229,24 @@ export default {
     color: #fff;
     font-size: 28rpx;
     border-radius: 40rpx;
+  }
+}
+
+.content-item {
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  
+  .content-image-wrapper {
+    position: relative;
+    height: 120px; // 确保高度足够显示图片
+    
+    .content-image {
+      width: 100%;
+      height: 100%;
+      background-color: #e0e0e0; // 确保背景色不会影响图片显示
+    }
   }
 }
 </style> 

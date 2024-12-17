@@ -1,5 +1,4 @@
 import Mock from 'mockjs'
-export { goodsList, userList ,commentsData}
 // 商品列表数据
 const goodsList = {   //>>>>>goodsList模拟数据库的goods表<<<<<
     //home页面的商品

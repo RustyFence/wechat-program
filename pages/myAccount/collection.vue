@@ -6,8 +6,9 @@
         <view class="content-grid">
           <goods-preview 
             v-for="(item, index) in collectionList" 
-            :key="index"
+            :key="item.goodsId"
             :goods="item"
+            @remove="removeFromCollection(item.goodsId)"
           ></goods-preview>
         </view>
       </view>
@@ -30,47 +31,80 @@ export default {
   },
   data() {
     return {
-      collectionList: [
-        {
-          id: 1,
-          title: 'iPhone 14 Pro Max',
-          price: '7999.00',
-          description: '全新未拆封，256G 暗紫色',
-          images: ['/static/goods/iphone14.jpg']
-        },
-        {
-          id: 8,
-          title: 'Switch OLED',
-          price: '1999.00',
-          description: '95新，带两个游戏',
-          images: ['/static/goods/switch.jpg']
-        },
-        {
-          id: 11,
-          title: '理光GR3x',
-          price: '4999.00',
-          description: '9成新，带UV镜',
-          images: ['/static/goods/camera.jpg']
-        }
-      ]
+      collectionList: []
     }
   },
+  mounted() {
+    this.loadCollection();
+  },
   methods: {
-    // 取消收藏
-    removeFromCollection(goodsId) {
+    async loadCollection() {
+      try {
+        const res = await uni.request({
+          url: '/api/favorites',
+          method: 'GET',
+          header: {
+            Authorization: 'Bearer ' + uni.getStorageSync('token')
+          }
+        });
+
+        if (res.data.code === 200) {
+          this.collectionList = res.data.data.map(item => ({
+            ...item,
+            images: JSON.parse(item.images)
+          }));
+        } else {
+          uni.showToast({
+            title: res.data.msg,
+            icon: 'none'
+          });
+        }
+      } catch (error) {
+        console.error('获取收藏列表失败:', error);
+        uni.showToast({
+          title: '获取收藏列表失败',
+          icon: 'none'
+        });
+      }
+    },
+
+    async removeFromCollection(goodsId) {
       uni.showModal({
         title: '提示',
         content: '确定要取消收藏该商品吗？',
-        success: (res) => {
+        success: async (res) => {
           if (res.confirm) {
-            this.collectionList = this.collectionList.filter(item => item.id !== goodsId)
-            uni.showToast({
-              title: '已取消收藏',
-              icon: 'success'
-            })
+            try {
+              const response = await uni.request({
+                url: `/api/favorites/${goodsId}`,
+                method: 'DELETE',
+                header: {
+                  Authorization: 'Bearer ' + uni.getStorageSync('token')
+                }
+              });
+
+              if (response.data.code === 204) {
+                uni.showToast({
+                  title: '已取消收藏',
+                  icon: 'success'
+                });
+                this.loadCollection(); // Refresh the list
+              } else {
+                uni.showToast({
+                  title: response.data.msg,
+                  icon: 'none'
+                });
+              }
+            } catch (error) {
+              console.error('取消收藏失败:', error);
+              uni.showToast({
+                title: '取消收藏失败',
+                icon: 'none'
+              });
+            }
           }
         }
-      })
+      });
     }
   }
 }

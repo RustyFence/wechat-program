@@ -12,6 +12,7 @@
     <view class="content-info">
       <text class="content-title text-ellipsis">{{goods.title || '商品标题'}}</text>
       <text class="content-desc text-ellipsis">{{goods.description || '商品描述'}}</text>
+      <text class="content-date">{{ formatDate(goods.updateAt) }}</text>
     </view>
   </view>
 </template>
@@ -31,6 +32,11 @@ export default {
         url: `/pages/goods-info/goods-info?id=${this.goods.goodsId}`
       })
       console.log('this.goods', this.goods)
+    },
+    formatDate(dateString) {
+      if (!dateString) return '未知时间';
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
     }
   }
 }
@@ -89,6 +95,12 @@ export default {
     .content-desc {
       font-size: 12px;
       color: #666;
+    }
+
+    .content-date {
+      font-size: 12px;
+      color: #999;
+      margin-top: 4px;
     }
   }
 }

@@ -134,7 +134,8 @@
       "images": ["string"],
       "tags": ["string"],
       "isActive": "boolean",
-      "publisherId": "int"
+      "publisherId": "int",
+      "updateAt": "string"
     }
   }
   ```
@@ -162,6 +163,36 @@
   ```
 
 ### 商品管理 API
+
+#### 获取个人商品列表
+
+- **Endpoint**: `GET /api/goods/myGoods`
+- **请求头**:
+  ```json
+  {
+    "Authorization": "Bearer {token}"
+  }
+  ```
+- **请求数据**:             
+- **响应数据**:
+  ```json
+  {
+    "code": 200,
+    "msg": "Goods retrieved successfully",
+    "data": [
+      {
+        "goodsId": "int",
+        "title": "string",
+        "description": "string",
+        "price": "decimal",
+        "images": ["string"],
+        "tags": ["string"],
+        "isActive": "boolean",
+        "publisherId": "int"
+      }
+    ]
+  }
+  ```
 
 #### 发布商品
 
@@ -212,7 +243,7 @@
   }
   ```
 
-### 修改商品信息
+#### 修改商品信息
 
 - **Endpoint**: `PUT /api/goods/{goodsId}`  
 - **请求头**:

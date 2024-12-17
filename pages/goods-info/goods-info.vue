@@ -35,12 +35,19 @@
           <view class="comment-user">
             <image :src="comment.userAvatar" class="user-avatar"></image>
             <view class="user-info">
-              <text class="user-name">{{ comment.userName }}</text>
+              <text class="user-name">{{ comment.username }}</text>
               <uni-rate :value="comment.rating" disabled size="12" />
             </view>
-            <text class="comment-time">{{ comment.time }}</text>
+            <text class="comment-time">{{ formatDate(comment.createdAt) }}</text>
           </view>
           <view class="comment-content">{{ comment.content }}</view>
+          
+          <!-- 删除评论按钮 -->
+          <button 
+            v-if="comment.username === currentUser"
+            class="delete-comment-btn" 
+            @click="deleteComment(comment.commentId)"
+          >删除</button>
         </view>
       </view>
 
@@ -97,14 +104,16 @@ export default {
   data() {
     return {
       goods: {
-        id: '',
+        goodsId : '',
         title: '',
         price: '',
         description: '',
         images: [],
         publisherId: '',
-        publisherName: ''
+        publisherName: '',
+        updateAt: ''
       },
+      currentUser:uni.getStorageSync('userName'),
       comments: [],
       userRating: 5,
       userComment: '',
@@ -120,6 +129,7 @@ export default {
   onLoad(options) {
     const goodsId = options.id
     this.loadGoodsInfo(goodsId)
+    this.checkIfCollected(goodsId)
   },
   methods: {
     async loadGoodsInfo(id) {
@@ -128,19 +138,14 @@ export default {
           url: `/api/goods/${id}`,
           method: 'GET'
         })
-        
         if (res.data.code === 200) {  
 
           const goodsInfo = res.data.data  
-          console.log('goodsInfo', goodsInfo)
           this.goods = { ...goodsInfo,
             images: JSON.parse(goodsInfo.images),
             tags: JSON.parse(goodsInfo.tags)
            }
-        
-          // 获取发布者信息
-          this.loadPublisherInfo(goodsInfo.publisherId)
-
+           
           // 获取商品评论
           this.loadComments(id)
         } else {
@@ -158,22 +163,6 @@ export default {
       }
     },
     
-    async loadPublisherInfo(publisherId) {
-      try {
-        const res = await uni.request({
-          url: `/api/users/${publisherId}`,
-          method: 'GET'
-        })
-
-        if (res.data.code === 200) {
-          this.goods.publisherName = res.data.data.name
-        } else {
-          console.error('获取发布者信息失败:', res.data.message)
-        }
-      } catch (error) {
-        console.error('获取发布者信息失败:', error)
-      }
-    },
     
     async loadComments(goodsId) {
       try {
@@ -181,9 +170,8 @@ export default {
           url: `/api/goods/${goodsId}/comments`,
           method: 'GET'
         })
-
         if (res.data.code === 200) {
-          this.comments = res.data.data.list
+          this.comments = res.data.data
           this.calculateAverageRating()
         }
       } catch (error) {
@@ -196,7 +184,7 @@ export default {
     closeCommentModal() {
       this.$refs.commentPopup.close()
     },
-    submitComment() {
+    async submitComment() {
       if (!this.userComment.trim()) {
         uni.showToast({
           title: '请输入评价内容',
@@ -204,32 +192,75 @@ export default {
         })
         return
       }
-      
-      // 构造评论对象
-      const newComment = {
-        id: Date.now(),
-        userAvatar: '/static/avatar/default.png',
-        userName: '用户' + Math.floor(Math.random() * 1000),
-        rating: this.userRating,
-        content: this.userComment,
-        time: new Date().toLocaleString()
+      try {
+        const res = await uni.request({
+          url: `/api/comments`,
+          method: 'POST',
+          header: {
+            Authorization: `Bearer ${uni.getStorageSync('token')}`
+          },
+          data: {
+            goodsId: this.goods.goodsId,
+            content: this.userComment,
+            rating: this.userRating
+          }
+        })
+        console.log(this.userRating)
+        if (res.data.code === 201) {
+          // 清空输入并关闭弹窗
+          this.userComment = ''
+          this.userRating = 5
+          this.closeCommentModal()
+
+          uni.showToast({
+            title: '评价成功',
+            icon: 'success'
+          })
+          this.loadComments(this.goods.goodsId)
+        } else {
+          uni.showToast({
+            title: res.data.message,
+            icon: 'none'
+          })
+        }
+      } catch (error) {
+        console.error('添加评论失败:', error)
+        uni.showToast({
+          title: '添加评论失败',
+          icon: 'none'
+        })
       }
-      
-      // 添加到评论列表开头
-      this.comments.unshift(newComment)
-      
-      // 重新计算平均评分
-      this.calculateAverageRating()
-      
-      // 清空输入并关闭弹窗
-      this.userComment = ''
-      this.userRating = 5
-      this.closeCommentModal()
-      
-      uni.showToast({
-        title: '评价成功',
-        icon: 'success'
-      })
+    },
+    async deleteComment(commentId) {
+      try {
+        console.log(commentId)
+        const res = await uni.request({
+          url: `/api/comments/${commentId}`,
+          method: 'DELETE',
+          header: {
+            Authorization: `Bearer ${uni.getStorageSync('token')}`
+          }
+        })
+        console.log(res)
+        if (res.data.code === 204) {
+          uni.showToast({
+            title: '评论已删除',
+            icon: 'success'
+          })
+          this.loadComments(this.goods.goodsId) // 重新加载评论列表
+        } else {
+          uni.showToast({
+            title: res.data.message,
+            icon: 'none'
+          })
+        }
+      } catch (error) {
+        console.error('删除评论失败:', error)
+        uni.showToast({
+          title: '删除评论失败',
+          icon: 'none'
+        })
+      }
     },
     calculateAverageRating() {
       if (this.comments.length === 0) {
@@ -239,31 +270,79 @@ export default {
       const sum = this.comments.reduce((acc, curr) => acc + curr.rating, 0)
       this.averageRating = Number((sum / this.comments.length).toFixed(1))
     },
-    // 切换收藏状态
-    async toggleCollect() {
+    formatDate(dateString) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    },
+    async checkIfCollected(goodsId) {
       try {
         const res = await uni.request({
-          url: '/api/goods/favorite',
-          method: 'POST',
-          data: {
-            goodsId: this.goods.id,
-            action: this.isCollected ? 'remove' : 'add'
+          url: `/api/favorites`,
+          method: 'GET',
+          header: {
+            Authorization: `Bearer ${uni.getStorageSync('token')}`
           }
         })
-        
         if (res.data.code === 200) {
-          this.isCollected = res.data.data.isCollected
-          uni.showToast({
-            title: res.data.message,
-            icon: 'success'
-          })
+          this.isCollected = res.data.data.some(item => item.goodsId === this.goods.goodsId)
         }
       } catch (error) {
-        console.error('收藏操作失败:', error)
-        uni.showToast({
-          title: '操作失败',
-          icon: 'none'
-        })
+        console.error('检查收藏状态失败:', error)
+      }
+    },
+    // 切换收藏状态
+    async toggleCollect() {
+      if (this.isCollected) {
+        // 取消收藏
+        try {
+          const res = await uni.request({
+            url: `/api/favorites/${this.goods.goodsId}`,
+            method: 'DELETE',
+            header: {
+              Authorization: `Bearer ${uni.getStorageSync('token')}`
+            }
+          });
+          if (res.data.code === 204) {
+            this.isCollected = false;
+            uni.showToast({
+              title: '已取消收藏',
+              icon: 'success'
+            });
+          }
+        } catch (error) {
+          console.error('取消收藏失败:', error);
+          uni.showToast({
+            title: '取消收藏失败',
+            icon: 'none'
+          });
+        }
+      } else {
+        // 添加收藏
+        try {
+          const res = await uni.request({
+            url: `/api/favorites`,
+            method: 'POST',
+            header: {
+              Authorization: `Bearer ${uni.getStorageSync('token')}`
+            },
+            data: {
+              goodsId: this.goods.goodsId
+            }
+          });
+          if (res.data.code === 201) {
+            this.isCollected = true;
+            uni.showToast({
+              title: '收藏成功',
+              icon: 'success'
+            });
+          }
+        } catch (error) {
+          console.error('收藏失败:', error);
+          uni.showToast({
+            title: '收藏失败',
+            icon: 'none'
+          });
+        }
       }
     },
     contactSeller() {
@@ -377,6 +456,22 @@ export default {
     font-size: 28rpx;
     color: #333;
     line-height: 1.5;
+  }
+  
+  .delete-comment-btn {
+    margin-top: 10rpx;
+    background: #ff4d4f;
+    color: #fff;
+    border-radius: 8rpx;
+    padding: 5rpx 15rpx;
+    font-size: 24rpx;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s;
+    
+    &:hover {
+      background: #e60000;
+    }
   }
 }
 

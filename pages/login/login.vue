@@ -54,13 +54,14 @@ export default {
             icon: 'none'
           });
           console.log(res)
-          uni.setStorageSync('token', res.data.data.token);
+          uni.setStorageSync('token', res.data.data.token)
+          uni.setStorageSync('userName',this.username)
           uni.switchTab({
             url: '/pages/home/home'
           });
         } else {
           uni.showToast({
-            title: '登录失败',
+            title: res.data.msg,
             icon: 'none'
           });
         }

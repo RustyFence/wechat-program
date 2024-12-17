@@ -4,7 +4,7 @@
     <view class="search-box">
       <view class="search-bar">
         <uni-icons type="search" size="18" color="#666"></uni-icons>
-        <input type="text" placeholder="搜索" placeholder-class="search-placeholder"/>
+        <input type="text" placeholder="搜索" placeholder-class="search-placeholder" v-model="keywords" @input="loadGoodsList"/>
       </view>
     </view>
 
@@ -13,10 +13,10 @@
       <view class="filter-list">
         <view 
           class="filter-item" 
-          v-for="(item, index) in filters" 
-          :key="index"
-          :class="{ active: currentFilter === index }"
-          @click="selectFilter(index)"
+          v-for="(item) in filters" 
+          :key="item"
+          :class="{ active: currentFilter === item }"
+          @click="selectFilter(item)"
         >
           {{ item }}
         </view>
@@ -29,8 +29,9 @@
       <view class="category-nav">
         <view 
           class="category-item" 
-          v-for="(item, index) in categories" 
-          :key="index"
+          v-for="(item) in categories" 
+          :key="item.name"
+          @click="selectCategory(item.name)"  
         >
           <image 
             :src="item.icon" 
@@ -44,11 +45,13 @@
       <!-- 商品列表 -->
       <view class="goods-section">
         <view class="content-grid">
-          <goods-preview 
+          <view 
+            class="grid-item" 
             v-for="(item, index) in goodsList" 
-            :key="index"
-            :goods="item"
-          ></goods-preview>
+            :key="item.goodsId"
+          >
+            <goods-preview :goods="item" v-if="item.isActive"></goods-preview>
+          </view>
         </view>
       </view>
     </scroll-view>
@@ -64,8 +67,10 @@ export default {
   },
   data() {
     return {
-      currentFilter: 0,
-      filters: ['全部', '最新', '热门', '附近', '低价', '高价'],
+      keywords: '',
+      currentFilter: '',
+      currentCategory: '',
+      filters: ['全部', '最新', '低价', '高价', '热门', '附近'],
       categories: [
         { name: '数码', icon: '/static/discover/数码.svg' },
         { name: '服装', icon: '/static/discover/服装.svg' },
@@ -76,71 +81,66 @@ export default {
         { name: '居家', icon: '/static/discover/居家.svg' },
         { name: '其他', icon: '/static/discover/其他.svg' }
       ],
-      goodsList: [
-        {
-          id: 7,
-          title: '戴森吸尘器 V15',
-          price: '3999.00',
-          description: '全新未拆封，顺丰包邮',
-          images: ['/static/goods/dyson.jpg']
-        },
-        {
-          id: 8,
-          title: 'Switch OLED',
-          price: '1999.00',
-          description: '95新，带两个游戏',
-          images: ['/static/goods/switch.jpg']
-        },
-        {
-          id: 9,
-          title: 'iPad Pro 12.9',
-          price: '6999.00',
-          description: '2022款，带妙控键盘',
-          images: ['/static/goods/ipad.jpg']
-        },
-        {
-          id: 10,
-          title: '索尼降噪耳机',
-          price: '1799.00',
-          description: 'WH-1000XM5，全新',
-          images: ['/static/goods/headphone.jpg']
-        },
-        {
-          id: 11,
-          title: '理光GR3x',
-          price: '4999.00',
-          description: '9成新，带UV镜',
-          images: ['/static/goods/camera.jpg']
-        },
-        {
-          id: 12,
-          title: '机械键盘',
-          price: '899.00',
-          description: 'HHKB Pro 3，带包装',
-          images: ['/static/goods/keyboard.jpg']
-        },
-        {
-          id: 13,
-          title: '显示器',
-          price: '2999.00',
-          description: 'LG 27寸4K显示器',
-          images: ['/static/goods/monitor.jpg']
-        },
-        {
-          id: 14,
-          title: '游戏主机',
-          price: '3699.00',
-          description: 'PS5光驱版，全新',
-          images: ['/static/goods/ps5.jpg']
-        }
-      ]
+      goodsList: [] // 初始化为空数组
     }
   },
   methods: {
-    selectFilter(index) {
-      this.currentFilter = index
-      // TODO: 实现筛选逻辑
+    selectFilter(item) {
+      this.currentFilter = item;
+      if (item === '全部') {
+        this.currentCategory = '';
+        this.loadGoodsList();
+      } else if (item === '最新') {
+        this.goodsList = this.goodsList.sort((a, b) => {
+          const timeA = new Date(a.updateAt).getTime() || 0;
+          const timeB = new Date(b.updateAt).getTime() || 0;
+          return timeB - timeA;
+        });
+      } else if (item === '低价') {
+        this.goodsList = this.goodsList.sort((a, b) => {
+          const priceA = a.price || 0;
+          const priceB = b.price || 0;
+          return priceA - priceB;
+        });
+      } else if (item === '高价') {
+        this.goodsList = this.goodsList.sort((a, b) => {
+          const priceA = a.price || 0;
+          const priceB = b.price || 0;
+          return priceB - priceA;
+        });
+      }
+      console.log('筛选后的商品列表:', this.goodsList);
+    },
+    selectCategory(name) {
+      this.currentCategory = name
+      this.loadGoodsList()
+    },
+    async loadGoodsList() {
+      try {
+        const res = await uni.request({
+          url: `/api/goods?keywords=${this.keywords}&tags=${this.currentCategory}`,
+          method: 'GET',
+        });
+        if (res.data.code === 200) {
+          const parsedData = res.data.data.map(item => ({
+            ...item,
+            images: JSON.parse(item.images),
+            tags: JSON.parse(item.tags),
+          }));
+          this.goodsList = parsedData.filter(goods => goods.isActive);
+        } else {
+          uni.showToast({
+            title: res.data.msg,
+            icon: 'none'
+          });
+        }
+      } catch (error) {
+        console.error('获取商品列表失败:', error);
+      }
     }
+  },
+  onLoad() {
+    this.loadGoodsList();
   }
 }
 </script>
@@ -240,11 +240,19 @@ export default {
 .goods-section {
   background-color: #ffffff;
   padding: 15px;
+
+  .content-grid {
+    display: flex;
+    flex-wrap: wrap;
+    
+    .grid-item {
+      width: 50%;
+      padding: 10rpx;
+      box-sizing: border-box;
+    }
+  }
 }
 
-.content-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
+
+
 </style>
