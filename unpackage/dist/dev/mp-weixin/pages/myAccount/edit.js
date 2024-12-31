@@ -4,16 +4,36 @@ const config = require("../../config.js");
 const _sfc_main = {
   data() {
     return {
+      goodsId: "",
       title: "",
       price: "",
       description: "",
       images: [],
       tags: [],
-      tagInput: "",
-      presetTags: ["数码", "服装", "美食", "图书", "运动", "生活", "居家", "其他"]
+      tagInput: ""
     };
   },
+  mounted() {
+    this.goodsId = this.$route.query.goodsId;
+    console.log(this.goodsId);
+    this.loadGoodsInfo();
+  },
   methods: {
+    async loadGoodsInfo() {
+      const res = await common_vendor.index.request({
+        url: `${config.apiUrl}/goods/${this.goodsId}`,
+        method: "GET"
+      });
+      if (res.statusCode === 200) {
+        const goodsInfo = res.data.data;
+        console.log(goodsInfo);
+        this.title = goodsInfo.title;
+        this.price = goodsInfo.price;
+        this.description = goodsInfo.description;
+        this.images = JSON.parse(goodsInfo.images);
+        this.tags = JSON.parse(goodsInfo.tags);
+      }
+    },
     // 添加 URL 生成辅助函数
     getPageUrl(page) {
       return `/pages/${page}/${page}`;
@@ -43,7 +63,7 @@ const _sfc_main = {
     removeTag(index) {
       this.tags.splice(index, 1);
     },
-    // 发布商品
+    //修改商品
     async handlePublish() {
       if (!this.title || !this.price || !this.description) {
         common_vendor.index.showToast({
@@ -77,11 +97,11 @@ const _sfc_main = {
           console.log("uploadResults", uploadResults);
         }
         const res = await common_vendor.index.request({
-          url: `${config.apiUrl}/goods`,
-          method: "POST",
           header: {
-            "Authorization": `Bearer ${common_vendor.index.getStorageSync("token")}`
+            Authorization: "Bearer " + common_vendor.index.getStorageSync("token")
           },
+          url: `${config.apiUrl}/goods/${this.goodsId}`,
+          method: "PUT",
           data: {
             title: this.title,
             price: this.price,
@@ -92,7 +112,7 @@ const _sfc_main = {
         });
         if (res.statusCode === 200) {
           common_vendor.index.showToast({
-            title: "发布成功",
+            title: "编辑成功",
             icon: "success"
           });
         } else {
@@ -103,16 +123,10 @@ const _sfc_main = {
         }
       } catch (error) {
         common_vendor.index.showToast({
-          title: "发布失败",
+          title: "编辑失败",
           icon: "none"
         });
         console.error(error);
-      }
-    },
-    // 添加选择预设标签的方法
-    selectPresetTag(tag) {
-      if (!this.tags.includes(tag)) {
-        this.tags.push(tag);
       }
     }
   }
@@ -136,20 +150,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, $data.images.length < 9 ? {
     i: common_vendor.o((...args) => $options.chooseImage && $options.chooseImage(...args))
   } : {}, {
-    j: common_vendor.f($data.presetTags, (tag, index, i0) => {
-      return {
-        a: common_vendor.t(tag),
-        b: index,
-        c: common_vendor.o(($event) => $options.selectPresetTag(tag), index)
-      };
-    }),
-    k: common_vendor.o((...args) => $options.addTags && $options.addTags(...args)),
-    l: $data.tagInput,
-    m: common_vendor.o(($event) => $data.tagInput = $event.detail.value),
-    n: common_vendor.o((...args) => $options.addTags && $options.addTags(...args)),
-    o: $data.tags.length > 0
+    j: common_vendor.o((...args) => $options.addTags && $options.addTags(...args)),
+    k: $data.tagInput,
+    l: common_vendor.o(($event) => $data.tagInput = $event.detail.value),
+    m: common_vendor.o((...args) => $options.addTags && $options.addTags(...args)),
+    n: $data.tags.length > 0
   }, $data.tags.length > 0 ? {
-    p: common_vendor.f($data.tags, (tag, index, i0) => {
+    o: common_vendor.f($data.tags, (tag, index, i0) => {
       return {
         a: common_vendor.t(tag),
         b: common_vendor.o(($event) => $options.removeTag(index), index),
@@ -157,8 +164,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       };
     })
   } : {}, {
-    q: common_vendor.o((...args) => $options.handlePublish && $options.handlePublish(...args))
+    p: common_vendor.o((...args) => $options.handlePublish && $options.handlePublish(...args))
   });
 }
-const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-bfce3555"]]);
+const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-00cc285f"]]);
 wx.createPage(MiniProgramPage);

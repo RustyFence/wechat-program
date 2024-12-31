@@ -68,20 +68,22 @@
 </template>
 
 <script>
+import { apiUrl } from '@/config.js';
+
 export default {
   data() {
     return {
       userInfo: {
         avatar: '/static/avatar/default.png',
         username: '用户昵称',
-        userId: '10086',
+        userId: '666',
         phone: '13800138000',
         email: 'example@email.com',
       },
       counts: {
-        collection: 12,
-        selling: 3,
-        sold: 8
+        collection: 0,
+        selling: 0,
+        sold: 0
       }
     }
   },
@@ -93,7 +95,7 @@ export default {
     async fetchUserInfo() {
       try {
         const res = await uni.request({
-          url: '/api/users',
+          url: `${apiUrl}/users`,
           method: 'GET',
           header: {
             Authorization: 'Bearer ' + uni.getStorageSync('token')
@@ -124,7 +126,7 @@ export default {
           const filePath = res.tempFilePaths[0];
           try {
             const uploadResult = await uni.uploadFile({
-              url: '/api/upload',
+              url: `${apiUrl}/upload`,
               filePath: filePath,
               name: 'image',
               header: {
@@ -207,7 +209,7 @@ export default {
     async updateUserInfo() {
       try {
         const res = await uni.request({
-          url: '/api/users',
+          url: `${apiUrl}/users`,
           method: 'PUT',
           header: {
             Authorization: 'Bearer ' + uni.getStorageSync('token')

@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const config = require("../../config.js");
 const common_assets = require("../../common/assets.js");
 const GoodsPreview = () => "../../components/goods-preview/goods-preview.js";
 const _sfc_main = {
@@ -24,14 +25,22 @@ const _sfc_main = {
     async loadSellingGoods() {
       try {
         const res = await common_vendor.index.request({
-          url: `/api/user/published?userId=${this.publisherId}`,
-          method: "GET"
+          url: `${config.apiUrl}/goods/myGoods`,
+          method: "GET",
+          header: {
+            Authorization: `Bearer ${common_vendor.index.getStorageSync("token")}`
+          }
         });
         if (res.data.code === 200) {
-          this.sellingList = res.data.data;
+          const parsedData = res.data.data.map((item) => ({
+            ...item,
+            images: JSON.parse(item.images),
+            tags: JSON.parse(item.tags)
+          }));
+          this.sellingList = parsedData.filter((goods) => goods.isActive);
         } else {
           common_vendor.index.showToast({
-            title: res.data.message,
+            title: res.data.msg,
             icon: "none"
           });
         }
@@ -43,18 +52,46 @@ const _sfc_main = {
         });
       }
     },
-    editGoods(goods) {
+    async editGoods(goods) {
       common_vendor.index.navigateTo({
-        url: `/pages/publish/publish?id=${goods.id}`
+        url: `/pages/myAccount/edit?goodsId=${goods.goodsId}`
       });
     },
-    deleteGoods(goods) {
+    async deactivateGoods(goods) {
       common_vendor.index.showModal({
         title: "提示",
         content: "确定要下架该商品吗？",
-        success: (res) => {
-          if (res.confirm)
-            ;
+        success: async (res) => {
+          if (res.confirm) {
+            try {
+              const response = await common_vendor.index.request({
+                url: `${config.apiUrl}/goods/${goods.goodsId}`,
+                method: "PUT",
+                header: {
+                  Authorization: "Bearer " + common_vendor.index.getStorageSync("token")
+                },
+                data: { isActive: false }
+              });
+              if (response.data.code === 204) {
+                common_vendor.index.showToast({
+                  title: "商品已下架",
+                  icon: "success"
+                });
+                this.loadSellingGoods();
+              } else {
+                common_vendor.index.showToast({
+                  title: response.data.msg,
+                  icon: "none"
+                });
+              }
+            } catch (error) {
+              console.error("下架商品失败:", error);
+              common_vendor.index.showToast({
+                title: "下架商品失败",
+                icon: "none"
+              });
+            }
+          }
         }
       });
     },
@@ -66,6 +103,7 @@ const _sfc_main = {
     loadMore() {
     },
     refresh() {
+      this.loadSellingGoods();
     }
   },
   navigationBarTitleText: "在售商品"
@@ -87,9 +125,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         b: common_vendor.p({
           goods: item
         }),
-        c: common_vendor.o(($event) => $options.editGoods(item), item.id),
-        d: common_vendor.o(($event) => $options.deleteGoods(item), item.id),
-        e: item.id
+        c: common_vendor.o(($event) => $options.editGoods(item), item.goodsId),
+        d: common_vendor.o(($event) => $options.deactivateGoods(item), item.goodsId),
+        e: item.goodsId
       };
     }),
     b: $data.sellingList.length === 0

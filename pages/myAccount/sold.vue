@@ -34,6 +34,8 @@
 
 <script>
 import GoodsPreview from '@/components/goods-preview/goods-preview.vue'
+import { apiUrl } from '@/config.js';
+
 
 export default {
   components: {
@@ -56,7 +58,7 @@ export default {
     async loadSoldGoods() {
       try {
         const res = await uni.request({
-          url: '/api/goods/myGoods',
+          url: `${apiUrl}/goods/myGoods`,
           method: 'GET',
           header: {
             Authorization: 'Bearer ' + uni.getStorageSync('token')
@@ -94,7 +96,7 @@ export default {
           if (res.confirm) {
             try {
               const response = await uni.request({
-                url: `/api/goods/${goods.goodsId}`,
+                url: `${apiUrl}/goods/${goods.goodsId}`,
                 method: 'PUT',
                 header: {
                   Authorization: 'Bearer ' + uni.getStorageSync('token')
@@ -134,7 +136,7 @@ export default {
           if (res.confirm) {
             try {
               const response = await uni.request({
-                url: `/api/goods/${goods.goodsId}`,
+                url: `${apiUrl}/goods/${goods.goodsId}`,
                 method: 'DELETE',
                 header: {
                   Authorization: 'Bearer ' + uni.getStorageSync('token')

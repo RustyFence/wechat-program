@@ -52,7 +52,10 @@
         /* 小程序特有相关 */
         "appid" : "wx71349d454b8fb9c2",
         "setting" : {
-            "urlCheck" : false
+            "urlCheck" : false,
+            "es6" : false,
+            "postcss" : false,
+            "minified" : false
         },
         "usingComponents" : true,
         "permission" : {
@@ -62,25 +65,25 @@
         }
     },
     "vueVersion" : "3",
-    "h5": {
-        "devServer": {
-            "port": 8081,
-            "disableHostCheck": true,
-            "proxy": {
-                "/api": {
-                    "target": "http://localhost:8080",
-                    "changeOrigin": true,
-                    "ws": true,
-                    "secure": false,
-                    "pathRewrite": {
-                        "^/api": "/api"
+    "h5" : {
+        "devServer" : {
+            "port" : 8081,
+            "disableHostCheck" : true,
+            "proxy" : {
+                "/api" : {
+                    "target" : "http://localhost:8080",
+                    "changeOrigin" : true,
+                    "ws" : true,
+                    "secure" : false,
+                    "pathRewrite" : {
+                        "^/api" : "/api"
                     }
                 }
             }
         },
-        "router": {
-            "mode": "hash"
+        "router" : {
+            "mode" : "hash"
         },
-        "title": ""
+        "title" : ""
     }
 }

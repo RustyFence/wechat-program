@@ -78,6 +78,20 @@
   color: #333;
   line-height: 1.5;
 }
+.comment-item .delete-comment-btn {
+  margin-top: 10rpx;
+  background: #ff4d4f;
+  color: #fff;
+  border-radius: 8rpx;
+  padding: 5rpx 15rpx;
+  font-size: 24rpx;
+  cursor: pointer;
+  border: none;
+  transition: background 0.3s;
+}
+.comment-item .delete-comment-btn:hover {
+  background: #e60000;
+}
 .comment-popup {
   background: #fff;
   padding: 30rpx;
@@ -151,4 +165,29 @@
 .action-buttons .contact-btn {
   background: #ff6b00;
   color: #fff;
+}
+.publisher-info {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #eee;
+}
+.publisher-info .publisher-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  border: 2rpx solid #ddd;
+}
+.publisher-info .publisher-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+.publisher-info .publisher-phone,
+.publisher-info .publisher-email {
+  font-size: 24rpx;
+  color: #666;
+  margin-left: 10rpx;
 }

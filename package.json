@@ -1,7 +1,6 @@
 {
   "dependencies": {
-    "lottie-miniprogram": "^1.0.12",
-    "mock.js": "^0.2.0"
+    "lottie-miniprogram": "^1.0.12"
   },
   "devDependencies": {
     "mockjs": "^1.1.0"

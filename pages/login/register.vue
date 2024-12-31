@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { apiUrl } from '@/config.js';
 export default {
   data() {
     return {
@@ -62,7 +63,7 @@ export default {
 
       try {
         const res = await uni.request({
-          url: `/api/users/register`,
+          url: `${apiUrl}/users/register`,
           method: 'POST',
           data: {
             username: this.username,

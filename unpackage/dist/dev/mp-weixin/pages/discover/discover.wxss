@@ -82,8 +82,12 @@
   background-color: #ffffff;
   padding: 15px;
 }
-.content-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+.goods-section .content-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+.goods-section .content-grid .grid-item {
+  width: 50%;
+  padding: 10rpx;
+  box-sizing: border-box;
 }

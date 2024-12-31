@@ -1,43 +1,28 @@
 <template>
   <view class="message-container">
-    <!-- 顶部导航栏 -->
-    <view class="nav-bar">
-      <view class="title">消息</view>
-      <view class="contact-btn" @click="navigateToContacts">
-        <uni-icons type="contact" size="24" color="#333"></uni-icons>
-      </view>
-    </view>
-    
-    <!-- 搜索框 -->
-    <view class="search-box">
-      <view class="search-bar">
-        <uni-icons type="search" size="20" color="#666"></uni-icons>
-        <input type="text" placeholder="搜索消息" placeholder-class="search-placeholder"/>
-      </view>
-    </view>
-
-    <!-- 消息列表 -->
     <scroll-view class="message-list" scroll-y>
       <view 
         class="message-item" 
-        v-for="(item, index) in messageList" 
-        :key="item.messageId"
-        @click="openChat(item)"
+        v-for="(conversation, index) in conversations" 
+        :key="index"
+        @click="openChat(conversation)"
       >
-        <!-- 头像 -->
         <view class="avatar">
-          <image :src="item.avatar" mode="aspectFill"></image>
-          <view class="badge" v-if="item.unread">{{item.unread}}</view>
+          <image 
+            :src="conversation.conversationAvatar" 
+            alt="User Avatar"
+            mode="aspectFill"
+          />
+          <!-- Badge for unread messages, if applicable -->
+          <view v-if="conversation.unreadCount > 0" class="badge">{{ conversation.unreadCount }}</view>
         </view>
-        
-        <!-- 消息内容 -->
         <view class="content">
           <view class="top-row">
-            <text class="name">{{item.senderName}}</text>
-            <text class="time">{{formatTime(item.timestamp)}}</text>
+            <text class="name">{{ conversation.conversationName }}</text>
+            <text class="time">{{ formatTime(conversation.timestamp) }}</text>
           </view>
           <view class="bottom-row">
-            <text class="preview">{{item.content}}</text>
+            <text class="preview">{{ conversation.lastMessage }}</text>
           </view>
         </view>
       </view>
@@ -46,80 +31,43 @@
 </template>
 
 <script>
+import { apiUrl } from '@/config.js';
+
 export default {
   data() {
     return {
-      messageList: [],
-      currentUserId: uni.getStorageSync('userId') // 获取当前用户ID
+      conversations: []
     }
   },
-  onShow() {
-    this.getMessageList();
+  onLoad() {
+    this.fetchConversations();
   },
   methods: {
-    navigateToContacts() {
-      uni.showToast({
-        title: '联系人功能锐意开发中，\n敬请期待',
-        icon: 'none', 
-        duration: 2000
-      });
-    },
-    
-    openChat(item) {
-      this.markAsRead(item.messageId);
-      
-      uni.navigateTo({
-        url: `/pages/message/chat?senderId=${item.senderId}&userName=${item.senderName}`
-      });
-    },
-    
-    async markAsRead(messageId) {
+    async fetchConversations() {
       try {
-        const message = this.messageList.find(msg => msg.messageId === messageId);
-        if (message) {
-          message.unread = 0;
-        }
-      } catch (error) {
-        console.error('标记已读失败:', error);
-      }
-    },
-    
-    async getMessageList() {
-      try {
-        const response = await uni.request({
-          url: `/api/messages`,
+        const res = await uni.request({
+          url: `${apiUrl}/conversations`,
           method: 'GET',
           header: {
             'Authorization': `Bearer ${uni.getStorageSync('token')}`
           }
         });
 
-        if (response.data.code === 200) {
-          const messages = response.data.data;
-          const uniqueConversations = {};
-
-          messages.forEach(msg => {
-            const userId = msg.senderId === this.receiverId ? msg.receiverId : msg.senderId;
-            if (!uniqueConversations[userId]) {
-              uniqueConversations[userId] = msg;
-            }
-          });
-
-          this.messageList = Object.values(uniqueConversations).map(msg => ({
-            messageId: msg.messageId,
-            senderId: msg.senderId,
-            senderName: msg.senderName,
-            avatar: msg.avatar || '/static/default-avatar.png',
-            content: msg.content,
-            timestamp: msg.timestamp,
-            unread: msg.isRead ? 0 : 1
-          }));
+        if (res.data.code === 200) {
+          this.conversations = res.data.data;
         } else {
-          console.error('获取消息列表失败:', response.data.msg);
+          console.error('Failed to fetch conversations:', res.data.msg);
         }
       } catch (error) {
-        console.error('获取消息列表失败:', error);
+        console.error('Failed to fetch conversations:', error);
       }
+    },
+
+    openChat(conversation) {
+      // Navigate to chat page with the opponent's user ID
+      uni.navigateTo({
+        url: `/pages/message/chat?oppoUserId=${conversation.oppoUserId}`
+      });
     },
 
     formatTime(timestamp) {
@@ -131,65 +79,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@mixin text-ellipsis {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.message-container {
-  min-height: 100vh;
-  background-color: #f8f8f8;
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 50px;
-}
-
-.nav-bar {
-  background: #fff;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  padding: 0 15px;
-  
-  .title {
-    font-size: 16px;
-    font-weight: 500;
-  }
-  
-  .contact-btn {
-    position: absolute;
-    right: 15px;
-    padding: 8px;
-  }
-}
-
-.search-box {
-  background-color: #ffffff;
-  padding: 10px 15px;
-}
-
-.search-bar {
-  display: flex;
-  align-items: center;
-  background-color: #f5f5f5;
-  border-radius: 20px;
-  padding: 8px 15px;
-  
-  .search-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-  }
-  
-  input {
-    flex: 1;
-    font-size: 14px;
-  }
-}
-
 .message-list {
   flex: 1;
   background: #fff;
@@ -199,69 +88,68 @@ export default {
   display: flex;
   padding: 15px;
   border-bottom: 1px solid #f5f5f5;
+  cursor: pointer;
+}
+
+.avatar {
+  position: relative;
+  margin-right: 12px;
   
-  .avatar {
-    position: relative;
-    margin-right: 12px;
-    
-    image {
-      width: 50px;
-      height: 50px;
-      border-radius: 25px;
-    }
-    
-    .badge {
-      position: absolute;
-      right: -6px;
-      top: -6px;
-      background: #ff4d4f;
-      color: #fff;
-      font-size: 12px;
-      min-width: 18px;
-      height: 18px;
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 4px;
-    }
+  image {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
   }
   
-  .content {
-    flex: 1;
+  .badge {
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    background: #ff4d4f;
+    color: #fff;
+    font-size: 12px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
+    padding: 0 4px;
+  }
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+  .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
     
-    .top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 4px;
-      
-      .name {
-        font-size: 16px;
-        color: #333;
-        font-weight: 500;
-      }
-      
-      .time {
-        font-size: 12px;
-        color: #999;
-      }
+    .name {
+      font-size: 16px;
+      color: #333;
+      font-weight: 500;
     }
     
-    .bottom-row {
-      .preview {
-        font-size: 14px;
-        color: #666;
-        @include text-ellipsis;
-      }
+    .time {
+      font-size: 12px;
+      color: #999;
     }
   }
   
-  &:active {
-    background-color: #f5f5f5;
+  .bottom-row {
+    .preview {
+      font-size: 14px;
+      color: #666;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
   }
 }
 </style>

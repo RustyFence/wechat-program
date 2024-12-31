@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const config = require("../../config.js");
 const common_assets = require("../../common/assets.js");
 const GoodsPreview = () => "../../components/goods-preview/goods-preview.js";
 const _sfc_main = {
@@ -8,44 +9,74 @@ const _sfc_main = {
   },
   data() {
     return {
-      collectionList: [
-        {
-          id: 1,
-          title: "iPhone 14 Pro Max",
-          price: "7999.00",
-          description: "全新未拆封，256G 暗紫色",
-          images: ["/static/goods/iphone14.jpg"]
-        },
-        {
-          id: 8,
-          title: "Switch OLED",
-          price: "1999.00",
-          description: "95新，带两个游戏",
-          images: ["/static/goods/switch.jpg"]
-        },
-        {
-          id: 11,
-          title: "理光GR3x",
-          price: "4999.00",
-          description: "9成新，带UV镜",
-          images: ["/static/goods/camera.jpg"]
-        }
-      ]
+      collectionList: []
     };
   },
+  mounted() {
+    this.loadCollection();
+  },
   methods: {
-    // 取消收藏
-    removeFromCollection(goodsId) {
+    async loadCollection() {
+      try {
+        const res = await common_vendor.index.request({
+          url: `${config.apiUrl}/favorites`,
+          method: "GET",
+          header: {
+            Authorization: "Bearer " + common_vendor.index.getStorageSync("token")
+          }
+        });
+        if (res.data.code === 200) {
+          this.collectionList = res.data.data.map((item) => ({
+            ...item,
+            images: JSON.parse(item.images)
+          }));
+        } else {
+          common_vendor.index.showToast({
+            title: res.data.msg,
+            icon: "none"
+          });
+        }
+      } catch (error) {
+        console.error("获取收藏列表失败:", error);
+        common_vendor.index.showToast({
+          title: "获取收藏列表失败",
+          icon: "none"
+        });
+      }
+    },
+    async removeFromCollection(goodsId) {
       common_vendor.index.showModal({
         title: "提示",
         content: "确定要取消收藏该商品吗？",
-        success: (res) => {
+        success: async (res) => {
           if (res.confirm) {
-            this.collectionList = this.collectionList.filter((item) => item.id !== goodsId);
-            common_vendor.index.showToast({
-              title: "已取消收藏",
-              icon: "success"
-            });
+            try {
+              const response = await common_vendor.index.request({
+                url: `${config.apiUrl}/favorites/${goodsId}`,
+                method: "DELETE",
+                header: {
+                  Authorization: "Bearer " + common_vendor.index.getStorageSync("token")
+                }
+              });
+              if (response.data.code === 204) {
+                common_vendor.index.showToast({
+                  title: "已取消收藏",
+                  icon: "success"
+                });
+                this.loadCollection();
+              } else {
+                common_vendor.index.showToast({
+                  title: response.data.msg,
+                  icon: "none"
+                });
+              }
+            } catch (error) {
+              console.error("取消收藏失败:", error);
+              common_vendor.index.showToast({
+                title: "取消收藏失败",
+                icon: "none"
+              });
+            }
           }
         }
       });
@@ -64,9 +95,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: common_vendor.f($data.collectionList, (item, index, i0) => {
       return {
-        a: index,
-        b: "1edd1d20-0-" + i0,
-        c: common_vendor.p({
+        a: item.goodsId,
+        b: common_vendor.o(($event) => $options.removeFromCollection(item.goodsId), item.goodsId),
+        c: "1edd1d20-0-" + i0,
+        d: common_vendor.p({
           goods: item
         })
       };

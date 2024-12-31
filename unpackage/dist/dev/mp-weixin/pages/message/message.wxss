@@ -1,50 +1,5 @@
 /* 水平间距 */
 /* 水平间距 */
-.message-container.data-v-4c1b26cf {
-  min-height: 100vh;
-  background-color: #f8f8f8;
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 50px;
-}
-.nav-bar.data-v-4c1b26cf {
-  background: #fff;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  padding: 0 15px;
-}
-.nav-bar .title.data-v-4c1b26cf {
-  font-size: 16px;
-  font-weight: 500;
-}
-.nav-bar .contact-btn.data-v-4c1b26cf {
-  position: absolute;
-  right: 15px;
-  padding: 8px;
-}
-.search-box.data-v-4c1b26cf {
-  background-color: #ffffff;
-  padding: 10px 15px;
-}
-.search-bar.data-v-4c1b26cf {
-  display: flex;
-  align-items: center;
-  background-color: #f5f5f5;
-  border-radius: 20px;
-  padding: 8px 15px;
-}
-.search-bar .search-icon.data-v-4c1b26cf {
-  width: 20px;
-  height: 20px;
-  margin-right: 8px;
-}
-.search-bar input.data-v-4c1b26cf {
-  flex: 1;
-  font-size: 14px;
-}
 .message-list.data-v-4c1b26cf {
   flex: 1;
   background: #fff;
@@ -53,17 +8,18 @@
   display: flex;
   padding: 15px;
   border-bottom: 1px solid #f5f5f5;
+  cursor: pointer;
 }
-.message-item .avatar.data-v-4c1b26cf {
+.avatar.data-v-4c1b26cf {
   position: relative;
   margin-right: 12px;
 }
-.message-item .avatar image.data-v-4c1b26cf {
+.avatar image.data-v-4c1b26cf {
   width: 50px;
   height: 50px;
   border-radius: 25px;
 }
-.message-item .avatar .badge.data-v-4c1b26cf {
+.avatar .badge.data-v-4c1b26cf {
   position: absolute;
   right: -6px;
   top: -6px;
@@ -78,34 +34,31 @@
   justify-content: center;
   padding: 0 4px;
 }
-.message-item .content.data-v-4c1b26cf {
+.content.data-v-4c1b26cf {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
-.message-item .content .top-row.data-v-4c1b26cf {
+.content .top-row.data-v-4c1b26cf {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 4px;
 }
-.message-item .content .top-row .name.data-v-4c1b26cf {
+.content .top-row .name.data-v-4c1b26cf {
   font-size: 16px;
   color: #333;
   font-weight: 500;
 }
-.message-item .content .top-row .time.data-v-4c1b26cf {
+.content .top-row .time.data-v-4c1b26cf {
   font-size: 12px;
   color: #999;
 }
-.message-item .content .bottom-row .preview.data-v-4c1b26cf {
+.content .bottom-row .preview.data-v-4c1b26cf {
   font-size: 14px;
   color: #666;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-.message-item.data-v-4c1b26cf:active {
-  background-color: #f5f5f5;
 }

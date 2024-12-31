@@ -1,34 +1,57 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
-const mock_auth = require("../../mock/auth.js");
+const config = require("../../config.js");
 const common_assets = require("../../common/assets.js");
 const _sfc_main = {
   data() {
     return {
       username: "",
-      password: "",
-      errorMessage: ""
+      password: ""
     };
   },
   methods: {
     // 普通登录
     async handleLogin() {
       try {
-        const response = await mock_auth.login(this.username, this.password);
-        if (response.success) {
-          console.log("Login successful:", response.token);
-          common_vendor.index.setStorageSync("userToken", response.token);
-          common_vendor.index.setStorageSync("userId", response.userId);
+        const res = await common_vendor.index.request({
+          url: `${config.apiUrl}/users/login`,
+          method: "POST",
+          header: {
+            "Content-Type": "application/json"
+          },
+          data: {
+            username: this.username,
+            password: this.password
+          }
+        });
+        if (res.data.code === 200) {
+          common_vendor.index.showToast({
+            title: "登录成功",
+            icon: "none"
+          });
+          console.log(res);
+          common_vendor.index.setStorageSync("token", res.data.data.token);
+          common_vendor.index.setStorageSync("userId", res.data.data.userId);
+          common_vendor.index.setStorageSync("userName", this.username);
           common_vendor.index.switchTab({
             url: "/pages/home/home"
           });
+        } else {
+          common_vendor.index.showToast({
+            title: res.data.msg,
+            icon: "none"
+          });
         }
       } catch (error) {
-        this.errorMessage = error.message || "Login failed";
+        common_vendor.index.showToast({
+          title: "登录失败",
+          icon: "none"
+        });
+        console.error("登录失败:", error);
       }
     },
     // 微信登录
-    handleWXLogin() {
+    async handleWXLogin() {
       common_vendor.index.login({
         provider: "weixin",
         success: (loginRes) => {

@@ -19,6 +19,8 @@
     <view class="publisher-info">
       <image :src="goods.publisherAvatar" class="publisher-avatar"></image>
       <text class="publisher-name">{{ goods.publisherName }}</text>
+      <text class="publisher-phone">{{ goods.publisherPhone }}</text>
+      <text class="publisher-email">{{ goods.publisherEmail }}</text>
     </view>
 
     <!-- 评价区域 -->
@@ -106,6 +108,8 @@
 </template>
 
 <script>
+import { apiUrl } from '@/config.js';
+
 export default {
   data() {
     return {
@@ -141,8 +145,11 @@ export default {
     async loadGoodsInfo(id) {
       try {
         const res = await uni.request({
-          url: `/api/goods/${id}`,
-          method: 'GET'
+          url: `${apiUrl}/goods/${id}`,
+          method: 'GET',
+          header: {
+            'Authorization': `Bearer ${uni.getStorageSync('token')}`
+          }
         })
         if (res.data.code === 200) {  
 
@@ -173,8 +180,11 @@ export default {
     async loadComments(goodsId) {
       try {
         const res = await uni.request({
-          url: `/api/goods/${goodsId}/comments`,
-          method: 'GET'
+          url: `${apiUrl}/goods/${goodsId}/comments`,
+          method: 'GET',
+          header: {
+            'Authorization': `Bearer ${uni.getStorageSync('token')}`
+          }
         })
         if (res.data.code === 200) {
           this.comments = res.data.data
@@ -200,10 +210,10 @@ export default {
       }
       try {
         const res = await uni.request({
-          url: `/api/comments`,
+          url: `${apiUrl}/comments`,
           method: 'POST',
           header: {
-            Authorization: `Bearer ${uni.getStorageSync('token')}`
+            'Authorization': `Bearer ${uni.getStorageSync('token')}`
           },
           data: {
             goodsId: this.goods.goodsId,
@@ -239,10 +249,10 @@ export default {
     async deleteComment(commentId) {
       try {
         const res = await uni.request({
-          url: `/api/comments/${commentId}`,
+          url: `${apiUrl}/comments/${commentId}`,
           method: 'DELETE',
           header: {
-            Authorization: `Bearer ${uni.getStorageSync('token')}`
+            'Authorization': `Bearer ${uni.getStorageSync('token')}`
           }
         })
         console.log(res)
@@ -281,10 +291,10 @@ export default {
     async checkIfCollected(goodsId) {
       try {
         const res = await uni.request({
-          url: `/api/favorites`,
+          url: `${apiUrl}/favorites`,
           method: 'GET',
           header: {
-            Authorization: `Bearer ${uni.getStorageSync('token')}`
+            'Authorization': `Bearer ${uni.getStorageSync('token')}`
           }
         })
         if (res.data.code === 200) {
@@ -300,10 +310,10 @@ export default {
         // 取消收藏
         try {
           const res = await uni.request({
-            url: `/api/favorites/${this.goods.goodsId}`,
+            url: `${apiUrl}/favorites/${this.goods.goodsId}`,
             method: 'DELETE',
             header: {
-              Authorization: `Bearer ${uni.getStorageSync('token')}`
+              'Authorization': `Bearer ${uni.getStorageSync('token')}`
             }
           });
           if (res.data.code === 204) {
@@ -324,10 +334,10 @@ export default {
         // 添加收藏
         try {
           const res = await uni.request({
-            url: `/api/favorites`,
+            url: `${apiUrl}/favorites`,
             method: 'POST',
             header: {
-              Authorization: `Bearer ${uni.getStorageSync('token')}`
+              'Authorization': `Bearer ${uni.getStorageSync('token')}`
             },
             data: {
               goodsId: this.goods.goodsId
@@ -351,7 +361,7 @@ export default {
     },
     contactSeller() {
       uni.navigateTo({
-        url: `/pages/message/chat?senderId=${this.goods.publisherId}&userName=${this.goods.publisherName}`
+        url: `/pages/message/chat?oppoUserId=${this.goods.publisherId}`
       })
     }
   }
@@ -586,6 +596,13 @@ export default {
     font-size: 28rpx;
     font-weight: bold;
     color: #333;
+  }
+
+  .publisher-phone,
+  .publisher-email {
+    font-size: 24rpx;
+    color: #666;
+    margin-left: 10rpx;
   }
 }
 </style>

@@ -8,34 +8,39 @@
 .goods-list.data-v-8f7ac795 {
   height: calc(100vh - 20rpx);
 }
-.sold-list.data-v-8f7ac795 {
+.goods-grid.data-v-8f7ac795 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
   padding: 20rpx;
 }
-.sold-list .sold-item.data-v-8f7ac795 {
-  margin-bottom: 20rpx;
-}
-.sold-list .sold-item .sold-info.data-v-8f7ac795 {
+.goods-item.data-v-8f7ac795 {
   background: #fff;
-  padding: 20rpx;
-  border-radius: 0 0 8rpx 8rpx;
-  margin-top: -8rpx;
+  border-radius: 8rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+.goods-item .action-bar.data-v-8f7ac795 {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-size: 24rpx;
+  padding: 10rpx;
+  background: #f5f5f5;
 }
-.sold-list .sold-item .sold-info .sold-time.data-v-8f7ac795 {
-  color: #666;
-}
-.sold-list .sold-item .sold-info .relist-btn.data-v-8f7ac795 {
-  margin: 0;
-  padding: 0 20rpx;
-  height: 48rpx;
-  line-height: 48rpx;
+.goods-item .action-bar .action-btn.data-v-8f7ac795 {
+  flex: 1;
+  height: 60rpx;
+  line-height: 60rpx;
   font-size: 24rpx;
-  background: #007AFF;
+  margin: 0 5rpx;
+}
+.goods-item .action-bar .action-btn.relist.data-v-8f7ac795 {
+  background: #28a745;
   color: #fff;
-  border-radius: 24rpx;
+}
+.goods-item .action-bar .action-btn.delete.data-v-8f7ac795 {
+  background: #fff;
+  color: #ff4d4f;
+  border: 1px solid #ff4d4f;
 }
 .empty-state.data-v-8f7ac795 {
   display: flex;
@@ -52,4 +57,5 @@
 .empty-state text.data-v-8f7ac795 {
   font-size: 28rpx;
   color: #999;
+  margin-bottom: 30rpx;
 }

@@ -60,6 +60,7 @@
 
 <script>
 import GoodsPreview from '@/components/goods-preview/goods-preview.vue'
+import { apiUrl } from '@/config.js';
 
 export default {
   components: {
@@ -72,14 +73,14 @@ export default {
       currentCategory: '',
       filters: ['全部', '最新', '低价', '高价', '热门', '附近'],
       categories: [
-        { name: '数码', icon: '/static/discover/数码.svg' },
-        { name: '服装', icon: '/static/discover/服装.svg' },
-        { name: '美食', icon: '/static/discover/美食.svg' },
-        { name: '图书', icon: '/static/discover/图书.svg' },
-        { name: '运动', icon: '/static/discover/运动.svg' },
-        { name: '生活', icon: '/static/discover/生活.svg' },
-        { name: '居家', icon: '/static/discover/居家.svg' },
-        { name: '其他', icon: '/static/discover/其他.svg' }
+        { name: '数码', icon: 'http://101.34.249.254:8080/ui/discover/数码.svg' },
+        { name: '服装', icon: 'http://101.34.249.254:8080/ui/discover/服装.svg' },
+        { name: '美食', icon: 'http://101.34.249.254:8080/ui/discover/美食.svg' },
+        { name: '图书', icon: 'http://101.34.249.254:8080/ui/discover/图书.svg' },
+        { name: '运动', icon: 'http://101.34.249.254:8080/ui/discover/运动.svg' },
+        { name: '生活', icon: 'http://101.34.249.254:8080/ui/discover/生活.svg' },
+        { name: '居家', icon: 'http://101.34.249.254:8080/ui/discover/居家.svg' },
+        { name: '其他', icon: 'http://101.34.249.254:8080/ui/discover/其他.svg' }
       ],
       goodsList: [] // 初始化为空数组
     }
@@ -118,8 +119,11 @@ export default {
     async loadGoodsList() {
       try {
         const res = await uni.request({
-          url: `/api/goods?keywords=${this.keywords}&tags=${this.currentCategory}`,
+          url: `${apiUrl}/goods?keywords=${this.keywords}&tags=${this.currentCategory}`,
           method: 'GET',
+          header: {
+            'Authorization': `Bearer ${uni.getStorageSync('token')}`
+          }
         });
         if (res.data.code === 200) {
           const parsedData = res.data.data.map(item => ({

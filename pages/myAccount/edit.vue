@@ -36,20 +36,6 @@
           <!-- 标签输入区域 -->
       <view class="form-item">
         <view class="tags-title">添加标签</view>
-        
-        <!-- 预设标签区域 -->
-        <view class="preset-tags">
-          <view 
-            class="preset-tag" 
-            v-for="(tag, index) in presetTags" 
-            :key="index"
-            @tap="selectPresetTag(tag)"
-          >
-            {{tag}}
-          </view>
-        </view>
-        
-        <!-- 原有的标签输入区域 -->
         <view class="tags-input-area">
           <input 
             type="text" 
@@ -60,8 +46,6 @@
           />
           <button class="add-tag-btn" @click="addTags">添加</button>
         </view>
-        
-        <!-- 已选标签显示区域 -->
         <view class="tags-list" v-if="tags.length > 0">
           <view class="tag-item" v-for="(tag, index) in tags" :key="index">
             {{tag}}
@@ -75,7 +59,7 @@
     
     <!-- 发布按钮 -->
     <view class="publish-btn-area">
-      <button class="publish-btn" @click="handlePublish">发布商品</button>
+      <button class="publish-btn" @click="handlePublish">修改商品</button>
     </view>
 
   </view>
@@ -87,16 +71,36 @@ import { apiUrl } from '@/config.js';
 export default {
   data() {
     return {
+      goodsId: '',
       title: '',
       price: '',
       description: '',
       images: [],
       tags: [],
-      tagInput: '',
-      presetTags: ['数码', '服装', '美食', '图书', '运动', '生活', '居家', '其他']
+      tagInput: ''
     }
   },
+  mounted() {
+    this.goodsId = this.$route.query.goodsId;
+    console.log(this.goodsId);
+    this.loadGoodsInfo();
+  },
   methods: {
+    async loadGoodsInfo() {
+      const res = await uni.request({
+        url: `${apiUrl}/goods/${this.goodsId}`,
+        method: 'GET',
+      })
+      if(res.statusCode === 200){
+        const goodsInfo = res.data.data;
+        console.log(goodsInfo);
+        this.title = goodsInfo.title;
+        this.price = goodsInfo.price;
+        this.description = goodsInfo.description;
+        this.images = JSON.parse(goodsInfo.images);
+        this.tags = JSON.parse(goodsInfo.tags);
+      }
+    },
     // 添加 URL 生成辅助函数
     getPageUrl(page) {
       return `/pages/${page}/${page}`
@@ -131,7 +135,7 @@ export default {
       this.tags.splice(index, 1);
     },
     
-    // 发布商品
+    //修改商品
     async handlePublish() {
       if (!this.title || !this.price || !this.description) {
         uni.showToast({
@@ -167,11 +171,11 @@ export default {
           console.log('uploadResults', uploadResults)
         } 
         const res = await uni.request({
-          url: `${apiUrl}/goods`,
-          method: 'POST',
           header: {
-            'Authorization': `Bearer ${uni.getStorageSync('token')}`
-          },
+            Authorization: 'Bearer ' + uni.getStorageSync('token')
+          },  
+          url: `${apiUrl}/goods/${this.goodsId}`,
+          method: 'PUT',
           data: {
             title: this.title,
             price: this.price,
@@ -182,7 +186,7 @@ export default {
         })
         if(res.statusCode === 200){
           uni.showToast({
-            title: '发布成功',
+            title: '编辑成功',
             icon: 'success',
           })
         }else{
@@ -193,17 +197,10 @@ export default {
         }
       } catch (error) {
         uni.showToast({
-          title: '发布失败',
+          title: '编辑失败',
           icon: 'none'
         });
         console.error(error);
-      }
-    },
-    
-    // 添加选择预设标签的方法
-    selectPresetTag(tag) {
-      if (!this.tags.includes(tag)) {
-        this.tags.push(tag);
       }
     }
   }
@@ -274,34 +271,31 @@ export default {
 .image-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 20rpx;
 }
 
 .image-item {
-  position: relative;
   width: 200rpx;
   height: 200rpx;
+  margin-right: 20rpx;
+  margin-bottom: 20rpx;
+  position: relative;
 }
 
 .image-item image {
   width: 100%;
   height: 100%;
-  border-radius: 8rpx;
+  border-radius: 12rpx;
 }
 
 .delete-btn {
   position: absolute;
-  right: -10rpx;
-  top: -10rpx;
-  width: 40rpx;
-  height: 40rpx;
-  background: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  top: 10rpx;
+  right: 10rpx;
   font-size: 24rpx;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 4rpx 8rpx;
+  border-radius: 50%;
 }
 
 .upload-btn {
@@ -326,19 +320,6 @@ export default {
   color: #999;
 }
 
-.publish-btn-area {
-  margin-top: 40rpx;
-  padding: 0 30rpx;
-}
-
-.publish-btn {
-  background: #007AFF;
-  color: #fff;
-  border-radius: 12rpx;
-  height: 88rpx;
-  line-height: 88rpx;
-}
-
 .tags-title {
   font-size: 28rpx;
   color: #333;
@@ -348,7 +329,6 @@ export default {
 .tags-input-area {
   display: flex;
   align-items: center;
-  margin-bottom: 20rpx;
 }
 
 .tag-input {
@@ -357,56 +337,54 @@ export default {
   border: 1px solid #eee;
   border-radius: 12rpx;
   padding: 0 20rpx;
-  font-size: 28rpx;
+  font-size: 32rpx;
 }
 
 .add-tag-btn {
-  margin-left: 20rpx;
-  background: #007AFF;
-  color: #fff;
-  border-radius: 12rpx;
   height: 88rpx;
-  line-height: 88rpx;
-  padding: 0 30rpx;
+  background: #007bff;
+  border-radius: 12rpx;
+  padding: 0 20rpx;
+  font-size: 32rpx;
+  color: #fff;
+  margin-left: 20rpx;
 }
 
 .tags-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10rpx;
 }
 
 .tag-item {
-  background: #f0f0f0;
+  background: #eee;
   border-radius: 12rpx;
-  padding: 10rpx 20rpx;
+  padding: 8rpx 16rpx;
+  margin-right: 10rpx;
+  margin-bottom: 10rpx;
   font-size: 28rpx;
-  display: flex;
-  align-items: center;
+  color: #333;
 }
 
 .delete-tag {
+  font-size: 24rpx;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 4rpx 8rpx;
+  border-radius: 50%;
   margin-left: 10rpx;
-  color: #ff4d4f;
-  cursor: pointer;
 }
 
-.preset-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10rpx;
-  margin-bottom: 20rpx;
+.publish-btn-area {
+  margin-top: 30rpx;
+  text-align: center;
 }
 
-.preset-tag {
-  padding: 10rpx 20rpx;
-  background-color: #f5f5f5;
+.publish-btn {
+  width: 200rpx;
+  height: 80rpx;
+  background: #007bff;
   border-radius: 12rpx;
-  font-size: 28rpx;
-  color: #333;
-  
-  &:active {
-    background-color: #e0e0e0;
-  }
+  font-size: 32rpx;
+  color: #fff;
 }
-</style>
+</style> 

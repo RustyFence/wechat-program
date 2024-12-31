@@ -58,7 +58,7 @@
 </template>
 
 <script>
-
+import { apiUrl } from '@/config.js';
 import GoodsPreview from '@/components/goods-preview/goods-preview.vue'
 export default {
   components: {
@@ -67,18 +67,18 @@ export default {
   data() {
     return {
       categories: [
-        { name: '热销', icon: '/static/home/热销.svg' },
-        { name: '推荐', icon: '/static/home/推荐1.svg' },
-        { name: '优惠', icon: '/static/home/优惠.svg' },
-        { name: '活动', icon: '/static/home/活动.svg' }
+        { name: '热销', icon: 'http://101.34.249.254:8080/ui/home/热销.svg' },
+        { name: '推荐', icon: 'http://101.34.249.254:8080/ui/home/推荐1.svg' },
+        { name: '优惠', icon: 'http://101.34.249.254:8080/ui/home/优惠.svg' },
+        { name: '活动', icon: 'http://101.34.249.254:8080/ui/home/活动.svg' }
       ],
       goodsList: [],
       currentPage: 1,
       loading: false,
       banners: [
-        {name : 'banner1', src : '/static/home/banner/banner1.png'},
-        {name : 'banner2', src : '/static/home/banner/banner2.png'},
-        {name : 'banner3', src : '/static/home/banner/banner3.png'}
+        {name : 'banner1', src : 'http://101.34.249.254:8080/ui//home/banner/banner1.png'},
+        {name : 'banner2', src : 'http://101.34.249.254:8080/ui/home/banner/banner2.png'},
+        {name : 'banner3', src : 'http://101.34.249.254:8080/ui/home/banner/banner3.png'}
       ]
     }
   },
@@ -88,8 +88,11 @@ export default {
       this.loading = true;
       try {
         const res = await uni.request({
-          url: `/api/goods?tags=home${this.currentPage}`,
+          url: `${apiUrl}/goods?tags=home${this.currentPage}`,
           method: 'GET',
+          header: {
+            'Authorization': `Bearer ${uni.getStorageSync('token')}`
+          }
         });
         if (res.data.code === 200) {
           // 解析 images 和 tags 字段

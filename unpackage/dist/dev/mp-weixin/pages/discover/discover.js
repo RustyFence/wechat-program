@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const config = require("../../config.js");
 const GoodsPreview = () => "../../components/goods-preview/goods-preview.js";
 const _sfc_main = {
   components: {
@@ -7,82 +8,84 @@ const _sfc_main = {
   },
   data() {
     return {
-      currentFilter: 0,
-      filters: ["全部", "最新", "热门", "附近", "低价", "高价"],
+      keywords: "",
+      currentFilter: "",
+      currentCategory: "",
+      filters: ["全部", "最新", "低价", "高价", "热门", "附近"],
       categories: [
-        { name: "数码", icon: "/static/discover/数码.svg" },
-        { name: "服装", icon: "/static/discover/服装.svg" },
-        { name: "美食", icon: "/static/discover/美食.svg" },
-        { name: "图书", icon: "/static/discover/图书.svg" },
-        { name: "运动", icon: "/static/discover/运动.svg" },
-        { name: "生活", icon: "/static/discover/生活.svg" },
-        { name: "居家", icon: "/static/discover/居家.svg" },
-        { name: "其他", icon: "/static/discover/其他.svg" }
+        { name: "数码", icon: "http://101.34.249.254:8080/ui/discover/数码.svg" },
+        { name: "服装", icon: "http://101.34.249.254:8080/ui/discover/服装.svg" },
+        { name: "美食", icon: "http://101.34.249.254:8080/ui/discover/美食.svg" },
+        { name: "图书", icon: "http://101.34.249.254:8080/ui/discover/图书.svg" },
+        { name: "运动", icon: "http://101.34.249.254:8080/ui/discover/运动.svg" },
+        { name: "生活", icon: "http://101.34.249.254:8080/ui/discover/生活.svg" },
+        { name: "居家", icon: "http://101.34.249.254:8080/ui/discover/居家.svg" },
+        { name: "其他", icon: "http://101.34.249.254:8080/ui/discover/其他.svg" }
       ],
-      goodsList: [
-        {
-          id: 7,
-          title: "戴森吸尘器 V15",
-          price: "3999.00",
-          description: "全新未拆封，顺丰包邮",
-          images: ["/static/goods/dyson.jpg"]
-        },
-        {
-          id: 8,
-          title: "Switch OLED",
-          price: "1999.00",
-          description: "95新，带两个游戏",
-          images: ["/static/goods/switch.jpg"]
-        },
-        {
-          id: 9,
-          title: "iPad Pro 12.9",
-          price: "6999.00",
-          description: "2022款，带妙控键盘",
-          images: ["/static/goods/ipad.jpg"]
-        },
-        {
-          id: 10,
-          title: "索尼降噪耳机",
-          price: "1799.00",
-          description: "WH-1000XM5，全新",
-          images: ["/static/goods/headphone.jpg"]
-        },
-        {
-          id: 11,
-          title: "理光GR3x",
-          price: "4999.00",
-          description: "9成新，带UV镜",
-          images: ["/static/goods/camera.jpg"]
-        },
-        {
-          id: 12,
-          title: "机械键盘",
-          price: "899.00",
-          description: "HHKB Pro 3，带包装",
-          images: ["/static/goods/keyboard.jpg"]
-        },
-        {
-          id: 13,
-          title: "显示器",
-          price: "2999.00",
-          description: "LG 27寸4K显示器",
-          images: ["/static/goods/monitor.jpg"]
-        },
-        {
-          id: 14,
-          title: "游戏主机",
-          price: "3699.00",
-          description: "PS5光驱版，全新",
-          images: ["/static/goods/ps5.jpg"]
-        }
-      ]
+      goodsList: []
+      // 初始化为空数组
     };
   },
   methods: {
-    selectFilter(index) {
-      this.currentFilter = index;
+    selectFilter(item) {
+      this.currentFilter = item;
+      if (item === "全部") {
+        this.currentCategory = "";
+        this.loadGoodsList();
+      } else if (item === "最新") {
+        this.goodsList = this.goodsList.sort((a, b) => {
+          const timeA = new Date(a.updateAt).getTime() || 0;
+          const timeB = new Date(b.updateAt).getTime() || 0;
+          return timeB - timeA;
+        });
+      } else if (item === "低价") {
+        this.goodsList = this.goodsList.sort((a, b) => {
+          const priceA = a.price || 0;
+          const priceB = b.price || 0;
+          return priceA - priceB;
+        });
+      } else if (item === "高价") {
+        this.goodsList = this.goodsList.sort((a, b) => {
+          const priceA = a.price || 0;
+          const priceB = b.price || 0;
+          return priceB - priceA;
+        });
+      }
+      console.log("筛选后的商品列表:", this.goodsList);
+    },
+    selectCategory(name) {
+      this.currentCategory = name;
+      this.loadGoodsList();
+    },
+    async loadGoodsList() {
+      try {
+        const res = await common_vendor.index.request({
+          url: `${config.apiUrl}/goods?keywords=${this.keywords}&tags=${this.currentCategory}`,
+          method: "GET",
+          header: {
+            "Authorization": `Bearer ${common_vendor.index.getStorageSync("token")}`
+          }
+        });
+        if (res.data.code === 200) {
+          const parsedData = res.data.data.map((item) => ({
+            ...item,
+            images: JSON.parse(item.images),
+            tags: JSON.parse(item.tags)
+          }));
+          this.goodsList = parsedData.filter((goods) => goods.isActive);
+        } else {
+          common_vendor.index.showToast({
+            title: res.data.msg,
+            icon: "none"
+          });
+        }
+      } catch (error) {
+        console.error("获取商品列表失败:", error);
+      }
     }
+  },
+  onLoad() {
+    this.loadGoodsList();
   }
 };
 if (!Array) {
@@ -102,29 +105,35 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       size: "18",
       color: "#666"
     }),
-    b: common_vendor.f($data.filters, (item, index, i0) => {
+    b: common_vendor.o([($event) => $data.keywords = $event.detail.value, (...args) => $options.loadGoodsList && $options.loadGoodsList(...args)]),
+    c: $data.keywords,
+    d: common_vendor.f($data.filters, (item, k0, i0) => {
       return {
         a: common_vendor.t(item),
-        b: index,
-        c: $data.currentFilter === index ? 1 : "",
-        d: common_vendor.o(($event) => $options.selectFilter(index), index)
+        b: item,
+        c: $data.currentFilter === item ? 1 : "",
+        d: common_vendor.o(($event) => $options.selectFilter(item), item)
       };
     }),
-    c: common_vendor.f($data.categories, (item, index, i0) => {
+    e: common_vendor.f($data.categories, (item, k0, i0) => {
       return {
         a: item.icon,
         b: common_vendor.t(item.name),
-        c: index
+        c: item.name,
+        d: common_vendor.o(($event) => $options.selectCategory(item.name), item.name)
       };
     }),
-    d: common_vendor.f($data.goodsList, (item, index, i0) => {
-      return {
-        a: index,
+    f: common_vendor.f($data.goodsList, (item, index, i0) => {
+      return common_vendor.e({
+        a: item.isActive
+      }, item.isActive ? {
         b: "8c4a8c2a-1-" + i0,
         c: common_vendor.p({
           goods: item
         })
-      };
+      } : {}, {
+        d: item.goodsId
+      });
     })
   };
 }

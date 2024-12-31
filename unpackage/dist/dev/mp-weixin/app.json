@@ -12,7 +12,8 @@
     "pages/message/contact",
     "pages/myAccount/collection",
     "pages/myAccount/selling",
-    "pages/myAccount/sold"
+    "pages/myAccount/sold",
+    "pages/myAccount/edit"
   ],
   "window": {
     "navigationBarTextStyle": "black",

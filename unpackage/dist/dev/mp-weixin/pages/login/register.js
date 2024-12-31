@@ -1,6 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
-const mock_auth = require("../../mock/auth.js");
+const config = require("../../config.js");
 const common_assets = require("../../common/assets.js");
 const _sfc_main = {
   data() {
@@ -28,21 +28,44 @@ const _sfc_main = {
         });
         return;
       }
+      if (!/^\d{11}$/.test(this.phone)) {
+        common_vendor.index.showToast({
+          title: "手机号格式不正确",
+          icon: "none"
+        });
+        return;
+      }
       try {
-        const response = await mock_auth.register(this.username, this.password);
-        if (response && response.success) {
-          console.log("Registration successful:", response);
+        const res = await common_vendor.index.request({
+          url: `${config.apiUrl}/users/register`,
+          method: "POST",
+          data: {
+            username: this.username,
+            password: this.password,
+            phone: this.phone
+          }
+        });
+        if (res.data.code === 200) {
+          common_vendor.index.showToast({
+            title: "注册成功",
+            icon: "none"
+          });
           common_vendor.index.navigateTo({
             url: "/pages/login/login"
           });
         } else {
+          console.log(res.data);
           common_vendor.index.showToast({
-            title: response.message || "Registration failed",
+            title: res.data.msg,
             icon: "none"
           });
         }
       } catch (error) {
-        this.errorMessage = error.message || "An error occurred during registration";
+        common_vendor.index.showToast({
+          title: "注册失败",
+          icon: "none"
+        });
+        console.error("注册失败:", error);
       }
     },
     goBack() {

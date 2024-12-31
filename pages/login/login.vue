@@ -19,15 +19,12 @@
       </view>
       
       <!-- 微信登录按钮 -->
-      <button class="wechat-login-btn" type="primary" @click="handleWXLogin">
-        <text class="iconfont icon-weixin"></text>
-        微信登录
-      </button>
     </view>
   </view>
 </template>
 
 <script>
+import { apiUrl } from '@/config.js';
 
 export default {
   data() {
@@ -41,8 +38,11 @@ export default {
     async handleLogin() {
       try { 
         const res = await uni.request({
-          url: `/api/users/login`,
+          url: `${apiUrl}/users/login`,
           method: 'POST',
+          header: {
+            'Content-Type': 'application/json'
+          },
           data: {
             username: this.username,
             password: this.password
@@ -55,6 +55,7 @@ export default {
           });
           console.log(res)
           uni.setStorageSync('token', res.data.data.token)
+          uni.setStorageSync('userId',res.data.data.userId)
           uni.setStorageSync('userName',this.username)
           uni.switchTab({
             url: '/pages/home/home'
@@ -86,7 +87,7 @@ export default {
             provider: 'weixin',
             success: (infoRes) => {
               console.log('用户信息：', infoRes.userInfo);
-              // TODO: 将code发送到后端换取用户token
+              // TODO: 将code发送到后��换取用户token
             }
           });
         },

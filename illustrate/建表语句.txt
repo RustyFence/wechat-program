@@ -1,4 +1,4 @@
-CREATE TABLE Users (                                                -- 用户表
+CREATE TABLE users (                                                -- 用户表
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL UNIQUE,                           -- 用户名长度限制为50
     password VARCHAR(50) NOT NULL,                                  -- 密码长度限制为50
@@ -8,7 +8,7 @@ CREATE TABLE Users (                                                -- 用户表
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE Goods (                                                -- 二手商品表
+CREATE TABLE goods (                                                -- 二手商品表
     goods_id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
     description TEXT,
@@ -22,7 +22,7 @@ CREATE TABLE Goods (                                                -- 二手商
     FOREIGN KEY (publisher_id) REFERENCES Users(user_id)
 );
 
-CREATE TABLE Messages (                                             -- 消息表
+CREATE TABLE messages (                                             -- 消息表
     message_id INT PRIMARY KEY AUTO_INCREMENT,
     sender_id INT,
     receiver_id INT,
@@ -33,7 +33,7 @@ CREATE TABLE Messages (                                             -- 消息表
     FOREIGN KEY (receiver_id) REFERENCES Users(user_id)
 );
 
-CREATE TABLE Comments (                                             -- 评论表
+CREATE TABLE comments (                                             -- 评论表
     comment_id INT PRIMARY KEY AUTO_INCREMENT,
     goods_id INT,
     user_id INT,
@@ -44,7 +44,7 @@ CREATE TABLE Comments (                                             -- 评论表
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
-CREATE TABLE Favorites (                                            -- 收藏表
+CREATE TABLE favorites (                                            -- 收藏表
     user_id INT,
     goods_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

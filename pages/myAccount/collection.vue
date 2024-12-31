@@ -24,6 +24,7 @@
 
 <script>
 import GoodsPreview from '@/components/goods-preview/goods-preview.vue'
+import { apiUrl } from '@/config.js';
 
 export default {
   components: {
@@ -41,7 +42,7 @@ export default {
     async loadCollection() {
       try {
         const res = await uni.request({
-          url: '/api/favorites',
+          url: `${apiUrl}/favorites`,
           method: 'GET',
           header: {
             Authorization: 'Bearer ' + uni.getStorageSync('token')
@@ -76,7 +77,7 @@ export default {
           if (res.confirm) {
             try {
               const response = await uni.request({
-                url: `/api/favorites/${goodsId}`,
+                url: `${apiUrl}/favorites/${goodsId}`,
                 method: 'DELETE',
                 header: {
                   Authorization: 'Bearer ' + uni.getStorageSync('token')

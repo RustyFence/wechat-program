@@ -47,6 +47,11 @@
   font-size: 12px;
   color: #666;
 }
+.content-item .content-info .content-date.data-v-4d8bc7a2 {
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+}
 .text-ellipsis.data-v-4d8bc7a2 {
   overflow: hidden;
   text-overflow: ellipsis;

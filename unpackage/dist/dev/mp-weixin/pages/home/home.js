@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const config = require("../../config.js");
 const GoodsPreview = () => "../../components/goods-preview/goods-preview.js";
 const _sfc_main = {
   components: {
@@ -7,71 +8,72 @@ const _sfc_main = {
   },
   data() {
     return {
-      userId: common_vendor.index.setStorageSync("userId", 1),
-      // 设置当前用户ID为1 ，测试用，后续改为从登录状态获取
       categories: [
-        { name: "热销", icon: "/static/home/热销.svg" },
-        { name: "推荐", icon: "/static/home/推荐1.svg" },
-        { name: "优惠", icon: "/static/home/优惠.svg" },
-        { name: "活动", icon: "/static/home/活动.svg" }
+        { name: "热销", icon: "http://101.34.249.254:8080/ui/home/热销.svg" },
+        { name: "推荐", icon: "http://101.34.249.254:8080/ui/home/推荐1.svg" },
+        { name: "优惠", icon: "http://101.34.249.254:8080/ui/home/优惠.svg" },
+        { name: "活动", icon: "http://101.34.249.254:8080/ui/home/活动.svg" }
       ],
-      goodsList: [
-        {
-          id: 1,
-          title: "iPhone 14 Pro Max",
-          price: "7999.00",
-          description: "全新未拆封，256G 暗紫色//测试字数溢出",
-          images: ["/static/goods/iphone14.jpg"]
-        },
-        {
-          id: 2,
-          title: "耐克运动鞋",
-          price: "599.00",
-          description: "Nike Air Max 270，9成新",
-          images: ["/static/goods/nike.jpg"]
-        },
-        {
-          id: 3,
-          title: "索尼相机 A7M4",
-          price: "15999.00",
-          description: "95新，快门数3000次以内",
-          images: ["/static/goods/sony.jpg"]
-        },
-        {
-          id: 4,
-          title: "MacBook Pro M2",
-          price: "12999.00",
-          description: "2023年新款，带包装",
-          images: ["/static/goods/macbook.jpg"]
-        },
-        {
-          id: 5,
-          title: "华为手表 GT4",
-          price: "1499.00",
-          description: "全新未拆封，46mm",
-          images: ["/static/goods/watch.jpg"]
-        },
-        {
-          id: 6,
-          title: "AirPods Pro 2",
-          price: "1299.00",
-          description: "99新，带包装盒",
-          images: ["/static/goods/airpods.jpg"]
-        }
-      ],
+      goodsList: [],
+      currentPage: 1,
+      loading: false,
       banners: [
-        { name: "banner1", src: "/static/home/banner/banner1.png" },
-        { name: "banner2", src: "/static/home/banner/banner2.png" },
-        { name: "banner3", src: "/static/home/banner/banner3.png" }
+        { name: "banner1", src: "http://101.34.249.254:8080/ui//home/banner/banner1.png" },
+        { name: "banner2", src: "http://101.34.249.254:8080/ui/home/banner/banner2.png" },
+        { name: "banner3", src: "http://101.34.249.254:8080/ui/home/banner/banner3.png" }
       ]
     };
   },
   methods: {
-    goToGoodsInfo(goodsId) {
-      common_vendor.index.navigateTo({
-        url: `/pages/goods-info/goods-info?id=${goodsId}`
-      });
+    async loadGoodsList() {
+      if (this.loading)
+        return;
+      this.loading = true;
+      try {
+        const res = await common_vendor.index.request({
+          url: `${config.apiUrl}/goods?tags=home${this.currentPage}`,
+          method: "GET",
+          header: {
+            "Authorization": `Bearer ${common_vendor.index.getStorageSync("token")}`
+          }
+        });
+        if (res.data.code === 200) {
+          const parsedData = res.data.data.map((item) => ({
+            ...item,
+            images: JSON.parse(item.images),
+            tags: JSON.parse(item.tags)
+          }));
+          if (parsedData.length === 0) {
+            common_vendor.index.showToast({
+              title: "没有更多商品了",
+              icon: "none"
+            });
+          } else {
+            this.goodsList = [...this.goodsList, ...parsedData.filter((goods) => goods.isActive)];
+            this.currentPage++;
+          }
+        } else {
+          console.log(res);
+          common_vendor.index.showToast({
+            title: res.data.msg,
+            icon: "none"
+          });
+        }
+      } catch (error) {
+        console.error("获取商品列表失败:", error);
+      } finally {
+        setTimeout(() => {
+          this.loading = false;
+        }, 1e3);
+      }
+    },
+    loadMore() {
+      console.log("request page:home" + this.currentPage);
+      this.loadGoodsList();
     }
+  },
+  onLoad() {
+    this.loadGoodsList();
   }
 };
 if (!Array) {
@@ -105,14 +107,18 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       };
     }),
     d: common_vendor.f($data.goodsList, (item, index, i0) => {
-      return {
-        a: "44b96aab-1-" + i0,
-        b: common_vendor.p({
+      return common_vendor.e({
+        a: item.isActive
+      }, item.isActive ? {
+        b: "44b96aab-1-" + i0,
+        c: common_vendor.p({
           goods: item
-        }),
-        c: index
-      };
-    })
+        })
+      } : {}, {
+        d: index
+      });
+    }),
+    e: common_vendor.o((...args) => $options.loadMore && $options.loadMore(...args))
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);

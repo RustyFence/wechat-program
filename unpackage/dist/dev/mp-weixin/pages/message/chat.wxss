@@ -1,4 +1,5 @@
-
+/* 水平间距 */
+/* 水平间距 */
 .chat-container.data-v-013fa921 {
   display: flex;
   flex-direction: column;
@@ -7,51 +8,76 @@
 }
 .chat-list.data-v-013fa921 {
   flex: 1;
-  padding: 10px;
+  padding: 5px;
   overflow-y: auto;
 }
-.chat-message.data-v-013fa921 {
-  margin-bottom: 10px;
+.chat-item.data-v-013fa921 {
   display: flex;
-  flex-direction: column;
-  max-width: 70%;
-  padding: 8px;
-  border-radius: 8px;
+  align-items: flex-end;
+  margin-bottom: 5px;
+  max-width: 90%;
   position: relative;
 }
-.sent.data-v-013fa921 {
+.from-me.data-v-013fa921 {
   align-self: flex-end;
+  flex-direction: row-reverse;
+  margin-left: auto;
+}
+.from-them.data-v-013fa921 {
+  align-self: flex-start;
+  margin-right: auto;
+}
+.avatar-and-name.data-v-013fa921 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 5px;
+}
+.user-avatar.data-v-013fa921 {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  margin-bottom: 2px;
+  object-fit: cover;
+}
+.username.data-v-013fa921 {
+  font-size: 12px;
+  color: #666;
+}
+.message-bubble.data-v-013fa921 {
+  background-color: #e5e5ea;
+  padding: 6px;
+  border-radius: 8px;
+  position: relative;
+  color: #000;
+}
+.from-me .message-bubble.data-v-013fa921 {
   background-color: #007aff;
   color: #fff;
-}
-.received.data-v-013fa921 {
-  align-self: flex-start;
-  background-color: #e5e5ea;
-  color: #000;
 }
 .message-content.data-v-013fa921 {
   font-size: 14px;
 }
-.time.data-v-013fa921 {
+.message-time.data-v-013fa921 {
   font-size: 12px;
   color: #999;
+  margin-top: 2px;
   align-self: flex-end;
-  margin-top: 4px;
 }
-.chat-input.data-v-013fa921 {
+.input-bar.data-v-013fa921 {
   display: flex;
   padding: 10px;
   background-color: #fff;
   border-top: 1px solid #ddd;
 }
-.chat-input input.data-v-013fa921 {
+.input-bar input.data-v-013fa921 {
   flex: 1;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
   margin-right: 10px;
 }
-.chat-input button.data-v-013fa921 {
+.input-bar button.data-v-013fa921 {
   padding: 8px 16px;
   background-color: #007aff;
   color: #fff;

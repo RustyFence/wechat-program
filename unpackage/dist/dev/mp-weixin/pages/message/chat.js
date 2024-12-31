@@ -1,76 +1,102 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const config = require("../../config.js");
 const _sfc_main = {
   data() {
     return {
-      messages: [],
-      senderId: null,
-      userId: common_vendor.index.getStorageSync("userId"),
-      // 获取当前用户ID
-      newMessage: ""
+      chatMessages: [],
+      newMessage: "",
+      oppoUserId: 0,
+      oppoUserName: "",
+      oppoUserAvatar: "",
+      currentUserId: 0,
+      currentUserName: "",
+      currentUserAvatar: ""
     };
   },
-  onLoad(options) {
-    this.senderId = options.senderId;
+  onLoad({ oppoUserId }) {
+    this.oppoUserId = Number(oppoUserId);
     this.fetchMessages();
   },
   methods: {
-    fetchMessages() {
-      const allMessages = common_vendor.index.getStorageSync("messages") || [];
-      this.messages = allMessages.filter((msg) => msg.senderId === this.senderId);
-      console.log(`>>>>>与senderId:${this.senderId}<<<<<的聊天记录`);
-      console.log("messages", this.messages);
+    async fetchMessages() {
+      console.log(this.oppoUserId);
+      console.log(common_vendor.index.getStorageSync("token"));
+      try {
+        const res = await common_vendor.index.request({
+          url: `${config.apiUrl}/messages`,
+          method: "GET",
+          header: {
+            "Authorization": `Bearer ${common_vendor.index.getStorageSync("token")}`
+          },
+          data: {
+            oppoUserId: this.oppoUserId
+          }
+        });
+        if (res.data.code === 200) {
+          const { messages, users } = res.data.data;
+          this.chatMessages = messages;
+          this.currentUserId = users.currentUser.userId;
+          this.currentUserName = users.currentUser.username;
+          this.currentUserAvatar = users.currentUser.avatar;
+          this.oppoUserName = users.oppoUser.username;
+          this.oppoUserAvatar = users.oppoUser.avatar;
+        } else {
+          console.log(res.data);
+          console.error("Failed to fetch messages:", res.data.msg);
+        }
+      } catch (error) {
+        console.error("Failed to fetch messages:", error);
+      }
     },
     async sendMessage() {
-      if (!this.newMessage.trim()) {
-        console.error("消息内容不能为空");
+      if (!this.newMessage.trim())
         return;
-      }
       try {
-        const response = await new Promise((resolve, reject) => {
-          common_vendor.index.request({
-            url: `/api/messages/send`,
-            method: "POST",
-            data: {
-              userId: this.userId,
-              senderId: this.senderId,
-              content: this.newMessage
-            },
-            success: (res) => {
-              const data = typeof res.data === "string" ? JSON.parse(res.data) : res.data;
-              if (data && data.code === 200) {
-                resolve(data);
-              } else {
-                reject(new Error("发送消息失败"));
-              }
-            },
-            fail: (error) => {
-              console.error("Request failed:", error);
-              reject(error);
-            }
+        const res = await common_vendor.index.request({
+          url: `${config.apiUrl}/messages`,
+          method: "POST",
+          header: {
+            "Authorization": `Bearer ${common_vendor.index.getStorageSync("token")}`
+          },
+          data: {
+            receiverId: this.oppoUserId,
+            content: this.newMessage
+          }
+        });
+        if (res.data.code === 201) {
+          this.chatMessages.push({
+            messageId: res.data.data.messageId,
+            senderId: this.currentUserId,
+            content: this.newMessage,
+            timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+            isRead: false
           });
-        });
-        console.log("消息发送成功:", response.message);
-        this.messages.push({
-          sender: "You",
-          content: this.newMessage,
-          time: (/* @__PURE__ */ new Date()).toLocaleString()
-        });
-        this.newMessage = "";
+          this.newMessage = "";
+        } else {
+          console.error("发送消息失败:", res.data.msg);
+        }
       } catch (error) {
-        console.error("发送消息失败:", error.message || "未知错误");
+        console.error("发送消息失败:", error);
       }
+    },
+    formatTime(timestamp) {
+      const date = new Date(timestamp);
+      return date.toLocaleString();
     }
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_vendor.f($data.messages, (msg, index, i0) => {
+    a: common_vendor.f($data.chatMessages, (msg, index, i0) => {
       return {
-        a: common_vendor.t(msg.content),
-        b: common_vendor.t(msg.time),
-        c: index,
-        d: common_vendor.n(msg.sender === "You" ? "sent" : "received")
+        a: msg.senderId === $data.currentUserId ? $data.currentUserAvatar : $data.oppoUserAvatar,
+        b: common_vendor.t(msg.senderId === $data.currentUserId ? $data.currentUserName : $data.oppoUserName),
+        c: common_vendor.t(msg.content),
+        d: common_vendor.t($options.formatTime(msg.timestamp)),
+        e: msg.messageId,
+        f: msg.senderId === $data.currentUserId ? 1 : "",
+        g: msg.senderId !== $data.currentUserId ? 1 : ""
       };
     }),
     b: $data.newMessage,

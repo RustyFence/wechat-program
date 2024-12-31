@@ -84,6 +84,12 @@
 				"navigationBarTitleText": "已售商品",
 				"navigationStyle": "default"
 			}
+		},
+		{
+			"path": "pages/myAccount/edit",
+			"style": {
+				"navigationBarTitleText": "编辑商品"
+			}
 		}
 	],
 	"tabBar": {
