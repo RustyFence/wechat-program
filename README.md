@@ -45,7 +45,7 @@
 1. 下载并安装 [HBuilderX](https://www.dcloud.io/hbuilderx.html)。
 2. 克隆项目到本地：
    ```bash
-   git clone <your-repo-url>
+   git clone git@github.com:RustyFence/wechat-program.git
    ```
 3. 使用 HBuilderX 打开项目。
 
@@ -53,7 +53,7 @@
 1. 确保已安装 [Node.js](https://nodejs.org/)。
 2. 克隆项目到本地：
    ```bash
-   git clone <your-repo-url>
+   git clone git@github.com:RustyFence/wechat-program.git
    ```
 3. 进入项目目录并安装依赖：
    ```bash
