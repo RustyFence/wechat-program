@@ -6,7 +6,7 @@ const _sfc_main = {
     return {
       userInfo: {
         avatar: "/static/avatar/default.png",
-        username: "用户昵称",
+        username: "没有登录信息",
         userId: "666",
         phone: "13800138000",
         email: "example@email.com"

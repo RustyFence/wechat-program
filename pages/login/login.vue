@@ -1,7 +1,7 @@
 <template>
   <view class="login-container">
     <!-- 背景图片 -->
-    <image class="bg-image" src="/static/login.jpg" mode="aspectFill"></image>
+    <image class="bg-image" src="http://101.34.249.254:8080/ui/login/login.jpg" mode="aspectFill"></image>
     
     <!-- 登录表单 -->
     <view class="login-form">
@@ -19,10 +19,6 @@
       </view>
       
       <!-- 微信登录按钮 -->
-      <button class="wechat-login-btn" type="primary" @click="handleWXLogin">
-        <text class="iconfont icon-weixin"></text>
-        微信登录
-      </button>
     </view>
   </view>
 </template>
