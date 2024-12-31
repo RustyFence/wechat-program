@@ -19,6 +19,10 @@
       </view>
       
       <!-- 微信登录按钮 -->
+      <button class="wechat-login-btn" type="primary" @click="handleWXLogin">
+        <text class="iconfont icon-weixin"></text>
+        微信登录
+      </button>
     </view>
   </view>
 </template>

@@ -165,7 +165,4 @@
   border-radius: 12rpx;
   font-size: 28rpx;
   color: #333;
-&.data-v-bfce3555:active {
-    background-color: #e0e0e0;
-}
 }

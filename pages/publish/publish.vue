@@ -405,8 +405,6 @@ export default {
   font-size: 28rpx;
   color: #333;
   
-  &:active {
-    background-color: #e0e0e0;
-  }
+  
 }
 </style>
